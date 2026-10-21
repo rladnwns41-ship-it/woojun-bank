@@ -290,7 +290,7 @@ class Component extends DCLogic {
     const tc = st.tcur, mk = (st.cfg && st.cfg.market) || "";
     const mktVals = { mktStatus: mk === "open" ? "특별 개장 중 · 요일 상관없이 거래돼요" : mk === "closed" ? "강제 마감 중 · 아무도 거래 못 해요" : "자동 · 수·토·일 휴장" + (W && W.marketOpen && !W.marketOpen() ? " (지금 마감)" : " (지금 거래 가능)"),
       mktModes: [["", "자동"], ["open", "장 열기"], ["closed", "장 마감"]].map(([v, label]) => ({ label, bg: mk === v ? (v === "closed" ? "#F04452" : v === "open" ? "#00A661" : "#fff") : "transparent", fg: mk === v ? (v ? "#fff" : "#191F28") : "#6B7684", sh: mk === v ? "0 1px 3px rgba(0,0,0,.12)" : "none",
-        pick: async () => { try { await this.db.ref("config/market").set(v || null); this.flash(label + (v ? "으로 바꿨어요" : " 모드로 돌렸어요")); } catch (e) { this.flash(this.denied ? this.denied(e) : e.message); } } })) };
+        pick: async () => { try { if (v === "open") await this.db.ref("config/openDays/" + Math.floor((Date.now() / 1000 + 32400) / 86400)).set(true); await this.db.ref("config/market").set(v || null); this.flash(label + (v ? "으로 바꿨어요" : " 모드로 돌렸어요")); } catch (e) { this.flash(this.denied ? this.denied(e) : e.message); } } })) };
     const tVals = { tOnline: W_ONLINE(st.tonline), tOpen: this.tOpen, tCancel: this.tCancel, tStatus: !tc ? "아직 연 적 없어요" : tc.st === "invite" ? "모집 중 · " + Object.keys(tc.p || {}).length + "명 초대됨" + (tc.dev ? " (수동)" : "") : tc.st === "play" ? "대국 진행 중" + (tc.dev ? " (수동)" : "") : tc.st === "done" ? "지난 대회 종료 · 우승 " + (tc.champN || "-") : "지난 대회 취소됨" };
     const keys = Object.keys(st.users);
     const users = keys.filter(k => (st.users[k].name || "").includes(st.q.trim())).map(k => { const u = st.users[k]; return {
