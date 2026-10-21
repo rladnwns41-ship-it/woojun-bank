@@ -161,8 +161,8 @@
     // A closed market keeps the last open day's final quote on charts and accounts.
     let kstDay = Math.floor((t + EPOCH + 32400) / 86400);
     let weekday = new Date(kstDay * 86400000).getUTCDay();
-    if (weekday === 0 || weekday === 3 || weekday === 6) {
-      do { kstDay--; weekday = new Date(kstDay * 86400000).getUTCDay(); } while (weekday === 0 || weekday === 3 || weekday === 6);
+    if (closedDay(kstDay)) {
+      do { kstDay--; } while (closedDay(kstDay));
       t = kstDay * 86400 - 32400 + 86399 - EPOCH;
     }
     // 상한가·하한가: 전일 종가(기준가) ±30%, 호가 단위로 내림/올림
@@ -173,7 +173,9 @@
     const ts = tickSize(p);
     return Math.min(L.up, Math.max(L.dn, Math.max(1, Math.round(p / ts) * ts)));
   }
-  const closedDay = d => { const w = new Date(d * 86400000).getUTCDay(); return w === 0 || w === 3 || w === 6; };
+  // 휴장일(수·토·일). 관리자가 특별 개장한 날(config/openDays/{d})은 평일처럼 가격이 움직인다
+  var OPEN_DAYS = OPEN_DAYS || {};
+  function closedDay(d) { if (OPEN_DAYS[d]) return false; const w = new Date(d * 86400000).getUTCDay(); return w === 0 || w === 3 || w === 6; }
   const prevTradeDay = d => { d--; while (closedDay(d)) d--; return d; };
   const rawClose = (i, d) => { const s = STOCKS[i]; return s.base * Math.exp(rawLog(s, d * 86400 - 32400 + 86399 - EPOCH)); };
   const band = base => { const u = base * (1 + LIMIT), w = base * (1 - LIMIT); return { base, up: Math.max(1, Math.floor(u / tickSize(u)) * tickSize(u)), dn: Math.max(1, Math.ceil(w / tickSize(w)) * tickSize(w)) }; };
@@ -203,14 +205,13 @@
   function marketOpen(at) {
     if (!at && CONFIG.market === "open") return true;
     if (!at && CONFIG.market === "closed") return false;
-    const kstDay = Math.floor(((at || new Date()).getTime() / 1000 + 32400) / 86400);
-    return ![0, 3, 6].includes(new Date(kstDay * 86400000).getUTCDay());
+    return !closedDay(Math.floor(((at || new Date()).getTime() / 1000 + 32400) / 86400));
   }
   // 해킹: 한국 시간 월(1)·수(3)요일에만
   const kstWeekday = () => new Date(Math.floor((Date.now() / 1000 + 32400) / 86400) * 86400000).getUTCDay();
   // 관리자 설정 (config): hackEnabled, tax { sell, gain }
-  const CONFIG = { hackEnabled: true };
-  ready.then(db => db.ref("config").on("value", s => { const c = s.val() || {}; CONFIG.tabs = c.tabs || {}; CONFIG.market = c.market || ""; CONFIG.hackEnabled = c.hackEnabled !== false && CONFIG.tabs.hack !== false; const t = c.tax || {}; TAX.sell = Number.isFinite(t.sell) ? t.sell : 0.003; TAX.gain = Number.isFinite(t.gain) ? t.gain : 0.15; TAX.buy = Number.isFinite(t.buy) ? t.buy : 0.003; CONFIG.loaded = true; try { window.dispatchEvent(new Event("wj-config")); } catch (e) {} }, () => {}));
+  const CONFIG = { hackEnabled: true, openDays: {} };
+  ready.then(db => db.ref("config").on("value", s => { const c = s.val() || {}; CONFIG.tabs = c.tabs || {}; CONFIG.market = c.market || ""; const od = JSON.stringify(c.openDays || {}); if (od !== CONFIG._od) { CONFIG._od = od; CONFIG.openDays = OPEN_DAYS = c.openDays || {}; Object.keys(bandCache).forEach(k => delete bandCache[k]); Object.keys(rawOpen).forEach(k => delete rawOpen[k]); } CONFIG.hackEnabled = c.hackEnabled !== false && CONFIG.tabs.hack !== false; const t = c.tax || {}; TAX.sell = Number.isFinite(t.sell) ? t.sell : 0.003; TAX.gain = Number.isFinite(t.gain) ? t.gain : 0.15; TAX.buy = Number.isFinite(t.buy) ? t.buy : 0.003; CONFIG.loaded = true; try { window.dispatchEvent(new Event("wj-config")); } catch (e) {} }, () => {}));
   const hackDisabled = () => !CONFIG.hackEnabled;
   // 탭 켜짐 여부: trade · bank · games · coin · ranking · hack
   const tabOn = key => !CONFIG.tabs || CONFIG.tabs[key] !== false;
