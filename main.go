@@ -100,6 +100,8 @@ func main() {
 	mux.HandleFunc("/api/redeem", post(handleRedeem))
 	mux.HandleFunc("/api/admin/currency/issue", post(adminOnly(handleIssue)))
 	mux.HandleFunc("/api/admin/currency/void", post(adminOnly(handleVoid)))
+	mux.HandleFunc("/api/admin/event", post(adminOnly(handleLiveEventAdmin)))
+	mux.HandleFunc("/api/event/answer", post(handleLiveEventAnswer))
 	mux.HandleFunc("/", static)
 
 	port := os.Getenv("PORT")
