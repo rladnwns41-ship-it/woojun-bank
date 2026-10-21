@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우준은행 · 시작하기</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%233182F6%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3EW%3C/text%3E%3C/svg%3E">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*::-webkit-scrollbar-thumb:hover{background:#B0B8C1}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wjpop{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}18%{transform:translate(-50%,-50%) scale(1.04);opacity:1}30%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(.96);opacity:0}}
+@keyframes wjblink{50%{opacity:.3}}
+@keyframes wjslide{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wjshake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#fff">
+  <div class="wj-ticker-viewport" aria-label="실시간 시세 목록" style="border-bottom:1px solid #F2F4F6;overflow:hidden;white-space:nowrap;padding:12px 0">
+    <div class="wj-ticker-track" style="display:inline-flex;gap:28px;animation:wjmarq 1200s linear infinite;padding-left:28px" style-hover="animation-play-state:paused">
+      <sc-for list="{{ tape }}" as="s" hint-placeholder-count="20">
+        <span style="display:inline-flex;gap:6px;font-size:14px;font-weight:600"><span style="color:#4E5968">{{ s.name }}</span><span style="color:{{ s.color }}">{{ s.pct }}</span></span>
+      </sc-for>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px">
+    <form onSubmit="{{ submit }}" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px">
+      <span style="width:52px;height:52px;border-radius:16px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800">W</span>
+      <div style="font-size:28px;font-weight:800;line-height:1.35;letter-spacing:-0.8px;margin:10px 0 4px;text-wrap:pretty">우준은행에서<br>나만의 가상 자산 키우기</div>
+      <div style="font-size:14px;color:#6B7684;line-height:1.55">주식, 친구들이 만든 코인, 실시간 보드게임까지 즐겨 보세요.</div>
+      <input value="{{ gname }}" onInput="{{ setGname }}" maxlength="12" placeholder="게스트 닉네임 (비워두면 자동)" style="height:54px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:16px;font-weight:600;padding:0 18px;outline:none;margin-top:8px" style-focus="box-shadow:inset 0 0 0 2px #191F28;background:#fff">
+      <button type="button" onClick="{{ guest }}" style="height:58px;border:0;border-radius:16px;background:#191F28;color:#fff;font-size:17px;font-weight:700;cursor:pointer" style-active="transform:scale(0.98)">{{ guestBtn }}</button>
+      <div style="font-size:12px;color:#8B95A1;line-height:1.55;text-align:center;margin-top:-4px">아무 정보 없이 시작해요. 이 브라우저에서는 계속 같은 계정으로 이어져요.</div>
+      <div style="display:flex;align-items:center;gap:10px;color:#B0B8C1;font-size:12px;font-weight:700;margin:6px 0"><span style="flex:1;height:1px;background:#E5E8EB"></span>또는 계정으로<span style="flex:1;height:1px;background:#E5E8EB"></span></div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;background:#F2F4F6;border-radius:13px;padding:4px"><sc-for list="{{ modes }}" as="m" hint-placeholder-count="2"><button type="button" onClick="{{ m.pick }}" style="border:0;border-radius:10px;padding:10px 5px;background:{{ m.bg }};color:{{ m.fg }};font-size:13px;font-weight:800;cursor:pointer">{{ m.label }}</button></sc-for></div>
+      <input value="{{ name }}" onInput="{{ setName }}" maxlength="40" placeholder="{{ namePh }}" autocomplete="username" style="height:54px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:16px;font-weight:600;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+      <input value="{{ password }}" onInput="{{ setPassword }}" type="password" autocomplete="{{ pwAuto }}" placeholder="{{ pwPh }}" style="height:54px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:16px;font-weight:600;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+      <sc-if value="{{ showPin }}" hint-placeholder-val="{{ false }}"><input value="{{ pin }}" onInput="{{ setPin }}" type="password" inputmode="numeric" maxlength="4" placeholder="기존 계정의 숫자 PIN 4자리" style="height:54px;border-radius:14px;border:0;background:#FFF7E8;color:#191F28;font-size:16px;font-weight:600;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #E5A400;background:#fff"></sc-if>
+      <sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><div style="color:#F04452;font-size:14px;font-weight:500;line-height:1.5">{{ err }}</div></sc-if>
+      <button type="submit" style="height:58px;border:0;border-radius:16px;background:#3182F6;color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:2px" style-hover="background:#1B64DA" style-active="transform:scale(0.98)">{{ btn }}</button>
+      <div style="font-size:13px;color:#8B95A1;line-height:1.6;text-align:center">{{ helpText }}</div>
+      <button type="button" onClick="{{ toMigrate }}" style="border:0;background:transparent;color:#8B95A1;font-weight:600;font-size:12px;cursor:pointer;text-decoration:underline">{{ migrateLink }}</button>
+    </form>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+async function idEmail(nick) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(nick.trim().toLowerCase()));
+  return "u" + Array.from(new Uint8Array(buf)).slice(0, 12).map(b => b.toString(16).padStart(2, "0")).join("") + "@id.wjbank.app";
+}
+class Component extends DCLogic {
+  state = { mode: "login", name: "", password: "", pin: "", err: "", busy: false, t: 0 };
+  returnTo() { const path = new URLSearchParams(location.search).get("return"); return /^games\.dc\.html\?room=[-0-9A-Z_a-z]{20}$/.test(path || "") ? path : "trade.dc.html"; }
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady;
+    if (WJ.uid()) {
+      try {
+        const snap = await (await WJ.ready).ref("users/" + WJ.uid()).once("value"), u = snap.val();
+        if (u && u.name && typeof u.cash === "number" && !u.banned) { location.href = this.returnTo(); return; }
+        await WJ.auth().signOut(); WJ.setAccountKey(null);
+        this.setState({ err: "계정 정보가 완전히 등록되지 않았어요. 관리자에게 문의해 주세요." });
+      } catch (er) { this.fail(er); }
+    }
+    this.setState({ t: WJ.now() });
+    this.iv = setInterval(() => this.setState({ t: WJ.now() }), 3000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  fail(er) {
+    const codes = { "auth/email-already-in-use": "이미 쓰고 있는 닉네임이에요", "auth/weak-password": "비밀번호를 6자 이상 입력하세요", "auth/invalid-credential": "닉네임 또는 비밀번호가 맞지 않아요", "auth/user-not-found": "닉네임 또는 비밀번호가 맞지 않아요", "auth/wrong-password": "닉네임 또는 비밀번호가 맞지 않아요", "auth/operation-not-allowed": "Firebase 콘솔에서 해당 로그인 방식(이메일/비밀번호, 익명)을 켜야 해요", "auth/admin-restricted-operation": "Firebase 콘솔에서 익명 로그인을 켜야 해요", "auth/unauthorized-domain": "Firebase Auth 허용 도메인에 이 사이트를 추가하세요", "auth/too-many-requests": "잠시 후 다시 시도해 주세요" };
+    this.setState({ err: codes[er.code] || er.message || "연결에 실패했어요", busy: false });
+  }
+  guest = async () => {
+    if (this.state.busy) return; this.setState({ busy: true, err: "" });
+    const gn = (this.state.gname || "").trim(); if (gn && (gn.length < 2 || /[.#$\[\]\/@]/.test(gn))) return this.setState({ busy: false, err: "게스트 닉네임은 2~12자, 특수문자 없이 정해 주세요" });
+    try { const k = await WJ.guestLogin(); if (gn) await (await WJ.ready).ref("users/" + k + "/name").set(gn); WJ.sfx("coin"); location.href = this.returnTo(); } catch (er) { this.fail(er); }
+  };
+  submit = async (e) => {
+    e.preventDefault();
+    if (this.state.busy) return;
+    const { mode } = this.state, name = this.state.name.trim(), password = this.state.password, pin = this.state.pin;
+    if (name.length < 2) return this.setState({ err: "닉네임을 2자 이상 입력하세요" });
+    if (mode !== "login" && (name.length > 12 || /[.#$\[\]\/@]/.test(name))) return this.setState({ err: "닉네임은 12자 이하, 특수문자 . # $ [ ] / @ 없이 정해 주세요" });
+    if (password.length < 6) return this.setState({ err: "비밀번호는 6자 이상 입력하세요" });
+    if (mode === "migrate" && !/^\d{4}$/.test(pin)) return this.setState({ err: "기존 PIN 4자리를 입력하세요" });
+    this.setState({ busy: true, err: "" });
+    try {
+      const db = await WJ.ready, auth = WJ.auth(), email = name.includes("@") ? name : await idEmail(name);
+      if (mode === "login") {
+        const cred = await auth.signInWithEmailAndPassword(email, password);
+        const account = await WJ.activateAccount(cred.user);
+        const snap = await db.ref("users/" + account).once("value");
+        if (!snap.exists() || !snap.val().name || typeof snap.val().cash !== "number" || snap.val().banned) {
+          await auth.signOut(); WJ.setAccountKey(null);
+          throw new Error(snap.val()?.banned ? "정지된 계정이에요" : "계정 정보가 완전히 등록되지 않았어요. 관리자에게 문의해 주세요.");
+        }
+      } else if (mode === "signup") {
+        const ow = await WJ.deviceOwner(); if (ow && ow.k) throw new Error("이 브라우저에는 이미 " + (ow.n || "다른") + " 계정이 있어요. 부계정은 만들 수 없어요");
+        const cred = await auth.createUserWithEmailAndPassword(email, password), account = cred.user.uid;
+        try {
+          const profile = db.ref("users/" + account);
+          await profile.set({ name, cash: WJ.START_CASH, loan: 0, createdAt: Date.now(), authUid: account, fps: { [WJ.FP]: Date.now() } });
+          db.ref("deviceOwners/" + WJ.DID).transaction(v => v || { k: account, n: name, t: Date.now() }).catch(() => {});
+          const saved = (await profile.once("value")).val();
+          if (!saved || saved.name !== name || typeof saved.cash !== "number") throw new Error("계정 정보를 저장하지 못했어요");
+        } catch (err) {
+          try { await cred.user.delete(); } catch (_) { await auth.signOut(); throw new Error("계정 정보 저장에 실패했어요. 계정은 생성됐을 수 있으니 관리자에게 문의해 주세요: " + (err.message || err)); }
+          throw err;
+        }
+        WJ.setAccountKey(account); WJ.log(account, "join", { amount: WJ.START_CASH });
+      } else {
+        const key = WJ.keyOf(name), old = await db.ref("users/" + key).once("value");
+        if (!old.exists() || old.val().name !== name || String(old.val().pin || "") !== pin) throw new Error("기존 닉네임 또는 PIN이 맞지 않아요");
+        if (old.val().banned) throw new Error("정지된 계정이에요");
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const reserve = await db.ref("legacyLinks/" + key).transaction(v => v === null ? cred.user.uid : undefined);
+        if (!reserve.committed) { await cred.user.delete(); throw new Error("이미 연결된 계정이에요"); }
+        try { await db.ref("authLinks/" + cred.user.uid).set(key); await db.ref("users/" + key).update({ authUid: cred.user.uid, pin: null }); }
+        catch (err) { await db.ref("authLinks/" + cred.user.uid).remove(); await db.ref("legacyLinks/" + key).remove(); await cred.user.delete(); throw err; }
+        WJ.setAccountKey(key);
+      }
+      WJ.sfx("coin");
+      location.href = this.returnTo();
+    } catch (er) { this.fail(er); }
+  };
+  renderVals() {
+    const st = this.state, t = st.t, W = window.WJ, m = st.mode;
+    const tape = W && t ? W.STOCKS.concat(W.STOCKS).map(s => { const c = W.change(s.i, t); return { name: s.name, pct: W.pct(c), color: c >= 0 ? "#F04452" : "#3182F6" }; }) : [];
+    return {
+      tape, name: st.name, password: st.password, pin: st.pin, err: st.err,
+      modes: [["login", "로그인"], ["signup", "새 계정"]].map(([key, label]) => ({ label, bg: m === key ? "#fff" : "transparent", fg: m === key ? "#191F28" : "#8B95A1", pick: () => this.setState({ mode: key, err: "" }) })),
+      namePh: m === "login" ? "닉네임 (예전 계정은 이메일)" : m === "signup" ? "닉네임 (다른 사람에게 보여요)" : "기존 닉네임",
+      pwPh: m === "migrate" ? "새로 쓸 비밀번호 (6자 이상)" : "비밀번호 (6자 이상)", pwAuto: m === "login" ? "current-password" : "new-password",
+      showPin: m === "migrate",
+      helpText: m === "login" ? "비밀번호를 잊었다면 관리자에게 문의하세요" : m === "signup" ? "닉네임과 비밀번호만 받아요. 이메일·전화번호는 묻지 않아요. 시작 자금 1,000,000준을 드려요." : "기존 닉네임과 PIN을 한 번 확인해 기록과 잔액을 이어가요",
+      btn: st.busy ? "처리 중…" : m === "login" ? "로그인" : m === "signup" ? "가입하고 시작하기" : "기존 계정 연결하기",
+      gname: st.gname || "", setGname: e => this.setState({ gname: e.target.value }), guestBtn: st.busy ? "처리 중…" : "게스트로 바로 시작",
+      migrateLink: m === "migrate" ? "로그인으로 돌아가기" : "예전 PIN 계정이 있어요", toMigrate: () => this.setState({ mode: m === "migrate" ? "login" : "migrate", err: "" }),
+      setName: e => this.setState({ name: e.target.value }), setPassword: e => this.setState({ password: e.target.value }), setPin: e => this.setState({ pin: e.target.value.replace(/\D/g, "") }),
+      submit: this.submit, guest: this.guest
+    };
+  }
+}
+</script>
+</body>
+</html>

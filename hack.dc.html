@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>우준은행 · 해킹</title>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjblink{50%{opacity:.3}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">{{ userName }}님 현금</div><div style="font-weight:800;font-size:16px">{{ cashStr }}준</div></div>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+<main style="width:100%;max-width:1120px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column;gap:14px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;padding:0 4px">
+    <div>
+      <div style="font-size:28px;font-weight:800;letter-spacing:-0.8px">해킹</div>
+      <div style="color:#8B95A1;font-size:15px;margin-top:6px">월·수요일에만 열려요 · 문제를 풀고 친구 계좌에서 현금을 빼 와요. 성공은 확률이에요.</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:800;background:{{ openBg }};color:{{ openFg }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ openFg }};animation:wjblink 2s infinite"></span>{{ openLabel }}</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px">
+    <sc-for list="{{ stats }}" as="m" hint-placeholder-count="4">
+      <div style="background:#fff;border-radius:18px;padding:16px 18px"><div style="font-size:13px;color:#8B95A1;font-weight:700">{{ m.label }}</div><div style="font-size:22px;font-weight:900;margin-top:5px;color:{{ m.color }}">{{ m.value }}</div><div style="font-size:12px;color:#8B95A1;margin-top:3px">{{ m.sub }}</div></div>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start">
+    <section style="flex:1 1 380px;min-width:0;background:#fff;border-radius:22px;padding:20px 14px 12px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 8px"><div style="font-size:19px;font-weight:800">대상 고르기</div><div style="font-size:13px;color:#8B95A1">같은 친구는 하루 한 번</div></div>
+      <div style="padding:0 8px"><input value="{{ q }}" onInput="{{ setQ }}" placeholder="닉네임 검색" style="width:100%;height:44px;border-radius:12px;border:0;background:#F2F4F6;color:#191F28;font-size:15px;padding:0 14px;outline:none"></div>
+      <div style="max-height:560px;overflow-y:auto;display:flex;flex-direction:column">
+        <sc-for list="{{ targets }}" as="t" hint-placeholder-count="6">
+          <div style="display:flex;align-items:center;gap:12px;padding:11px 8px;border-radius:14px" style-hover="background:#F9FAFB">
+            <div style="width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:#F2F4F6;color:#4E5968">{{ t.initial }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.name }}</div>
+              <div style="font-size:12px;color:#8B95A1">현금 {{ t.cashStr }} · 방어 Lv.{{ t.def }}</div>
+            </div>
+            <div style="text-align:right;flex:none"><div style="font-size:12px;color:#8B95A1">성공 확률</div><div style="font-weight:800;font-size:15px;color:{{ t.chanceColor }}">{{ t.chanceStr }}</div></div>
+            <button onClick="{{ t.go }}" disabled="{{ t.disabled }}" style="flex:none;height:38px;padding:0 14px;border:0;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;background:{{ t.btnBg }};color:{{ t.btnFg }}">{{ t.btnLabel }}</button>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noTargets }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 8px;color:#8B95A1;font-size:14px">해킹할 친구가 없어요</div></sc-if>
+      </div>
+    </section>
+
+    <section style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:14px">
+      <div style="background:#191F28;color:#E5E8EB;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div style="font-size:13px;font-weight:700;color:#00C473">wj-terminal</div>
+          <div style="font-size:12px;color:#8B95A1">{{ termRight }}</div>
+        </div>
+        <sc-if value="{{ inHack }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:14px;color:#B0B8C1">&gt; target: <span style="color:#fff;font-weight:700">{{ hackName }}</span> · 방어 Lv.{{ hackDef }} · 성공 확률 {{ hackChance }}</div>
+          <div style="display:flex;gap:6px">
+            <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3"><div style="flex:1;height:6px;border-radius:3px;background:{{ s.bg }}"></div></sc-for>
+          </div>
+          <div style="font-size:13px;color:#8B95A1">{{ stepLabel }}</div>
+          <div style="font-size:30px;font-weight:800;color:#fff;letter-spacing:0">{{ question }}</div>
+          <div style="display:flex;gap:8px">
+            <input ref="{{ ansRef }}" type="text" inputmode="numeric" value="{{ ans }}" onInput="{{ setAns }}" onKeyDown="{{ ansKey }}" placeholder="답 입력" aria-label="답 입력" style="flex:1;min-width:0;height:52px;border-radius:12px;border:1px solid #333D4B;background:#0F141A;color:#00C473;font-size:22px;font-weight:800;padding:0 14px;outline:none;font-family:inherit">
+            <button onClick="{{ answer }}" style="height:52px;padding:0 20px;border:0;border-radius:12px;background:#00A661;color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:'Pretendard Variable',Pretendard,sans-serif">확인</button>
+          </div>
+          <div style="height:4px;border-radius:2px;background:#333D4B;overflow:hidden"><div style="height:100%;background:{{ timeColor }};width:{{ timeW }}"></div></div>
+          <button onClick="{{ abort }}" style="align-self:flex-start;border:0;background:transparent;color:#8B95A1;font-size:13px;cursor:pointer;padding:0;font-family:'Pretendard Variable',Pretendard,sans-serif">그만두기 (시도 1회는 사용돼요)</button>
+        </sc-if>
+        <sc-if value="{{ notHack }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:14px;line-height:1.8;color:#B0B8C1">
+            <div>&gt; 왼쪽에서 대상을 고르면 침투가 시작돼요</div>
+            <div>&gt; 문제 3개를 {{ timeLimit }}초 안에 모두 맞혀야 해요</div>
+            <div>&gt; 다 맞히면 확률로 성공 · 실패가 갈려요</div>
+            <div>&gt; 실패하면 추적당해 벌금을 상대에게 물어요</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="background:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:17px;font-weight:800">업그레이드</div>
+        <sc-for list="{{ upgrades }}" as="g" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:#F9FAFB">
+            <div style="width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;background:{{ g.iconBg }};color:{{ g.iconFg }}">{{ g.lv }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:800;font-size:15px">{{ g.title }}</div>
+              <div style="font-size:12px;color:#6B7684;margin-top:2px">{{ g.effect }}</div>
+            </div>
+            <button onClick="{{ g.buy }}" disabled="{{ g.disabled }}" style="flex:none;height:40px;padding:0 14px;border:0;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;background:{{ g.btnBg }};color:{{ g.btnFg }}">{{ g.btn }}</button>
+          </div>
+        </sc-for>
+        <div style="font-size:12px;color:#8B95A1;line-height:1.6">성공 확률은 내 공격과 상대 방어 레벨에 따라 달라져요 (5%~85%). 시도할 때마다 쿨타임 30분. 훔치는 양 = 상대 현금의 {{ rateStr }} (최대 {{ capStr }}준).</div>
+      </div>
+
+      <div style="background:#fff;border-radius:22px;padding:20px 14px 12px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:17px;font-weight:800;padding:0 8px 6px">해킹 기록</div>
+        <div style="max-height:300px;overflow-y:auto">
+          <sc-for list="{{ logs }}" as="l" hint-placeholder-count="0">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 8px">
+              <span style="flex:none;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:{{ l.tagBg }};color:{{ l.tagFg }}">{{ l.tag }}</span>
+              <span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#333D4B">{{ l.text }}</span>
+              <span style="flex:none;font-size:14px;font-weight:800;color:{{ l.amountColor }}">{{ l.amountStr }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noLogs }}" hint-placeholder-val="{{ true }}"><div style="padding:8px;color:#8B95A1;font-size:14px">아직 기록이 없어요</div></sc-if>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", DN = "#3182F6", MU = "#8B95A1", GR = "#00A661";
+const MAX_TRIES = 5, LV_MAX = 10, TIME = 40, QN = 5, COOL = 30 * 60000;
+const KST_DAY = () => new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
+const cost = l => 50000 * (l + 1) * (l + 1);
+const chance = (atk, def, adj) => Math.min(0.85, Math.max(0.05, 0.3 + 0.06 * (atk - def) + (adj || 0)));
+const rate = atk => 0.03 + 0.01 * atk;
+const cap = atk => 300000 + 100000 * atk;
+const penalty = def => 20000 + 10000 * def;
+const DAYN = ["일", "월", "화", "수", "목", "금", "토"];
+function makeQ(i) {
+  const r = n => Math.floor(Math.random() * n), k = r(6);
+  if (k === 0) { const a = 120 + r(780), b = 120 + r(780); return { q: a + " + " + b, a: a + b }; }
+  if (k === 1) { const a = 400 + r(600), b = 111 + r(a - 111); return { q: a + " − " + b, a: a - b }; }
+  if (k === 2) { const a = 12 + r(18), b = 6 + r(14); return { q: a + " × " + b, a: a * b }; }
+  if (k === 3) { const a = 6 + r(9), b = 7 + r(9), c = 10 + r(80); return { q: a + " × " + b + " − " + c, a: a * b - c }; }
+  if (k === 4) { const n = 33 + r(200); return { q: "2진수 " + n.toString(2) + " → 10진수", a: n }; }
+  const n = 26 + r(230); return { q: "16진수 " + n.toString(16).toUpperCase() + " → 10진수", a: n };
+}
+class Component extends DCLogic {
+  state = { user: null, users: {}, logs: [], q: "", hack: null, ans: "", now: Date.now(), busy: false };
+  ansRef = React.createRef();
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady;
+    const uid = WJ.requireUser(); if (!uid) return; this.uid = uid;
+    const db = await WJ.ready; this.db = db;
+    this.subs = [
+      [db.ref("users/" + uid), s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); this.setState({ user: u }); }],
+      [db.ref("users"), s => this.setState({ users: s.val() || {} })],
+      [db.ref("hackLog/" + uid).limitToLast(40), s => { const a = []; s.forEach(c => { a.push(c.val()); }); this.setState({ logs: a.reverse() }); }]
+    ];
+    this.subs.forEach(([r, f]) => r.on("value", f));
+    WJ.presence(uid);
+    this.iv = setInterval(() => { this.setState({ now: Date.now() }); const h = this.state.hack; if (h && Date.now() > h.until) this.fail("시간 초과"); }, 250);
+  }
+  componentWillUnmount() { (this.subs || []).forEach(([r]) => r.off()); clearInterval(this.iv); }
+  componentDidUpdate(_, ps) { const h = this.state.hack; if (h && (!ps.hack || ps.hack.i !== h.i) && this.ansRef.current) this.ansRef.current.focus(); }
+  note(m, icon, ms) { window.WJUI && WJUI.toast(m, { icon: icon || "⚠️", html: true, ms: ms || 3600 }); }
+  my() { const h = (this.state.user && this.state.user.hack) || {}, today = h.day === KST_DAY(); return { last: h.last || 0, atk: h.atk || 0, def: h.def || 0, tries: today ? h.tries || 0 : 0, hit: today ? h.hit || {} : {}, stolen: today ? h.stolen || 0 : 0, total: h.total || 0 }; }
+  start = async (key) => {
+    if (this.state.hack || this.state.busy) return;
+    if (!WJ.hackOpen()) return this.note(WJ.hackDisabled() ? "관리자가 해킹을 잠시 꺼 뒀어요" : "해킹은 월·수요일에만 열려요", "🔒");
+    const tu = this.state.users[key]; if (!tu || key === this.uid) return;
+    let err = null; this.setState({ busy: true });
+    if (await WJ.isLinked(this.uid, key)) { this.setState({ busy: false }); return this.note("같은 기기에서 쓴 계정은 해킹할 수 없어요"); }
+    const r = await this.db.ref("users/" + this.uid).transaction(u => {
+      if (!u) return u; const day = KST_DAY(), h = u.hack || {};
+      if (h.day !== day) { h.day = day; h.tries = 0; h.hit = {}; h.stolen = 0; }
+      if ((h.tries || 0) >= MAX_TRIES) { err = "오늘 시도를 모두 썼어요"; return; }
+      if (h.hit && h.hit[key]) { err = "이 친구는 오늘 이미 해킹했어요"; return; }
+      if (h.last && Date.now() - h.last < COOL) { err = "쿨타임 " + Math.ceil((COOL - (Date.now() - h.last)) / 60000) + "분 남았어요"; return; }
+      err = null; h.last = Date.now(); h.tries = (h.tries || 0) + 1; h.hit = Object.assign({}, h.hit, { [key]: true }); u.hack = h; return u;
+    }).catch(() => ({ committed: false }));
+    this.setState({ busy: false });
+    if (!r.committed || err) return this.note(err || "연결을 확인해 주세요");
+    WJ.sfx("click");
+    const qs = Array.from({ length: QN }, (_, i) => makeQ(i));
+    this.setState({ hack: { key, name: tu.name || key, def: ((tu.hack || {}).def) || 0, qs, i: 0, until: Date.now() + TIME * 1000 }, ans: "" });
+  };
+  answer = () => {
+    const h = this.state.hack; if (!h || this.state.busy) return;
+    const v = this.state.ans.trim(); if (!v) return;
+    if (+v !== h.qs[h.i].a) return this.fail("오답 · 방화벽에 막혔어요");
+    WJ.sfx("flip");
+    if (h.i + 1 < QN) return this.setState({ hack: Object.assign({}, h, { i: h.i + 1 }), ans: "" });
+    this.resolve(h);
+  };
+  fail(why) { this.setState({ hack: null, ans: "" }); WJ.sfx("lose"); this.note("<b>침투 실패</b> · " + why, "🛑"); }
+  async resolve(h) {
+    this.setState({ busy: true, hack: null, ans: "" });
+    const me = this.my(), db = this.db, ts = Date.now(), myName = (this.state.user || {}).name || "";
+    const snap = await db.ref("users/" + h.key).once("value"); const tu = snap.val() || {};
+    const def = (tu.hack || {}).def || 0, p = chance(me.atk, def, WJ.eqHack(this.state.users, this.uid, h.key));
+    try {
+      if (Math.random() < p) {
+        const want = Math.min(cap(me.atk), Math.floor((tu.cash || 0) * rate(me.atk))); let took = 0;
+        await db.ref("users/" + h.key + "/cash").transaction(c => { if (c === null) return c; took = Math.max(0, Math.min(c, want)); return c - took; });
+        if (took > 0) {
+          await WJ.addCash(this.uid, took, true);
+          await db.ref("users/" + this.uid + "/hack").transaction(x => { x = x || {}; x.stolen = (x.stolen || 0) + took; x.total = (x.total || 0) + took; return x; });
+        }
+        WJ.log(this.uid, "hack", { amount: took, text: h.name + "님 계좌 해킹 성공" }); WJ.log(h.key, "hacked", { amount: -took, text: myName + "님에게 해킹당함" });
+        db.ref("hackLog/" + this.uid).push({ kind: "out", ok: true, name: h.name, amount: took, ts }); db.ref("hackLog/" + h.key).push({ kind: "in", ok: true, name: myName, amount: took, ts });
+        WJ.sfx("win"); this.note("<b>해킹 성공 +" + WJ.fmt(took) + "준</b> · " + h.name + "님 계좌 (확률 " + Math.round(p * 100) + "%)", "💻", 4200);
+      } else {
+        const pen = Math.min(Math.max(0, (this.state.user || {}).cash || 0), penalty(def));
+        if (pen > 0 && await WJ.addCash(this.uid, -pen)) await WJ.addCash(h.key, pen, true);
+        WJ.log(this.uid, "hackfail", { amount: -pen, text: h.name + "님 해킹 실패 · 추적 벌금" }); WJ.log(h.key, "recv", { amount: pen, who: myName + "(해킹 벌금)" });
+        db.ref("hackLog/" + this.uid).push({ kind: "out", ok: false, name: h.name, amount: pen, ts }); db.ref("hackLog/" + h.key).push({ kind: "in", ok: false, name: myName, amount: pen, ts });
+        WJ.sfx("lose"); this.note("<b>해킹 실패</b> · 추적당해 벌금 " + WJ.fmt(pen) + "준을 " + h.name + "님에게 냈어요", "🚨", 4200);
+      }
+    } catch (e) { this.note("연결을 확인해 주세요"); }
+    this.setState({ busy: false });
+  }
+  upgrade = async (kind) => {
+    let err = null, paid = 0, lv = 0;
+    const r = await this.db.ref("users/" + this.uid).transaction(u => {
+      if (!u) return u; const h = u.hack || {}, cur = h[kind] || 0;
+      if (cur >= LV_MAX) { err = "최고 레벨이에요"; return; }
+      const c = cost(cur); if ((u.cash || 0) < c) { err = "현금이 부족해요 (" + WJ.fmt(c) + "준 필요)"; return; }
+      err = null; u.cash -= c; h[kind] = cur + 1; u.hack = h; paid = c; lv = cur + 1; return u;
+    }).catch(() => ({ committed: false }));
+    if (!r.committed || err) { WJ.sfx("lose"); return this.note(err || "연결을 확인해 주세요"); }
+    const label = kind === "atk" ? "공격" : "방어";
+    WJ.log(this.uid, "hackup", { amount: -paid, text: label + " Lv." + lv + " 업그레이드" });
+    WJ.sfx("coin"); this.note("<b>" + label + " Lv." + lv + "</b> 업그레이드 · −" + WJ.fmt(paid) + "준", "🛡️");
+  };
+  renderVals() {
+    const W = window.WJ, st = this.state, u = st.user || {}, F = n => W ? W.fmt(n) : "0";
+    const open = W ? W.hackOpen() : false, me = this.my(), left = MAX_TRIES - me.tries, h = st.hack, coolMs = Math.max(0, COOL - (st.now - me.last)), coolStr = Math.floor(coolMs / 60000) + ":" + String(Math.floor(coolMs / 1000) % 60).padStart(2, "0");
+    let nextOpen = "";
+    if (W && !open) { const wd = W.kstWeekday(); for (let k = 1; k <= 7; k++) { const d = (wd + k) % 7; if (d === 1 || d === 3) { nextOpen = DAYN[d] + "요일"; break; } } }
+    const ql = st.q.trim();
+    const targets = Object.keys(st.users).filter(k => k !== this.uid && !st.users[k].banned && st.users[k].name && (!ql || st.users[k].name.includes(ql)))
+      .map(k => { const t = st.users[k], def = (t.hack || {}).def || 0, p = chance(me.atk, def, W ? W.eqHack(st.users, this.uid, k) : 0), done = !!me.hit[k], can = open && left > 0 && !done && !h && !st.busy && !coolMs;
+        return { k, cash: t.cash || 0, name: t.name, initial: t.name[0], cashStr: F(t.cash) + "준", def, chanceStr: Math.round(p * 100) + "%", chanceColor: p >= 0.5 ? GR : p >= 0.25 ? "#E07B00" : UP,
+          disabled: !can, btnLabel: done ? "완료" : coolMs && open && left > 0 ? coolStr : "해킹", btnBg: can ? "#191F28" : "#F2F4F6", btnFg: can ? "#FFFFFF" : "#B0B8C1", go: () => this.start(k) }; })
+      .sort((a, b) => b.cash - a.cash);
+    const remain = h ? Math.max(0, h.until - st.now) : 0;
+    const upg = (kind, title, eff) => { const lv = me[kind], max = lv >= LV_MAX, c = cost(lv), ok = !max && (u.cash || 0) >= c;
+      return { lv: "Lv." + lv, title, effect: max ? "최고 레벨" : eff, btn: max ? "MAX" : F(c) + "준", disabled: !ok, btnBg: ok ? "#3182F6" : "#F2F4F6", btnFg: ok ? "#FFFFFF" : "#B0B8C1",
+        iconBg: kind === "atk" ? "#E9F9F1" : "#E8F3FF", iconFg: kind === "atk" ? GR : DN, buy: () => this.upgrade(kind) }; };
+    const logs = st.logs.map(l => { const out = l.kind === "out"; const tag = out ? (l.ok ? "성공" : "실패") : (l.ok ? "털림" : "막아냄"); const gain = out ? l.ok : !l.ok;
+      return { tag, tagBg: gain ? "#E9F9F1" : "#FFF0F2", tagFg: gain ? GR : UP, text: out ? l.name + "님 계좌 공격" : l.name + "님이 내 계좌 공격", amountStr: (gain ? "+" : "−") + F(l.amount) + "준", amountColor: gain ? GR : UP }; });
+    return {
+      userName: u.name || "", cashStr: F(u.cash), logout: () => W && W.logout(),
+      openLabel: open ? "지금 열림 · 오늘 자정까지" : W && W.hackDisabled() ? "관리자가 잠시 꺼 뒀어요" : "닫힘 · 다음 오픈 " + nextOpen, openBg: open ? "#E9F9F1" : "#F2F4F6", openFg: open ? GR : "#6B7684",
+      stats: [
+        { label: "공격 레벨", value: "Lv." + me.atk, sub: "성공률 · 훔치는 양 증가", color: GR },
+        { label: "방어 레벨", value: "Lv." + me.def, sub: "상대 성공률 감소 · 벌금 증가", color: DN },
+        { label: "오늘 남은 시도", value: left + " / " + MAX_TRIES, sub: coolMs ? "쿨타임 " + coolStr + " 남음" : open ? "시도마다 쿨타임 30분" : "월·수요일에 사용", color: coolMs ? "#E07B00" : "#191F28" },
+        { label: "오늘 빼 온 돈", value: F(me.stolen) + "준", sub: "누적 " + F(me.total) + "준", color: UP }
+      ],
+      q: st.q, setQ: e => this.setState({ q: e.target.value }), targets, noTargets: targets.length === 0,
+      termRight: h ? Math.ceil(remain / 1000) + "s" : !open ? "locked" : coolMs ? "cooldown " + coolStr : "ready",
+      inHack: !!h, notHack: !h, timeLimit: TIME,
+      hackName: h ? h.name : "", hackDef: h ? h.def : 0, hackChance: h ? Math.round(chance(me.atk, h.def, W ? W.eqHack(st.users, this.uid, h.key) : 0) * 100) + "%" : "",
+      steps: Array.from({ length: QN }, (_, i) => ({ bg: h && i < h.i ? "#00C473" : h && i === h.i ? "#FFFFFF" : "#333D4B" })),
+      stepLabel: h ? "문제 " + (h.i + 1) + " / " + QN : "", question: h ? h.qs[h.i].q + " = ?" : "",
+      ansRef: this.ansRef, ans: st.ans, setAns: e => this.setState({ ans: e.target.value.replace(/[^0-9]/g, "") }), ansKey: e => { if (e.key === "Enter") this.answer(); }, answer: this.answer,
+      abort: () => this.fail("그만뒀어요"),
+      timeW: (remain / (TIME * 10)).toFixed(1) + "%", timeColor: remain < 8000 ? UP : "#00C473",
+      upgrades: [upg("atk", "공격 업그레이드", "성공 확률 +6%p · 훔치는 비율 +1%p"), upg("def", "방어 업그레이드", "상대 성공 확률 −6%p · 실패한 상대 벌금 +1만준")],
+      rateStr: Math.round(rate(me.atk) * 100) + "%", capStr: F(cap(me.atk)),
+      logs, noLogs: logs.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

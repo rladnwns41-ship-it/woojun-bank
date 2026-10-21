@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우준은행 · 랭킹</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%233182F6%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3EW%3C/text%3E%3C/svg%3E">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*::-webkit-scrollbar-thumb:hover{background:#B0B8C1}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wjpop{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}18%{transform:translate(-50%,-50%) scale(1.04);opacity:1}30%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(.96);opacity:0}}
+@keyframes wjblink{50%{opacity:.3}}
+@keyframes wjslide{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wjshake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600;flex:none" style-hover="color:#F04452">로그아웃</button>
+  </div>
+</header>
+  <main style="width:100%;max-width:880px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;padding:0 4px">
+      <div><div style="font-size:28px;font-weight:800;letter-spacing:-0.8px">{{ title }}</div><div style="color:#8B95A1;font-size:15px;margin-top:6px">{{ desc }}</div></div>
+      <div style="display:flex;background:#F2F4F6;border-radius:10px;padding:3px;gap:2px;overflow-x:auto;max-width:100%">
+              <sc-for list="{{ modes }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="flex:none;border:0;border-radius:8px;height:34px;padding:0 11px;font-size:13px;font-weight:700;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};box-shadow:{{ o.sh }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end">
+      <sc-for list="{{ podium }}" as="p" hint-placeholder-count="3">
+        <div style="background:#fff;border-radius:22px;padding:22px 14px;text-align:center;order:{{ p.order }};min-height:{{ p.h }};display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px">
+          <div style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;background:{{ p.bg }};color:{{ p.fg }}">{{ p.rank }}</div>
+          <div style="font-size:17px;font-weight:700;margin-top:8px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</div>
+          <div style="font-weight:800;font-size:clamp(15px,2.4vw,21px)">{{ p.value }}</div>
+          <div style="font-size:14px;font-weight:600;color:{{ p.retColor }}">{{ p.ret }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:22px;padding:48px 20px;text-align:center;color:#8B95A1;font-size:15px;line-height:1.6">{{ emptyText }}</div></sc-if>
+    <sc-if value="{{ hasRows }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#fff;border-radius:22px;padding:8px">
+      <div style="max-height:640px;overflow-y:auto;padding:6px 0">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+          <div style="display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:14px;background:{{ r.bg }}">
+            <div style="width:26px;font-weight:700;font-size:16px;color:#3182F6;text-align:center">{{ r.rank }}</div>
+            <div style="width:40px;height:40px;border-radius:50%;background:{{ r.ib }};color:{{ r.ic }};flex:none;display:flex;align-items:center;justify-content:center;font-weight:700">{{ r.initial }}</div>
+            <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">{{ r.name }}</div><div style="font-size:13px;color:#8B95A1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.sub }}</div></div>
+            <div style="text-align:right;flex:none"><div style="font-weight:700;font-size:16px">{{ r.value }}</div><div style="font-size:13px;font-weight:600;color:{{ r.color }}">{{ r.ret }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", DN = "#3182F6", MU = "#8B95A1";
+const P0 = 100, K = 2;
+const TABS = [["net", "부자", "순자산 = 현금 + 주식 + 집 − 대출 · 실시간"], ["invest", "투자", "주식·코인 매도로 실제로 번 돈(실현손익)"], ["games", "보드게임", "대국 승수 · 승률 · 대국 수익"], ["coin", "코인", "보유 코인 평가액 (수요 곡선 가격 기준)"], ["estate", "부동산", "가진 집 수와 매입가 합계"], ["company", "증권사", "펀드 수익률 (기준가 1,000 대비)"], ["tourney", "토너먼트", "목요일 토너먼트 우승 횟수 · 상금"]];
+class Component extends DCLogic {
+  state = { users: {}, tstats: {}, coins: {}, cos: {}, hist: {}, t: 0, mode: "net" };
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady; if (!WJ.requireUser()) return; this.me = WJ.uid();
+    const db = await WJ.ready;
+    this.subs = [["users", "users"], ["tstats", "tstats"], ["coins", "coins"], ["companies", "cos"], ["tourney/hist", "hist"]].map(([p, k]) => { const ref = db.ref(p); ref.on("value", s => this.setState({ [k]: s.val() || {} }), () => {}); return ref; });
+    this.setState({ t: WJ.now() }); this.iv = setInterval(() => this.setState({ t: WJ.now() }), 2000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); (this.subs || []).forEach(r => r.off()); }
+  renderVals() {
+    const st = this.state, W = window.WJ, mode = st.mode, tab = TABS.find(x => x[0] === mode);
+    const modes = TABS.map(([v, label]) => ({ label, bg: mode === v ? "#fff" : "transparent", color: mode === v ? "#191F28" : MU, sh: mode === v ? "0 1px 3px rgba(0,0,0,.08)" : "none", pick: () => this.setState({ mode: v }) }));
+    const base = { modes, title: tab[1] + " 랭킹", desc: tab[2], podium: [], rows: [], empty: false, hasRows: true, emptyText: "", logout: () => W && W.logout() };
+    if (!W || !st.t) return base;
+    const F = n => W.fmt(n), big = n => { const a = Math.abs(n), s = n < 0 ? "-" : ""; return s + (a >= 1e8 ? (a / 1e8).toFixed(1).replace(/\.0$/, "") + "억" : a >= 1e4 ? Math.round(a / 1e4).toLocaleString("ko-KR") + "만" : F(a)) + "준"; };
+    const U = st.users, me = this.me, ok = k => U[k] && !U[k].banned && U[k].name;
+    const coinVal = k => Object.values(st.coins).reduce((a, c) => a + ((c && c.h && c.h[k]) || 0) * (P0 + K * ((c && c.s) || 0)), 0);
+    const homes = k => Object.values((U[k] || {}).homes || {}), homeVal = k => homes(k).reduce((a, h) => a + (h.buy || 0), 0), homeLoan = k => homes(k).reduce((a, h) => a + (h.loan || 0), 0);
+    let list = [];
+    if (mode === "net") list = Object.keys(U).filter(ok).map(k => { const u = U[k], stock = W.holdingsValue(u, st.t), hv = homeVal(k), v = (u.cash || 0) + stock + hv - (u.loan || 0) - homeLoan(k), r = (v - W.START_CASH) / W.START_CASH * 100; return { k, n: u.name, v, val: big(v), sub: "현금 " + big(u.cash || 0) + " · 주식 " + big(stock) + " · 집 " + big(hv) + " · 대출 " + big((u.loan || 0) + homeLoan(k)), ret: W.pct(r), c: r >= 0 ? UP : DN }; });
+    else if (mode === "invest") list = Object.keys(U).filter(ok).map(k => { const u = U[k], v = u.realized || 0; return { k, n: u.name, v, val: (v >= 0 ? "+" : "") + big(v), sub: "거래 " + (u.trades || 0) + "회 · 보유 주식 " + big(W.holdingsValue(u, st.t)), ret: "", c: v >= 0 ? UP : DN }; });
+    else if (mode === "games") list = Object.keys(st.tstats).filter(k => st.tstats[k]).map(k => { const s = st.tstats[k], tot = (s.w || 0) + (s.l || 0) + (s.d || 0); return { k, n: s.n || (U[k] || {}).name || "?", v: (s.w || 0) * 1e6 + (s.earn || 0) / 1e3, val: (s.w || 0) + "승 " + (s.l || 0) + "패", sub: "승률 " + (tot ? Math.round((s.w || 0) / tot * 100) : 0) + "% · 대국 " + tot + "판 · 수익 " + big(s.earn || 0), ret: "", c: MU }; });
+    else if (mode === "coin") list = Object.keys(U).filter(ok).map(k => { const v = coinVal(k), mine = Object.values(st.coins).filter(c => c && c.by === k).length; return { k, n: U[k].name, v, val: big(v), sub: "보유 코인 " + Object.values(st.coins).filter(c => c && c.h && c.h[k] > 0).length + "종 · 발행 " + mine + "개", ret: "", c: MU }; }).filter(x => x.v > 0);
+    else if (mode === "estate") list = Object.keys(U).filter(ok).map(k => { const n = homes(k).length, v = homeVal(k); return { k, n: U[k].name, v: n * 1e12 + v, val: n + "채", sub: "매입가 합계 " + big(v) + " · 집 대출 " + big(homeLoan(k)), ret: big(v), c: MU }; }).filter(x => x.v > 0);
+    else if (mode === "company") list = Object.keys(st.cos).filter(k => st.cos[k]).map(k => { const c = st.cos[k], pf = c.pf || {}, t = W ? W.now() : Date.now(); let nav = pf.cash || 0; Object.keys(pf.h || {}).forEach(h => { nav += (pf.h[h].q || 0) * (W ? W.price(+h.slice(1), t) : 0); }); const live = pf.units > 1e-9, v = live ? nav / pf.units / 1000 - 1 : -9; return { k: "co:" + k, n: c.name, v, val: live ? (v >= 0 ? "+" : "") + (v * 100).toFixed(1) + "%" : "모집 중", sub: "운용 " + big(Math.round(nav)) + " · 회장 " + (c.ceoN || "?") + " · 직원 " + Object.keys(c.members || {}).length + "명" + (c.ipo ? " · 상장" : ""), ret: (c.members || {})[me] ? "내 회사" : "", c: DN, mine: !!(c.members || {})[me], color: c.color }; });
+    else { const cnt = {}; Object.values(st.hist).forEach(h => { if (!h || !h.champ) return; const x = cnt[h.champ] = cnt[h.champ] || { n: h.champN, w: 0, p: 0 }; x.w++; x.p += h.prize || 0; }); list = Object.keys(cnt).map(k => ({ k, n: cnt[k].n || (U[k] || {}).name || "?", v: cnt[k].w * 1e12 + cnt[k].p, val: cnt[k].w + "회 우승", sub: "상금 합계 " + big(cnt[k].p), ret: "", c: MU })); }
+    list.sort((a, b) => b.v - a.v);
+    const PD = [{ bg: "#FFC342", fg: "#fff", h: "210px", order: 2 }, { bg: "#B0B8C1", fg: "#fff", h: "185px", order: 1 }, { bg: "#D9925B", fg: "#fff", h: "170px", order: 3 }];
+    const isMe = x => x.k === me || x.mine;
+    const EMPTY = { net: "아직 아무도 없어요", invest: "아직 실현손익이 있는 사람이 없어요", games: "아직 대국 기록이 없어요", coin: "아직 코인을 가진 사람이 없어요", estate: "아직 집을 가진 사람이 없어요", company: "아직 증권사가 없어요", tourney: "아직 토너먼트 우승자가 없어요 · 목요일 저녁 7시에 열려요" };
+    return Object.assign(base, { empty: !list.length, hasRows: list.length > 0, emptyText: EMPTY[mode],
+      podium: list.slice(0, 3).map((x, i) => Object.assign({ rank: i + 1, name: x.n, value: x.val, ret: x.ret, retColor: x.c }, PD[i])),
+      rows: list.map((x, i) => ({ rank: i + 1, initial: (x.n || "?")[0], ib: x.color || "#F2F4F6", ic: x.color ? "#fff" : "#4E5968", name: x.n + (x.k === me ? " (나)" : ""), sub: x.sub, value: x.val, ret: x.ret, color: x.c, bg: isMe(x) ? "#E8F3FF" : "transparent" }))
+    });
+  }
+}
+</script>
+</body>
+</html>

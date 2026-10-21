@@ -1,0 +1,73 @@
+/* Shared touch layout for the static bank pages. */
+html{overflow-x:hidden;-webkit-text-size-adjust:100%}
+body{overflow-x:hidden}
+button,a,input{touch-action:manipulation}
+button{min-height:36px}
+div:fullscreen{background:#101820!important;display:flex!important;align-items:center;justify-content:center;border-radius:0!important}
+div:fullscreen canvas{width:min(100vw,100vh)!important;height:min(100vw,100vh)!important;flex:none}
+@media(max-width:780px){
+  header{position:relative!important}
+  header>div{height:auto!important;min-height:60px;display:flex!important;flex-wrap:wrap!important;gap:8px!important;padding:9px 12px!important}
+  header nav{order:10;flex:1 0 100%!important;width:100%;min-width:0;gap:2px!important;overflow-x:auto!important;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  header nav::-webkit-scrollbar{display:none}
+  header nav a{font-size:13px!important;padding:9px 11px!important;flex:none}
+  header>div>a:first-child{font-size:17px!important}
+  header>div>div:last-child{margin-left:auto;gap:5px!important}
+  header>div>div:last-child button{font-size:11px!important;padding:0 8px!important}
+  header>div>div:last-child>div{font-size:12px!important}
+  main{padding:12px 12px 44px!important;gap:12px!important}
+  main>section,main>aside{max-width:none!important;min-width:0!important;flex:1 1 100%!important}
+  main>section[style*="position:sticky"],main>aside[style*="position:sticky"]{position:static!important;top:auto!important}
+  main>section[style*="height:calc"]{height:410px!important;min-height:0!important}
+  main>section>div[style*="border-radius:22px"],main>div[style*="border-radius:22px"]{max-width:100%}
+  main [style*="height:360px"]{height:260px!important}
+  main [style*="padding:28px"],main [style*="padding:26px"]{padding:18px!important}
+  main [style*="font-size:40px"]{font-size:31px!important}
+  main [style*="font-size:48px"]{font-size:34px!important}
+  main [style*="min-width:300px"]{min-width:0!important}
+  main input,main button{max-width:100%}
+  .top{position:relative!important}.topin{flex-wrap:wrap;gap:7px!important;padding:9px 14px!important}
+  .topin .nav{order:10;flex:1 0 100%;width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .topin .nav::-webkit-scrollbar{display:none}
+  .topin .nav a{font-size:13px;padding:9px 10px}
+  .topin .cash{display:block;font-size:12px;margin-left:auto}
+  .hero{margin:12px 0!important}.heroMain{padding:21px!important}.heroMain:after{font-size:100px!important}
+  .water{height:235px!important}.numberGrid{gap:5px!important}
+  .lottoBall{width:37px!important;height:37px!important}
+  .wj-livebar{height:auto!important;display:grid!important;grid-template-columns:1fr auto;grid-template-areas:"live online" "headline headline" "ticker ticker";gap:8px!important;padding:9px 12px!important;align-items:center}
+  .wj-live-label{grid-area:live}
+  .wj-online{grid-area:online;font-size:12px!important;height:27px!important}
+  .wj-livebar-divider{display:none!important}
+  .wj-headline{grid-area:headline;max-width:none!important;min-width:0;width:100%;animation:none!important}
+  .wj-headline-text{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.35}
+  .wj-livebar .wj-ticker-viewport{grid-area:ticker;width:100%;min-width:0;height:25px}
+}
+@media(max-width:420px){
+  header>div>div:last-child>div{display:none}
+  header nav a{font-size:12px!important;padding:8px 9px!important}
+  main [style*="grid-template-columns:repeat(3,minmax(0,1fr))"]{gap:6px!important}
+  main [style*="grid-template-columns:repeat(3,minmax(0,1fr))"]>div{padding:10px!important}
+  main [style*="font-size:22px"]{font-size:18px!important}
+  .questGrid{grid-template-columns:1fr 1fr!important}
+  .daily,.grid{gap:11px!important}
+  .card{padding:15px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:0s!important;scroll-behavior:auto!important}
+  .wj-ticker-viewport{overflow-x:auto!important;-webkit-mask-image:none!important;mask-image:none!important;scrollbar-width:thin;touch-action:pan-x}
+}
+
+/* 세로 폰에서만 보이는 작은 회전 안내 바 (게임판을 가리지 않음) */
+.wj-rotate-bar{display:none}
+@media(max-width:600px) and (orientation:portrait){
+  .wj-rotate-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#E8F3FF;color:#1B64DA;font-size:13px;font-weight:700;animation:wjRotateIn .3s ease-out both}
+  .wj-rotate-bar .ic{font-size:18px;display:inline-block;animation:wjRotatePhone 2.4s ease-in-out infinite}
+  .wj-rotate-bar button{margin-left:auto;min-height:30px;padding:0 10px;border:0;border-radius:9px;background:#fff;color:#4E5968;font-size:12px;font-weight:700;cursor:pointer}
+}
+@keyframes wjRotateIn{from{opacity:0;transform:translateY(-6px)}}
+@keyframes wjRotatePhone{0%,30%{transform:rotate(0)}50%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+@media(prefers-reduced-motion:reduce){.wj-rotate-bar,.wj-rotate-bar .ic{animation:none!important}}
+
+/* 아이폰처럼 전체 화면 API가 없는 브라우저용 가짜 전체 화면 */
+.wj-pseudo-fs{position:fixed!important;inset:0!important;z-index:9000!important;width:100vw!important;height:100vh!important;height:100dvh!important;aspect-ratio:auto!important;border-radius:0!important;background:#101820!important;display:flex!important;align-items:center;justify-content:center;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.wj-pseudo-fs canvas{width:min(100vw,100dvh)!important;height:min(100vw,100dvh)!important;flex:none}

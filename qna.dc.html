@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>우준은행 · 친구들의 Q&amp;A</title><script src="./support.js"></script></head>
+<body><x-dc><helmet>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}button,input{font:inherit;letter-spacing:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjblink{50%{opacity:.3}}
+@keyframes qIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes qFloat{50%{transform:translateY(-8px) rotate(-10deg)}}
+.shell{width:100%;max-width:1160px;margin:0 auto;padding:0 20px}
+.hero{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;margin:22px 0 14px;padding:28px 30px;border-radius:22px;background:#fff}
+
+.hero .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#3182F6;background:#E8F3FF;border-radius:8px;padding:5px 10px}
+.hero .eyebrow:before{content:'';width:6px;height:6px;border-radius:50%;background:#3182F6;animation:wjblink 1.4s infinite}
+.hero h1{margin:12px 0 8px;font-size:clamp(24px,3vw,30px);font-weight:800;letter-spacing:-0.8px}
+.hero p{max-width:560px;margin:0;line-height:1.6;color:#6B7684;font-size:14px}
+.heroStats{flex:none;display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:10px}
+.heroStat{padding:18px 20px;border-radius:18px;background:#F9FAFB}
+.heroStat .lb{display:block;color:#8B95A1;font-size:13px;font-weight:600}
+.heroStat .vl{display:block;margin-top:6px;font-size:24px;font-weight:800;letter-spacing:-0.6px;color:#191F28;white-space:nowrap}
+.heroStat .vl.blue{color:#3182F6}
+.heroStat .vl em{font-style:normal;font-size:15px;font-weight:700;margin-left:2px;color:#8B95A1}
+.heroCta{display:inline-flex;align-items:center;height:40px;margin-top:16px;padding:0 16px;border-radius:12px;background:#3182F6;color:#fff;font-size:14px;font-weight:700;transition:background .15s}.heroCta:hover{background:#1B64DA}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.summary div{padding:16px 18px;border-radius:18px;background:#fff}
+.summary small{display:block;color:#8B95A1;font-size:13px}
+.summary b{display:block;margin-top:5px;color:#191F28;font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}.feed{min-width:0}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.toolbar h2{margin:0;font-size:19px;font-weight:800}
+.filters{display:flex;gap:2px;padding:4px;border-radius:12px;background:#fff}
+.filters button{border:0;background:transparent;color:#8B95A1;height:34px;padding:0 12px;border-radius:9px;font-size:13px;font-weight:700;transition:background .15s,color .15s}
+.filters button.active{background:#E8F3FF;color:#3182F6}
+.quizCard,.composer,.guide{background:#fff;border-radius:22px}
+.quizCard{padding:22px;margin-bottom:12px;animation:qIn .3s ease both}
+.quizTop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.author{display:flex;align-items:center;gap:10px;min-width:0;color:#4E5968;font-size:14px;font-weight:700}
+.avatar{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:#E8F3FF;color:#3182F6;font-weight:800}
+.quizTop time{color:#B0B8C1;font-size:12px;white-space:nowrap}
+.quizCard h3{margin:16px 0 14px;font-size:18px;font-weight:800;line-height:1.45;letter-spacing:-0.4px;word-break:break-word}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choices button{min-height:52px;padding:12px 14px;text-align:left;border:0;border-radius:14px;background:#F2F4F6;color:#333D4B;font-size:14px;font-weight:600;word-break:break-word;transition:background .15s,color .15s,transform .1s}
+.choices button:hover:not(:disabled){background:#E8F3FF;color:#3182F6}
+.choices button:active:not(:disabled){transform:scale(.98)}
+.choices button:disabled{cursor:default}
+.choices button.correct{background:#E9F9F1;color:#00A661;font-weight:800}
+.choices button.wrong{background:#FFF0F2;color:#F04452;font-weight:800}
+.choices button.revealed{opacity:.55}
+.quizFoot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;color:#8B95A1;font-size:12px}
+.tag{padding:5px 9px;border-radius:8px;background:#E8F3FF;color:#3182F6;font-weight:700}
+.tag.own{background:#F2F4F6;color:#4E5968}.tag.done{background:#E9F9F1;color:#00A661}.tag.fail{background:#FFF0F2;color:#F04452}
+.explain{margin-top:12px;padding:12px 14px;border-radius:12px;background:#F9FAFB;color:#4E5968;font-size:13px;line-height:1.55}
+.delete{min-height:0;border:0;background:none;color:#B0B8C1;font-size:12px;font-weight:600}.delete:hover{color:#F04452}
+.empty{padding:44px 20px;text-align:center;border-radius:22px;background:#fff;color:#8B95A1;font-size:14px}
+.empty b{display:block;margin-bottom:6px;color:#191F28;font-size:17px}
+.side{display:flex;flex-direction:column;gap:14px;position:sticky;top:74px}
+.composer,.guide{padding:22px}
+.composer h2,.guide h2{margin:0 0 6px;font-size:19px;font-weight:800}
+.muted{margin:0;color:#8B95A1;font-size:13px;line-height:1.55}
+.field{display:block;margin-top:16px}
+.field span{display:block;margin-bottom:7px;font-size:13px;font-weight:700;color:#4E5968}
+.field input{width:100%;height:48px;padding:0 14px;border:0;border-radius:12px;background:#F2F4F6;outline:none;color:#191F28;font-size:15px;transition:box-shadow .15s,background .15s}
+.field input:focus{background:#fff;box-shadow:inset 0 0 0 2px #3182F6}
+.choiceDraft{display:flex;gap:7px;align-items:center;margin-top:7px}.choiceDraft input{flex:1;min-width:0}
+.correctPick{flex:none;width:40px;height:40px;border:0;border-radius:12px;background:#F2F4F6;color:#B0B8C1;font-size:18px;font-weight:900;transition:background .15s,color .15s}
+.correctPick.active{background:#3182F6;color:#fff}
+.hint{margin-top:10px;color:#8B95A1;font-size:12px;line-height:1.5}
+.postButton{width:100%;height:52px;margin-top:16px;border:0;border-radius:14px;background:#3182F6;color:#fff;font-size:16px;font-weight:700;transition:background .15s,transform .1s}
+.postButton:hover{background:#1B64DA}.postButton:active{transform:scale(.98)}
+.postButton:disabled{opacity:.55;cursor:not-allowed}
+.message{min-height:19px;margin-top:10px;color:#3182F6;font-size:13px;font-weight:700;line-height:1.45;text-align:center}
+.guideList{display:grid;gap:6px;margin-top:14px}
+.guideList div{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:12px;background:#F9FAFB;font-size:14px;color:#4E5968}
+.guideList b{color:#3182F6;white-space:nowrap}
+.foot{padding:28px 0 72px;text-align:center;color:#B0B8C1;font-size:12px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.side{position:static}.hero{padding:22px}.heroStats{width:100%;grid-template-columns:1fr 1fr}.hero{flex-direction:column;align-items:stretch}.toolbar{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){.shell{padding:0 12px}.hero{margin:12px 0}.summary{gap:6px}.summary div{padding:12px 10px}.summary b{font-size:17px}.summary small{font-size:11px}.quizCard{padding:16px}.quizCard h3{font-size:16px}.choices{grid-template-columns:1fr}.composer,.guide{padding:18px}}
+@media(prefers-reduced-motion:reduce){.quizCard{animation:none}}
+</style></helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">보유 현금</div><div style="font-weight:800;font-size:16px">{{ cash }}준</div></div>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+<main class="shell">
+ <section class="hero"><div><div class="eyebrow">실시간 퀴즈</div><h1>친구들의 Q&amp;A</h1><p>내가 만든 문제를 친구들이 풀고, 나도 친구들의 문제에 도전해요. 정답과 도전 보상은 우준은행 계좌에 바로 들어옵니다.</p><a class="heroCta" href="#composer">내 퀴즈 만들기 ↗</a></div><div class="heroStats"><div class="heroStat"><span class="lb">퀴즈로 번 돈</span><b class="vl blue">{{ earned }}<em>준</em></b></div><div class="heroStat"><span class="lb">오늘 도전</span><b class="vl">{{ todayAnswers }}<em>문제</em></b></div></div></section>
+ <div class="summary"><div><small>새로 올라온 퀴즈</small><b>{{ quizCount }}개</b></div><div><small>내 연속 정답</small><b>{{ streak }}개</b></div><div><small>오늘 보상 가능</small><b>{{ rewardsLeft }}회</b></div></div>
+ <div class="layout"><section class="feed"><div class="toolbar"><h2>친구들의 문제</h2><div class="filters"><button class="{{ allClass }}" onClick="{{ showAll }}">전체</button><button class="{{ freshClass }}" onClick="{{ showFresh }}">아직 안 푼 문제</button><button class="{{ mineClass }}" onClick="{{ showMine }}">내가 낸 문제</button></div></div>
+  <sc-if value="{{ noQuizzes }}" hint-placeholder-val="{{ true }}"><div class="empty"><b>아직 표시할 퀴즈가 없어요</b>첫 문제를 올리거나 다른 목록을 골라 보세요.</div></sc-if>
+  <sc-for list="{{ quizzes }}" as="q" hint-placeholder-count="2"><article class="quizCard"><div class="quizTop"><div class="author"><span class="avatar">{{ q.initial }}</span><span>{{ q.author }}</span></div><time>{{ q.time }}</time></div><h3>{{ q.question }}</h3><div class="choices"><sc-for list="{{ q.options }}" as="o" hint-placeholder-count="4"><button class="{{ o.className }}" disabled="{{ o.disabled }}" onClick="{{ o.pick }}">{{ o.label }}</button></sc-for></div><div class="quizFoot"><span class="tag {{ q.tagClass }}">{{ q.tag }}</span><span>정답 +1,000준 · 도전 +100준</span><sc-if value="{{ q.own }}" hint-placeholder-val="{{ false }}"><button class="delete" onClick="{{ q.remove }}">내 퀴즈 삭제</button></sc-if></div><sc-if value="{{ q.showExplain }}" hint-placeholder-val="{{ false }}"><div class="explain">{{ q.explain }}</div></sc-if></article></sc-for>
+ </section><aside class="side"><section class="composer" id="composer"><h2>친구에게 퀴즈 내기</h2><p class="muted">문제와 보기 네 개를 쓰고, 정답 보기 옆 ✓를 눌러 주세요.</p><label class="field"><span>문제</span><input value="{{ draftQuestion }}" onInput="{{ setQuestion }}" maxlength="160" placeholder="예: 3 × 4는 얼마일까?"></label><div class="field"><span>보기 · 정답 선택</span><div class="choiceDraft"><button class="correctPick {{ correct0 }}" onClick="{{ pick0 }}" aria-label="1번 정답으로 지정">✓</button><input value="{{ choice0 }}" onInput="{{ setChoice0 }}" maxlength="60" placeholder="1번 보기"></div><div class="choiceDraft"><button class="correctPick {{ correct1 }}" onClick="{{ pick1 }}" aria-label="2번 정답으로 지정">✓</button><input value="{{ choice1 }}" onInput="{{ setChoice1 }}" maxlength="60" placeholder="2번 보기"></div><div class="choiceDraft"><button class="correctPick {{ correct2 }}" onClick="{{ pick2 }}" aria-label="3번 정답으로 지정">✓</button><input value="{{ choice2 }}" onInput="{{ setChoice2 }}" maxlength="60" placeholder="3번 보기"></div><div class="choiceDraft"><button class="correctPick {{ correct3 }}" onClick="{{ pick3 }}" aria-label="4번 정답으로 지정">✓</button><input value="{{ choice3 }}" onInput="{{ setChoice3 }}" maxlength="60" placeholder="4번 보기"></div></div><label class="field"><span>정답 설명 · 선택</span><input value="{{ draftExplain }}" onInput="{{ setExplain }}" maxlength="160" placeholder="친구에게 알려 줄 풀이"></label><div class="hint">하루 최대 5문제까지 올릴 수 있어요. 내 문제에는 보상이 지급되지 않습니다.</div><button class="postButton" disabled="{{ postDisabled }}" onClick="{{ postQuiz }}">{{ postLabel }}</button><div class="message" role="status">{{ message }}</div></section><section class="guide"><h2>보상 안내</h2><p class="muted">퀴즈마다 한 번만 풀 수 있어요. 보상은 하루 최대 20문제까지 지급됩니다.</p><div class="guideList"><div><span>정답 맞히기</span><b>+1,000준</b></div><div><span>틀려도 도전 보상</span><b>+100준</b></div><div><span>3연속 정답부터</span><b>추가 +200준</b></div></div></section></aside></div>
+ <div class="foot">우준은행 · 가상 게임머니 · 퀴즈는 친구들이 직접 작성합니다.</div>
+</main></div></x-dc>
+<script type="text/x-dc" data-dc-script>
+const KST_DAY=()=>new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+const REWARD_LIMIT=20, POST_LIMIT=5;
+const tidy=s=>String(s||"").trim().replace(/\s+/g," ");
+const ago=ts=>{const d=Math.max(0,Date.now()-(Number(ts)||0));return d<60000?"방금 전":d<3600000?Math.floor(d/60000)+"분 전":d<86400000?Math.floor(d/3600000)+"시간 전":new Date(Number(ts)||Date.now()).toLocaleDateString("ko-KR");};
+class Component extends DCLogic {
+ state={user:null,quizzes:[],draftQuestion:"",draftChoices:["","","",""],draftAnswer:0,draftExplain:"",filter:"all",posting:false,pendingQuiz:"",message:"",tick:0};
+ async componentDidMount(){while(!window.WJ)await new Promise(r=>setTimeout(r,30));await WJ.authReady;this.uid=WJ.requireUser();if(!this.uid)return;this.db=await WJ.ready;this.authUid=WJ.auth().currentUser?.uid||this.uid;this.userRef=this.db.ref("users/"+this.uid);this.userCb=s=>{const u=s.val();if(!u||u.banned)return WJ.logout();this.setState({user:u});};this.userRef.on("value",this.userCb);this.quizRef=this.db.ref("friendQuizzes").orderByChild("createdAt").limitToLast(60);this.quizCb=s=>{const quizzes=[];s.forEach(child=>{const q=child.val();if(q&&Array.isArray(q.choices)&&q.choices.length===4&&q.question)quizzes.push({...q,id:child.key});});quizzes.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));this.setState({quizzes});};this.quizRef.on("value",this.quizCb,()=>this.setState({message:"퀴즈 목록을 읽을 수 없어요. Firebase 권한을 확인해 주세요."}));this.clock=setInterval(()=>this.setState({tick:this.state.tick+1}),60000);WJ.presence(this.uid);}
+ componentWillUnmount(){if(this.userRef&&this.userCb)this.userRef.off("value",this.userCb);if(this.quizRef&&this.quizCb)this.quizRef.off("value",this.quizCb);clearInterval(this.clock);}
+ setQuestion=e=>this.setState({draftQuestion:e.target.value});
+ setExplain=e=>this.setState({draftExplain:e.target.value});
+ setChoice=(i,value)=>this.setState(s=>{const draftChoices=s.draftChoices.slice();draftChoices[i]=value;return{draftChoices};});
+ pickAnswer=i=>this.setState({draftAnswer:i});
+ async postQuiz(){if(this.state.posting||!this.userRef||!this.db)return;const question=tidy(this.state.draftQuestion),choices=this.state.draftChoices.map(tidy),explain=tidy(this.state.draftExplain);if(question.length<8){this.setState({message:"문제를 8글자 이상 입력해 주세요."});return;}if(choices.some(c=>c.length<1)||new Set(choices.map(c=>c.toLocaleLowerCase())).size!==4){this.setState({message:"서로 다른 보기 네 개를 모두 입력해 주세요."});return;}const day=KST_DAY();let reason="";this.setState({posting:true,message:"퀴즈를 올리는 중…"});try{const quota=await this.userRef.transaction(u=>{if(!u)return;u.qna=u.qna||{};if(u.qna.postDay!==day){u.qna.postDay=day;u.qna.postCount=0;}if((u.qna.postCount||0)>=POST_LIMIT){reason="오늘은 5문제를 모두 올렸어요.";return;}u.qna.postCount=(u.qna.postCount||0)+1;u.qna.postedTotal=(u.qna.postedTotal||0)+1;return u;});if(!quota.committed){this.setState({message:reason||"로그인 상태를 확인해 주세요."});return;}const ref=this.db.ref("friendQuizzes").push();try{await ref.set({question,choices,answer:this.state.draftAnswer,explain,authorKey:this.uid,authorAuthUid:this.authUid,authorName:String(this.state.user?.name||"친구").slice(0,16),createdAt:Date.now()});}catch(e){await this.userRef.transaction(u=>{if(!u)return;u.qna=u.qna||{};if(u.qna.postDay===day)u.qna.postCount=Math.max(0,(u.qna.postCount||1)-1);u.qna.postedTotal=Math.max(0,(u.qna.postedTotal||1)-1);return u;});throw e;}this.setState({draftQuestion:"",draftChoices:["","","",""],draftAnswer:0,draftExplain:"",message:"퀴즈가 올라갔어요! 친구들의 화면에도 바로 보여요."});WJ.sfx("coin");}catch(e){this.setState({message:"퀴즈를 올리지 못했어요. 연결과 Firebase 권한을 확인해 주세요."});}finally{this.setState({posting:false});}}
+ async answerQuiz(id,choice){if(this.state.pendingQuiz||!this.userRef)return;const quiz=this.state.quizzes.find(q=>q.id===id),existing=this.state.user?.qna?.answers?.[id];if(!quiz||(quiz.authorAuthUid===this.authUid||quiz.authorKey===this.uid)||existing)return;const correct=choice===quiz.answer,day=KST_DAY(),now=Date.now();let reward=0,already=false;this.setState({pendingQuiz:id,message:""});try{const result=await this.userRef.transaction(u=>{if(!u||u.banned)return;u.qna=u.qna||{};u.qna.answers=u.qna.answers||{};if(u.qna.answers[id]){already=true;return;}if(u.qna.answerDay!==day){u.qna.answerDay=day;u.qna.todayAnswers=0;u.qna.todayRewarded=0;}const streak=correct?(u.qna.streak||0)+1:0;const eligible=(u.qna.todayRewarded||0)<REWARD_LIMIT;reward=eligible?(correct?1000+(streak>=3?200:0):100):0;u.qna.answers[id]={choice,correct,reward,at:now};u.qna.todayAnswers=(u.qna.todayAnswers||0)+1;if(eligible)u.qna.todayRewarded=(u.qna.todayRewarded||0)+1;u.qna.streak=streak;u.qna.solvedTotal=(u.qna.solvedTotal||0)+1;if(correct)u.qna.correctTotal=(u.qna.correctTotal||0)+1;u.qna.earned=(u.qna.earned||0)+reward;u.cash=(u.cash||0)+reward;return u;});if(result.committed){this.setState({message:correct?"정답! "+(reward?"+"+WJ.fmt(reward)+"준":"오늘의 보상 한도를 채웠어요."):"도전 완료! "+(reward?"+"+WJ.fmt(reward)+"준":"오늘의 보상 한도를 채웠어요.")});WJ.sfx(correct?"win":"flip");if(correct)WJ.confetti(.35);if(reward)WJ.log(this.uid,"game",{text:"친구들의 Q&A "+(correct?"정답":"도전"),amount:reward});}else this.setState({message:already?"이미 푼 문제예요.":"답안을 저장하지 못했어요."});}catch(e){this.setState({message:"답안을 저장하지 못했어요. 연결을 확인해 주세요."});}finally{this.setState({pendingQuiz:""});}}
+ async removeQuiz(id){const quiz=this.state.quizzes.find(q=>q.id===id);if(!quiz||(quiz.authorAuthUid!==this.authUid&&quiz.authorKey!==this.uid)||!this.db)return;try{await this.db.ref("friendQuizzes/"+id).remove();this.setState({message:"내 퀴즈를 삭제했어요."});}catch(e){this.setState({message:"삭제하지 못했어요. Firebase 권한을 확인해 주세요."});}}
+ renderVals(){const W=window.WJ,u=this.state.user||{},qna=u.qna||{},answers=qna.answers||{},day=KST_DAY(),today=qna.answerDay===day?qna.todayAnswers||0:0,rewarded=qna.answerDay===day?qna.todayRewarded||0:0,filter=this.state.filter,quizzes=this.state.quizzes.filter(q=>filter==="mine"?(q.authorAuthUid===this.authUid||q.authorKey===this.uid):filter==="fresh"?q.authorAuthUid!==this.authUid&&q.authorKey!==this.uid&&!answers[q.id]:true).slice(0,30);return{
+  cash:W?W.fmt(u.cash||0):"0",earned:W?W.fmt(qna.earned||0):"0",todayAnswers:today,quizCount:this.state.quizzes.length,streak:qna.streak||0,rewardsLeft:Math.max(0,REWARD_LIMIT-rewarded),message:this.state.message,
+  allClass:filter==="all"?"active":"",freshClass:filter==="fresh"?"active":"",mineClass:filter==="mine"?"active":"",showAll:()=>this.setState({filter:"all"}),showFresh:()=>this.setState({filter:"fresh"}),showMine:()=>this.setState({filter:"mine"}),noQuizzes:quizzes.length===0,
+  quizzes:quizzes.map(q=>{const own=q.authorAuthUid===this.authUid||q.authorKey===this.uid,ans=answers[q.id],answered=!!ans,correct=ans?.correct,locked=own||answered||!!this.state.pendingQuiz;return{author:String(q.authorName||"친구").slice(0,16),initial:String(q.authorName||"친구").slice(0,1),time:ago(q.createdAt),question:q.question,own,remove:()=>this.removeQuiz(q.id),tag:own?"내가 낸 문제":answered?(correct?"정답 · +"+(W?W.fmt(ans.reward||0):ans.reward||0)+"준":"도전 · +"+(W?W.fmt(ans.reward||0):ans.reward||0)+"준"):"도전 가능",tagClass:own?"own":answered?(correct?"done":"fail"):"",showExplain:answered,explain:"정답: "+(q.choices[q.answer]||"")+(q.explain?" · "+q.explain:""),options:q.choices.map((label,i)=>({label:(i+1)+". "+label,disabled:locked,className:answered?(i===q.answer?"correct":i===ans.choice?"wrong":"revealed"):"",pick:()=>this.answerQuiz(q.id,i)}))};}),
+  draftQuestion:this.state.draftQuestion,draftExplain:this.state.draftExplain,choice0:this.state.draftChoices[0],choice1:this.state.draftChoices[1],choice2:this.state.draftChoices[2],choice3:this.state.draftChoices[3],setQuestion:this.setQuestion,setExplain:this.setExplain,setChoice0:e=>this.setChoice(0,e.target.value),setChoice1:e=>this.setChoice(1,e.target.value),setChoice2:e=>this.setChoice(2,e.target.value),setChoice3:e=>this.setChoice(3,e.target.value),correct0:this.state.draftAnswer===0?"active":"",correct1:this.state.draftAnswer===1?"active":"",correct2:this.state.draftAnswer===2?"active":"",correct3:this.state.draftAnswer===3?"active":"",pick0:()=>this.pickAnswer(0),pick1:()=>this.pickAnswer(1),pick2:()=>this.pickAnswer(2),pick3:()=>this.pickAnswer(3),postDisabled:this.state.posting,postLabel:this.state.posting?"올리는 중…":"퀴즈 올리기",postQuiz:()=>this.postQuiz(),logout:()=>W&&W.logout()
+ };}
+}
+</script></body></html>

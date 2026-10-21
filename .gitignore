@@ -1,0 +1,5 @@
+app
+*.exe
+.DS_Store
+serviceAccount*.json
+.env

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우준은행 · 부동산</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%233182F6%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3EW%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="wj-ui.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<script src="game-core.js"></script>
+<script src="wj-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px;display:flex;flex-direction:column}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button,input{font-family:inherit;letter-spacing:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB;flex:none}
+.hd{height:60px;display:flex;align-items:center;gap:28px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none}
+.logo span{width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800}
+nav{display:flex;gap:2px;flex:1;overflow-x:auto}
+nav a{padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap}
+nav a:hover{background:#F2F4F6;color:#191F28}
+nav a.on{color:#191F28;font-weight:700;background:#F2F4F6}
+.cash{text-align:right;line-height:1.25}.cash div:first-child{font-size:12px;color:#8B95A1}.cash div:last-child{font-weight:800;font-size:16px}
+.btn-s{height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600}
+#app{flex:1;display:flex;min-height:0}
+#panel{width:420px;flex:none;background:#fff;border-right:1px solid #E5E8EB;display:flex;flex-direction:column;min-height:0;z-index:500;position:relative}
+#mapwrap{flex:1;position:relative;min-height:0;display:flex}
+#map{flex:1;min-height:0;background:#1B2430}
+@media(max-width:820px){#app{flex-direction:column-reverse}#panel{width:100%;border-right:0;border-top:1px solid #E5E8EB;flex:1}#mapwrap{flex:none;height:44vh}#map{height:100%}}
+.ptabs{display:flex;gap:4px;padding:12px 14px 10px;background:#fff;flex:none;position:relative;z-index:2;border-bottom:1px solid #F2F4F6;box-shadow:0 4px 10px -8px rgba(0,27,55,.18)}
+.ptabs button{flex:1;height:38px;border:0;border-radius:10px;background:transparent;color:#8B95A1;font-size:14px;font-weight:700;cursor:pointer}
+.ptabs button.on{background:#191F28;color:#fff}
+.pbody{flex:1;min-height:0;overflow-y:auto;padding:12px 14px 24px;display:flex;flex-direction:column;gap:12px}
+.pbody>*{flex-shrink:0}
+.search{display:flex;align-items:center;gap:8px;height:46px;border-radius:13px;background:#F2F4F6;padding:0 14px}
+.search input{flex:1;border:0;background:transparent;font-size:15px;outline:none;color:#191F28}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:32px;padding:0 12px;border:0;border-radius:999px;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer}
+.chip.on{background:#E8F3FF;color:#3182F6}
+.row{display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:14px;cursor:pointer}
+.row:hover{background:#F9FAFB}
+.row .ic{width:42px;height:42px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+.row .m{flex:1;min-width:0}.row .n{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .s{font-size:12px;color:#8B95A1;margin-top:2px}
+.row .r{text-align:right;flex:none}.row .p{font-size:15px;font-weight:800}.row .c{font-size:12px;font-weight:700;margin-top:2px}
+.up{color:#F04452}.dn{color:#3182F6}.mu{color:#8B95A1}
+.card{background:#F9FAFB;border-radius:16px;padding:14px 16px}
+.lbl{font-size:12px;color:#8B95A1}.val{font-size:17px;font-weight:800;margin-top:3px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.big-btn{height:50px;border:0;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer}
+.sm-btn{height:34px;padding:0 12px;border:0;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex:none}
+.back{height:34px;border:0;background:transparent;color:#4E5968;font-size:14px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px}
+.badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:800}
+.seg{display:flex;background:#F2F4F6;border-radius:10px;padding:3px;gap:2px}.seg button{flex:1;height:32px;border:0;border-radius:8px;background:transparent;color:#8B95A1;font-size:13px;font-weight:700;cursor:pointer}.seg button.on{background:#fff;color:#191F28}
+.empty{padding:28px 10px;text-align:center;color:#8B95A1;font-size:14px;line-height:1.6}
+.news{display:flex;gap:10px;padding:12px 10px;border-radius:14px;cursor:pointer}.news:hover{background:#F9FAFB}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:6px}
+.unit{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;border:1px solid #F2F4F6}
+.unit .m{flex:1;min-width:0}.unit .n{font-size:14px;font-weight:800}.unit .s{font-size:12px;color:#8B95A1;margin-top:2px}.unit .p{font-size:16px;font-weight:900;text-align:right}
+.pin{position:relative;transform:translate(-50%,-100%);display:inline-flex;flex-direction:column;align-items:center;white-space:nowrap;font-family:'Pretendard Variable',Pretendard,sans-serif;cursor:pointer}
+.pin .b{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:10px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.45);font-size:12px;font-weight:800;color:#191F28;border:2px solid transparent;transition:transform .15s}
+.pin .b i{font-style:normal;font-size:10px;font-weight:800;padding:2px 5px;border-radius:5px;color:#fff}
+.pin .b em{font-style:normal;font-size:10px;color:#8B95A1;font-weight:700}
+.pin .t{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #fff}
+.pin:hover .b{transform:scale(1.06)}
+.pin.sel .b{background:#191F28;color:#fff}.pin.sel .t{border-top-color:#191F28}.pin.sel .b em{color:#B0B8C1}
+.pin.mine .b{border-color:#FFB020}
+.pin.small .b{padding:3px 7px;font-size:11px}.pin.small .b i,.pin.small .b em{display:none}
+.pin.deal .b{background:#FFB020;color:#191F28;animation:wjpulse 1s ease-in-out infinite}.pin.deal .t{border-top-color:#FFB020}
+.pin .cr{font-size:10px;font-weight:800;color:#fff;background:#191F28;border-radius:6px;padding:2px 6px;margin-bottom:2px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+@keyframes wjpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.pdot{width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4);transform:translate(-50%,-50%);cursor:pointer}
+.leaflet-div-icon{background:transparent;border:0}
+.leaflet-bottom.leaflet-right{bottom:64px}
+.hot{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:#191F28;color:#fff;cursor:pointer}
+.hot .z{font-size:22px}.hot b{display:block;font-size:15px}.hot span{font-size:12px;color:#B0B8C1}
+.mapctl{position:absolute;top:12px;left:12px;right:60px;z-index:1000;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:6px}.mapctl::-webkit-scrollbar{display:none}.mapctl button{flex:none}
+.mapctl button{height:34px;padding:0 12px;border:0;border-radius:10px;background:rgba(255,255,255,.95);color:#4E5968;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.mapctl button.on{background:#191F28;color:#fff}
+#sheet{position:absolute;inset:0;z-index:700;background:rgba(25,31,40,.5);display:none;align-items:flex-end}
+#sheet.on{display:flex}
+#sheet .in{width:calc(100% - 32px);max-width:380px;margin:0 auto 16px;max-height:90%;overflow-y:auto;overflow-x:hidden;background:#fff;border-radius:22px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:12px;animation:wjup .22s ease-out}
+@keyframes wjup{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.doc{border:1.5px solid #191F28;border-radius:6px;padding:14px;position:relative;background:#FFFEFA}
+.doc h4{margin:0 0 10px;text-align:center;font-size:16px;letter-spacing:4px}
+.doc .ln{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed #E5E8EB;font-size:13px}.doc .ln:last-child{border-bottom:0}
+.doc .ln b{font-weight:800}
+.stamp{position:absolute;right:16px;bottom:14px;width:78px;height:78px;border:4px solid #E5483A;border-radius:50%;color:#E5483A;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;transform:rotate(-14deg) scale(1.6);opacity:0;transition:all .28s cubic-bezier(.2,1.6,.4,1)}
+.stamp.on{opacity:.9;transform:rotate(-14deg) scale(1)}
+input[type=range]{width:100%;accent-color:#3182F6}
+.inp{height:46px;border:0;border-radius:12px;background:#F2F4F6;font-size:17px;font-weight:800;padding:0 14px;outline:none;color:#191F28;width:100%}
+.inp:focus{box-shadow:inset 0 0 0 2px #3182F6;background:#fff}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <a class="logo" href="trade.dc.html"><span>W</span>우준은행</a>
+  <nav>
+    <a href="trade.dc.html">거래소</a><a href="bank.dc.html">내 계좌</a><a href="games.dc.html">보드게임</a><a href="tournament.dc.html">토너먼트</a><a href="estate.html" class="on">부동산</a><a href="company.dc.html">증권사</a><a href="coin.dc.html">코인</a><a href="ranking.dc.html">랭킹</a><a href="hack.dc.html">해킹</a><a href="lotto.dc.html">복권</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:10px;flex:none"><div class="cash"><div>보유 현금</div><div id="cash">—</div></div><button class="btn-s" id="logout">로그아웃</button></div>
+</div></header>
+<div id="app">
+  <aside id="panel">
+    <div class="ptabs"><button data-tab="map" class="on">매물</button><button data-tab="mine">내 집</button><button data-tab="news">부동산 뉴스</button></div>
+    <div class="pbody" id="pbody"></div>
+    <div id="sheet"><div class="in" id="sheetIn"></div></div>
+  </aside>
+  <div id="mapwrap"><div id="map"></div><div class="mapctl" id="mapctl"></div></div>
+</div>
+<script>
+(function () {
+  const DAY = 864e5, EPOCH = Date.UTC(2026, 0, 1), BROKER = .004, GAIN_TAX = .2, RENT_CAP = 3, LTV_MAX = 70, LOAN_DAY = .0015, BANK_BUY = .95;
+  const TYPES = { 아파트: "#3182F6", 오피스텔: "#8B5CF6", 빌딩: "#191F28", 상가: "#00A661", 빌라: "#FFB020", 주택: "#E07B00", 전원주택: "#2E9B5A" };
+  const RENT = { 아파트: .0012, 오피스텔: .0016, 빌딩: .0018, 상가: .002, 빌라: .0014, 주택: .0013, 전원주택: .001 };
+  const PY = { 아파트: [24, 34, 34, 45], 오피스텔: [12, 18], 빌딩: [30, 60, 100], 상가: [15, 30], 빌라: [18, 24], 주택: [30, 45, 60], 전원주택: [40, 60, 80] };
+  const acqRate = v => v <= 1e7 ? .01 : v <= 5e7 ? .02 : .03, HOLD_TAX = .0006, JEONSE = .5, RM_MAX = 3;
+  const RAW = [
+    ["한강 로열팰리스", "강남구 압구정동", "아파트", 37.5296, 127.0293, 1200000, 28], ["반포 리버클래스", "서초구 반포동", "아파트", 37.5079, 126.9952, 1100000, 32],
+    ["대치 에듀파크", "강남구 대치동", "아파트", 37.4966, 127.0619, 950000, 30], ["도곡 스카이팰리스", "강남구 도곡동", "아파트", 37.4887, 127.0530, 1000000, 20],
+    ["개포 그린타운", "강남구 개포동", "아파트", 37.4795, 127.0592, 850000, 34], ["강남역 우준타워", "강남구 역삼동", "빌딩", 37.4990, 127.0287, 1500000, 16],
+    ["잠실 레이크뷰", "송파구 잠실동", "아파트", 37.5110, 127.0890, 850000, 36], ["가락 메가타운", "송파구 가락동", "아파트", 37.4975, 127.1095, 700000, 40],
+    ["고덕 그린파크", "강동구 고덕동", "아파트", 37.5560, 127.1540, 500000, 32], ["성수 포레스트원", "성동구 성수동", "아파트", 37.5446, 127.0560, 750000, 18],
+    ["서울숲 리버파크", "성동구 성수동1가", "아파트", 37.5436, 127.0419, 900000, 16], ["왕십리 뉴타운센트럴", "성동구 하왕십리동", "아파트", 37.5640, 127.0300, 520000, 28],
+    ["한남 힐탑레지던스", "용산구 한남동", "아파트", 37.5370, 127.0050, 1150000, 12], ["용산 센트럴파크", "용산구 한강로동", "아파트", 37.5290, 126.9680, 900000, 22],
+    ["여의도 아일랜드시티", "영등포구 여의도동", "아파트", 37.5250, 126.9320, 700000, 28], ["여의도 우준금융센터", "영등포구 여의도동", "빌딩", 37.5216, 126.9250, 1100000, 16],
+    ["영등포 타임오피스텔", "영등포구 영등포동", "오피스텔", 37.5165, 126.9060, 330000, 24], ["공덕 마포스카이", "마포구 공덕동", "아파트", 37.5446, 126.9510, 600000, 26],
+    ["홍대 걷고싶은상가", "마포구 서교동", "상가", 37.5560, 126.9235, 600000, 14], ["상암 미디어시티", "마포구 상암동", "오피스텔", 37.5790, 126.8895, 380000, 24],
+    ["신촌 캠퍼스오피스텔", "서대문구 창천동", "오피스텔", 37.5575, 126.9370, 350000, 22], ["목동 센트럴하이츠", "양천구 목동", "아파트", 37.5300, 126.8750, 650000, 36],
+    ["마곡 사이언스파크", "강서구 마곡동", "아파트", 37.5605, 126.8255, 560000, 28], ["구로 디지털하임", "구로구 구로동", "오피스텔", 37.4850, 126.8960, 300000, 26],
+    ["봉천 관악타운", "관악구 봉천동", "아파트", 37.4825, 126.9420, 320000, 32], ["사당 역세권빌라", "동작구 사당동", "빌라", 37.4770, 126.9810, 400000, 12],
+    ["종로 우준빌딩", "종로구 종로1가", "빌딩", 37.5703, 126.9830, 800000, 14], ["청량리 스카이타워", "동대문구 전농동", "아파트", 37.5810, 127.0470, 450000, 24],
+    ["은평 북한산뷰", "은평구 진관동", "아파트", 37.6390, 126.9220, 380000, 28], ["중계 학원가아파트", "노원구 중계동", "아파트", 37.6480, 127.0700, 400000, 32],
+    ["상계 햇살마을", "노원구 상계동", "아파트", 37.6580, 127.0620, 350000, 40], ["판교 스마트시티", "성남시 분당구 백현동", "아파트", 37.3920, 127.1120, 700000, 28],
+    ["정자 그린빌", "성남시 분당구 정자동", "아파트", 37.3660, 127.1080, 550000, 32],
+    ["평창동 단독주택","종로구 평창동","주택",37.611,126.97,600000,6],
+    ["성북동 한옥","성북구 성북동","주택",37.594,126.994,800000,5],
+    ["해운대 마린스카이","부산 해운대구 우동","아파트",35.1569,129.144,900000,30],
+    ["센텀 오션뷰","부산 해운대구 재송동","아파트",35.169,129.131,700000,28],
+    ["서면 센트럴오피스텔","부산 부산진구 부전동","오피스텔",35.1578,129.06,350000,20],
+    ["광안리 비치하우스","부산 수영구 광안동","빌라",35.1532,129.1186,450000,12],
+    ["기장 오션 전원주택","부산 기장군 기장읍","전원주택",35.2445,129.2222,250000,10],
+    ["범어 수성파크","대구 수성구 범어동","아파트",35.859,128.625,600000,30],
+    ["동성로 상가","대구 중구 동성로","상가",35.869,128.596,400000,14],
+    ["송도 센트럴베이","인천 연수구 송도동","아파트",37.392,126.642,550000,34],
+    ["청라 호수공원뷰","인천 서구 청라동","아파트",37.534,126.642,450000,30],
+    ["부평 역세권빌라","인천 부평구 부평동","빌라",37.489,126.724,250000,12],
+    ["상무 센트럴","광주 서구 치평동","아파트",35.153,126.85,350000,28],
+    ["충장로 상가","광주 동구 충장로","상가",35.149,126.918,250000,12],
+    ["둔산 크로바타운","대전 서구 둔산동","아파트",36.351,127.385,400000,30],
+    ["유성 온천빌라","대전 유성구 봉명동","빌라",36.362,127.356,220000,12],
+    ["삼산 테크타운","울산 남구 삼산동","아파트",35.539,129.338,380000,26],
+    ["세종 정부청사뷰","세종 어진동","아파트",36.48,127.289,450000,30],
+    ["광교 호수마을","경기 수원시 광교동","아파트",37.285,127.056,600000,30],
+    ["영통 디지털하임","경기 수원시 영통동","오피스텔",37.251,127.071,300000,20],
+    ["일산 호수공원파크","경기 고양시 장항동","아파트",37.658,126.77,400000,30],
+    ["수지 그린힐스","경기 용인시 수지구","아파트",37.322,127.096,480000,28],
+    ["동탄 레이크파크","경기 화성시 동탄","아파트",37.201,127.073,450000,34],
+    ["미사 강변타운","경기 하남시 망월동","아파트",37.563,127.193,520000,28],
+    ["과천 관악산뷰","경기 과천시 중앙동","아파트",37.429,126.988,850000,22],
+    ["고덕 국제신도시","경기 평택시 고덕동","아파트",37.045,127.048,330000,30],
+    ["양평 남한강 전원주택","경기 양평군 양서면","전원주택",37.492,127.492,200000,8],
+    ["가평 북한강 주택","경기 가평군 청평면","주택",37.735,127.43,180000,8],
+    ["춘천 호반하우스","강원 춘천시 온의동","아파트",37.871,127.72,250000,24],
+    ["강릉 경포 오션뷰","강원 강릉시 안현동","아파트",37.796,128.9,300000,22],
+    ["속초 바다뷰 오피스텔","강원 속초시 조양동","오피스텔",38.195,128.598,280000,18],
+    ["원주 혁신도시","강원 원주시 반곡동","아파트",37.329,127.98,260000,26],
+    ["청주 오창 테크밸리","충북 청주시 오창읍","아파트",36.717,127.429,280000,26],
+    ["불당 센트럴","충남 천안시 불당동","아파트",36.815,127.105,330000,28],
+    ["전주 한옥마을 주택","전북 전주시 풍남동","주택",35.815,127.153,220000,10],
+    ["전주 에코시티","전북 전주시 송천동","아파트",35.865,127.129,280000,26],
+    ["군산 근대거리 상가","전북 군산시 월명동","상가",35.987,126.711,180000,10],
+    ["여수 밤바다뷰","전남 여수시 돌산읍","오피스텔",34.738,127.744,260000,18],
+    ["순천만 정원타운","전남 순천시 오천동","아파트",34.93,127.51,220000,22],
+    ["목포 하당 아파트","전남 목포시 상동","아파트",34.809,126.423,180000,22],
+    ["포항 영일대 오션","경북 포항시 두호동","아파트",36.056,129.378,230000,22],
+    ["경주 황리단길 한옥","경북 경주시 황남동","주택",35.838,129.21,260000,8],
+    ["안동 하회 주택","경북 안동시 풍천면","주택",36.539,128.518,150000,6],
+    ["창원 상남 센트럴","경남 창원시 상남동","아파트",35.223,128.681,330000,28],
+    ["김해 장유 신도시","경남 김해시 장유동","아파트",35.193,128.807,250000,26],
+    ["진주 혁신도시","경남 진주시 충무공동","아파트",35.164,128.134,220000,22],
+    ["제주 노형 레지던스","제주 제주시 노형동","아파트",33.485,126.48,450000,22],
+    ["애월 바다 전원주택","제주 제주시 애월읍","전원주택",33.463,126.31,350000,10],
+    ["서귀포 감귤밭 주택","제주 서귀포시 남원읍","주택",33.28,126.72,230000,8]
+  ];
+  function h2(a, b) { let n = Math.imul(a | 0, 73856093) ^ Math.imul(b | 0, 19349663); n = (n ^ 61) ^ (n >>> 16); n = (n + (n << 3)) | 0; n ^= n >>> 4; n = Math.imul(n, 0x27d4eb2d); n ^= n >>> 15; return (n >>> 0) / 4294967296; }
+  function noise(s, x) { const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f), a = h2(s, i) * 2 - 1, b = h2(s, i + 1) * 2 - 1; return a + (b - a) * u; }
+  const P = RAW.map((r, i) => { const seed = 4000 + i * 53, p = { id: "e" + i, name: r[0], area: r[1], type: r[2], lat: r[3], lng: r[4], base: r[5], seed, trend: .02 + h2(seed, 5) * .1, vol: .8 + h2(seed, 6) * .6, units: [] };
+    const N = r[6] * 3, D = Math.max(1, Math.round(r[6] / 8)), seen = new Set();
+    for (let k = 0; k < N; k++) { const dong = (p.type === "아파트" ? 101 : 1) + (k % D), fl = 2 + Math.floor(h2(seed + 21, k) * (p.type === "빌라" ? 4 : p.type === "상가" ? 2 : 24)), py = PY[p.type][Math.floor(h2(seed + 23, k) * PY[p.type].length)];
+      let ho = fl * 100 + 1 + Math.floor(h2(seed + 25, k) * 4), key = dong + "-" + ho; while (seen.has(key)) { ho++; key = dong + "-" + ho; } seen.add(key);
+      p.units.push({ k: key, i: k, dong, ho, fl, py, label: (p.type === "아파트" ? dong + "동 " : "") + ho + "호" }); }
+    p.repPy = PY[p.type][Math.min(1, PY[p.type].length - 1)]; return p; });
+  const byId = Object.fromEntries(P.map(p => [p.id, p]));
+  const GOOD = ["지하철역 개통 확정", "재건축 안전진단 통과", "대기업 본사 이전 발표", "학군 1위 발표", "대형 공원 조성 확정", "광역급행철도 노선 발표"];
+  const BAD = ["투기과열지구 지정", "대출 규제 강화", "부실 공사 논란", "인근 대규모 공급 예정", "전세 사기 여파", "층간소음 집단 소송"];
+  function eventAt(p, w) { if (h2(p.seed * 7 + 5, w) > .2) return null; const good = h2(p.seed + 9, w) > .45, mag = (.04 + h2(p.seed + 11, w) * .1) * (good ? 1 : -1), start = EPOCH + w * 7 * DAY + h2(p.seed + 13, w) * 6 * DAY; return { p, w, good, mag, start, text: (good ? GOOD : BAD)[Math.floor(h2(p.seed + 17, w) * 6)] }; }
+  function rawLog(p, t) { const d = (t - EPOCH) / DAY; let lp = (.16 * noise(p.seed, d / 40) + .06 * noise(p.seed + 1, d / 7) + .02 * noise(p.seed + 2, d) + .006 * noise(p.seed + 3, d * 24)) * p.vol + p.trend * d / 365;
+    const w = Math.floor((t - EPOCH) / (7 * DAY)); for (let k = w - 4; k <= w; k++) { const e = eventAt(p, k); if (!e || t < e.start) continue; const dt = (t - e.start) / DAY; lp += e.mag * Math.min(1, dt) * Math.exp(-Math.max(0, dt - 1) / 14); } return lp; }
+  let EST = {};
+  const unitsOf = id => (EST[id] || {}).units || {};
+  const soldRatio = p => Object.keys(unitsOf(p.id)).length / p.units.length;
+  function ppy(p, t) { return Math.max(1000, Math.round(p.base * Math.exp(rawLog(p, t)) * (1 + .2 * soldRatio(p)) / 1000) * 1000); }
+  function uprice(p, u, t) { return Math.round(ppy(p, t) * u.py * (1 + (u.fl - 10) * .006) * (.97 + h2(p.seed + 31, u.i) * .06) / 10000) * 10000; }
+  const repPrice = (p, t) => Math.round(ppy(p, t) * p.repPy / 10000) * 10000;
+  const chg = (p, t) => { const a = ppy(p, t), b = ppy(p, t - DAY); return (a - b) / b * 100; };
+  const loanNow = h => Math.round((h.loan || 0) * Math.pow(1 + LOAN_DAY, Math.max(0, (Date.now() - (h.lt || h.ts || Date.now())) / DAY)));
+  const fmt = n => Math.round(n || 0).toLocaleString("ko-KR");
+  const short = n => { const a = Math.abs(n), s = n < 0 ? "-" : ""; if (a >= 1e8) return s + (a / 1e8).toFixed(a >= 1e9 ? 0 : 1).replace(/\.0$/, "") + "억"; if (a >= 1e4) return s + Math.round(a / 1e4).toLocaleString("ko-KR") + "만"; return s + fmt(a); };
+  const pct = v => (v > 0 ? "+" : "") + v.toFixed(2) + "%";
+  const cls = v => v > 0 ? "up" : v < 0 ? "dn" : "mu";
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const toast = (m, ic) => { try { WJUI.toast(m, { icon: ic || "🏠", html: true }); } catch (e) {} };
+  const S = { tab: "map", sel: null, dtab: "list", q: "", type: "전체", sort: "price", range: 30, inView: P.map(p => p.id), user: null, users: {}, sheet: null };
+  let db, me, map, markers = {}, KOR = null;
+  const $ = id => document.getElementById(id);
+  const homes = () => (S.user && S.user.homes) || {};
+  const nHomes = () => Object.keys(homes()).length;
+  const acqR = v => acqRate(v) + (nHomes() >= 2 ? .05 : 0);
+  const gainR = () => nHomes() >= 3 ? .4 : GAIN_TAX;
+  const hval = (h, t) => { const p = byId[h.pid], un = p && p.units.find(x => x.k === h.k); return un ? uprice(p, un, t || Date.now()) * (1 + .08 * (h.rm || 0)) : 0; };
+  const myName = () => (S.user && S.user.name) || "익명";
+  const DEAL_MS = 10 * 60000;
+  function dealNow(t) { const s = Math.floor(t / DEAL_MS), p = P[Math.floor(h2(777, s) * P.length)], d = .1 + h2(778, s) * .15, free = p.units.filter(u => !unitsOf(p.id)[u.k]), u = free.length ? free[Math.floor(h2(779, s) * free.length)] : null; return { s, p, d, u, end: (s + 1) * DEAL_MS }; }
+  function landlord(id) { const U = unitsOf(id), c = {}; Object.values(U).forEach(x => { if (x && x.o) c[x.o] = (c[x.o] || 0) + 1; }); let best = null; Object.keys(c).forEach(k => { if (c[k] >= 3 && (!best || c[k] > c[best])) best = k; }); return best; }
+  function news(limit) { const now = Date.now(), w = Math.floor((now - EPOCH) / (7 * DAY)), out = []; P.forEach(p => { for (let k = w - 3; k <= w; k++) { const e = eventAt(p, k); if (e && e.start <= now) out.push(e); } }); return out.sort((a, b) => b.start - a.start).slice(0, limit || 40); }
+  function ago(t) { const m = Math.floor((Date.now() - t) / 60000); return m < 60 ? Math.max(0, m) + "분 전" : m < 1440 ? Math.floor(m / 60) + "시간 전" : Math.floor(m / 1440) + "일 전"; }
+  // 월세는 세입자가 들어온 날만 나온다. 세입자 확률 = 30% + 같은 단지 다른 플레이어 1명당 20% (최대 95%).
+  // 공실이든 아니든 관리비·보유세는 매일 나가고, 하루 3% 확률로 누수·화재 수리비(집값 2%)가 터진다.
+  const MAX_HOMES = 20, MAINT = .0005, ACC_P = .03, ACC_COST = .02;
+  const sHash = s => { let h = 2166136261; for (const ch of String(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const roll = (a, d) => h2(sHash(a) % 1e6, d);
+  function occP(pid, who) { const U = unitsOf(pid); let n = 0; Object.keys(U).forEach(k => { if (U[k] && U[k].o && U[k].o !== who) n++; }); return Math.min(.95, .3 + .2 * n); }
+  function settleCalc(u, t, who) { const H = (u && u.homes) || {}, start = (u && u.rentAt) || t, dd = Math.max(0, (t - start) / DAY); let rent = 0, tax = 0, fix = 0, occ = 0, vac = 0, acc = 0, per = 0;
+    const d0 = Math.floor(start / DAY), d1 = Math.floor(t / DAY), rentFrom = t - RENT_CAP * DAY;
+    Object.keys(H).forEach(hid => { const h = H[hid], p = byId[h.pid], v = hval(h, t); if (!p || !v) return; const mode = h.mode || "월세", pr = occP(p.id, who), dayRent = v * RENT[p.type] * (landlord(p.id) === who ? 1.5 : 1) * (1 + .1 * (h.rm || 0));
+      if (mode === "월세") per += dayRent * pr;
+      for (let d = d0; d <= d1 && d - d0 < 60; d++) { const a = Math.max(start, d * DAY), b = Math.min(t, (d + 1) * DAY); if (b <= a) continue; const f = (b - a) / DAY;
+        if (mode !== "실거주") tax += v * HOLD_TAX * f;
+        if (mode === "월세") { const ok = roll(hid + ":t", d) < pr; if (ok) { const ra = Math.max(a, rentFrom); if (b > ra) rent += dayRent * (b - ra) / DAY; occ += f; } else { vac += f; fix += v * MAINT * f; } }
+        if (roll(hid + ":a", d) < ACC_P) { fix += v * ACC_COST * f; acc += f; } } });
+    return { per: Math.round(per), due: Math.floor(rent), tax: Math.round(Object.values(H).reduce((s, h) => s + (h.mode !== "실거주" ? hval(h, t) * HOLD_TAX : 0), 0)), taxDue: Math.floor(tax), fix: Math.floor(fix), occ, vac, acc, dd }; }
+  function rentDue() { return settleCalc(S.user || {}, Date.now(), me); }
+
+  // ---------- 지도 ----------
+  function pinHtml(p, t) { const pr = repPrice(p, t), c = chg(p, t), H = homes(), mine = Object.values(H).some(h => h.pid === p.id), dl = dealNow(t), deal = dl.p.id === p.id && dl.u, ll = landlord(p.id), z = map ? map.getZoom() : 12, forSale = p.units.length - Object.keys(unitsOf(p.id)).length + Object.values(unitsOf(p.id)).filter(x => x && x.ask).length;
+    return '<div class="pin' + (S.sel === p.id ? " sel" : "") + (mine ? " mine" : "") + (deal ? " deal" : "") + (z < 13 && !deal ? " small" : "") + '">' + (ll ? '<div class="cr">👑 ' + esc(((S.users[ll] || {}).name) || "?") + "</div>" : "") + '<div class="b">' + (deal ? "⚡급매 " : "") + '<em>' + p.repPy + "평</em>" + short(pr) + '<i style="background:' + (c >= 0 ? "#F04452" : "#3182F6") + '">' + (c >= 0 ? "▲" : "▼") + Math.abs(c).toFixed(1) + '</i><em>' + forSale + "</em></div><div class=\"t\"></div></div>"; }
+  function drawPins() { if (!map) return; const t = Date.now(), H = homes(), z = map.getZoom(), bw = z < 13 ? 58 : 110, bh = z < 13 ? 24 : 30, kept = [], full = {}, dl = dealNow(t);
+    const vis = P.filter(p => (S.type === "전체" || p.type === S.type) && (!S.q || (p.name + p.area).includes(S.q))), mineSet = new Set(Object.values(H).map(h => h.pid));
+    vis.slice().sort((a, b) => ((b.id === S.sel) * 4 + (dl.p.id === b.id) * 2 + mineSet.has(b.id)) - ((a.id === S.sel) * 4 + (dl.p.id === a.id) * 2 + mineSet.has(a.id)) || repPrice(b, t) - repPrice(a, t)).forEach(p => { const pt = map.latLngToContainerPoint([p.lat, p.lng]), force = p.id === S.sel || mineSet.has(p.id) || dl.p.id === p.id || landlord(p.id);
+      if (force || !kept.some(k => Math.abs(k.x - pt.x) < bw && Math.abs(k.y - pt.y) < bh)) { kept.push(pt); full[p.id] = 1; } });
+    P.forEach(p => { const show = vis.includes(p); let m = markers[p.id];
+      if (!show) { if (m) { map.removeLayer(m); delete markers[p.id]; } return; }
+      const html = full[p.id] ? pinHtml(p, t) : '<div class="pdot" title="' + esc(p.name) + '" style="background:' + TYPES[p.type] + '"></div>';
+      if (!m) { m = L.marker([p.lat, p.lng], { icon: L.divIcon({ html, className: "", iconSize: [0, 0] }), riseOnHover: true }).addTo(map); m._k = html; m.on("click", () => select(p.id, true)); markers[p.id] = m; }
+      else if (m._k !== html) { m._k = html; m.setIcon(L.divIcon({ html, className: "", iconSize: [0, 0] })); }
+      m.setZIndexOffset(S.sel === p.id ? 1000 : full[p.id] ? 100 : 0); }); }
+  function initMap() {
+    map = L.map("map", { zoomControl: false, scrollWheelZoom: true, doubleClickZoom: true, touchZoom: true, zoomSnap: .5, wheelPxPerZoomLevel: 90, minZoom: 7, maxZoom: 19, maxBounds: [[32.6, 124.0], [39.0, 131.5]], maxBoundsViscosity: .8 }).setView([36.2, 127.9], 7);
+    L.control.zoom({ position: "topright" }).addTo(map);
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, maxNativeZoom: 18, updateWhenZooming: false, keepBuffer: 2, attribution: "Tiles © Esri — Esri, Maxar, Earthstar Geographics" }).addTo(map);
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, maxNativeZoom: 18, updateWhenZooming: false, opacity: .85, pane: "overlayPane" }).addTo(map);
+    map.on("moveend", () => { const b = map.getBounds(); S.inView = P.filter(p => b.contains([p.lat, p.lng])).map(p => p.id); drawPins(); if (S.tab === "map" && !S.sel) renderSoon(); });
+    KOR = L.latLngBounds(P.map(p => [p.lat, p.lng])).pad(.08);
+    const refit = first => { map.invalidateSize(); if (first) map.fitBounds(KOR, { animate: false }); const b = map.getBounds(); S.inView = P.filter(p => b.contains([p.lat, p.lng])).map(p => p.id); drawPins(); renderSoon(); };
+    renderCtl(); refit(true); requestAnimationFrame(() => refit(true)); setTimeout(() => refit(true), 300);
+    let rz = 0; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => refit(false), 150); }); }
+  function renderCtl() { $("mapctl").innerHTML = '<button data-all="1" style="background:#191F28;color:#fff">전국 보기</button>' + ["전체", "아파트", "주택", "전원주택", "빌라", "오피스텔", "상가", "빌딩"].map(t => '<button data-type="' + t + '" class="' + (S.type === t ? "on" : "") + '">' + t + "</button>").join(""); }
+  function select(id, fly) { S.sel = id; S.tab = "map"; S.dtab = "list"; setTabs(); const p = byId[id]; if (fly && map) map.flyTo([p.lat, p.lng], Math.max(map.getZoom(), 17), { duration: .9 }); else if (map && !map.getBounds().pad(-.15).contains([p.lat, p.lng])) map.panTo([p.lat, p.lng]); drawPins(); render(); $("pbody").scrollTop = 0; }
+
+  // ---------- 패널 ----------
+  function setTabs() { document.querySelectorAll(".ptabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === S.tab)); }
+  function chart(p, days) { const t = Date.now(), n = 60, pts = []; for (let i = 0; i <= n; i++) pts.push(repPrice(p, t - (n - i) / n * days * DAY)); const mn0 = Math.min(...pts), mx0 = Math.max(...pts);
+    const deals = Object.values((EST[p.id] || {}).deals || {}).filter(d => d.py === p.repPy && t - d.ts < days * DAY), mn = Math.min(mn0, ...deals.map(d => d.price)), mx = Math.max(mx0, ...deals.map(d => d.price)), rg = mx - mn || 1, up = pts[n] >= pts[0], col = up ? "#F04452" : "#3182F6";
+    const Y = v => (110 - (v - mn) / rg * 96).toFixed(1), line = pts.map((v, i) => (i / n * 360).toFixed(1) + "," + Y(v)).join(" ");
+    return '<svg viewBox="0 0 360 124" preserveAspectRatio="none" style="width:100%;height:124px;display:block"><polygon points="0,124 ' + line + ' 360,124" fill="' + col + '" fill-opacity=".1"/><polyline points="' + line + '" fill="none" stroke="' + col + '" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>'
+      + deals.map(d => '<circle cx="' + ((1 - (t - d.ts) / (days * DAY)) * 360).toFixed(1) + '" cy="' + Y(d.price) + '" r="4" fill="#191F28" stroke="#fff" stroke-width="1.5"/>').join("") + "</svg>"
+      + '<div style="display:flex;justify-content:space-between;font-size:11px;color:#8B95A1;margin-top:4px"><span>' + p.repPy + "평 시세 · ● 실거래</span><span>" + (up ? "+" : "") + ((pts[n] - pts[0]) / pts[0] * 100).toFixed(1) + "% · " + days + "일</span></div>"; }
+  function listView() { const t = Date.now(); let L2 = P.filter(p => (S.type === "전체" || p.type === S.type) && (!S.q || (p.name + p.area).includes(S.q)));
+    if (!S.q) L2 = L2.filter(p => S.inView.includes(p.id));
+    L2.sort((a, b) => S.sort === "price" ? repPrice(b, t) - repPrice(a, t) : S.sort === "up" ? chg(b, t) - chg(a, t) : S.sort === "down" ? chg(a, t) - chg(b, t) : RENT[b.type] - RENT[a.type]);
+    const H = homes(), dl = dealNow(t), mm = Math.max(0, Math.ceil((dl.end - t) / 60000));
+    return (dl.u ? '<div class="hot" data-sel="' + dl.p.id + '"><span class="z">⚡</span><div style="flex:1;min-width:0"><b>급매! ' + esc(dl.p.name) + " " + dl.u.label + '</b><span>' + dl.u.py + "평 · " + Math.round(dl.d * 100) + "% 싸게 · 먼저 계약하는 사람 임자 · " + mm + "분 뒤 마감</span></div><span style=\"color:#FFC342;font-weight:800\">›</span></div>" : '<div class="hot" style="background:#F2F4F6;color:#8B95A1;cursor:default"><span class="z">⏳</span><div><b style="color:#4E5968">급매 계약 완료!</b><span>' + mm + "분 뒤 다음 급매가 나와요</span></div></div>")
+      + '<div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B95A1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><circle cx="10" cy="10" r="7"/><path d="M21 21l-6-6"/></svg><input id="q" placeholder="단지명, 동네 검색" value="' + esc(S.q) + '"></div>'
+      + '<div class="chips">' + [["price", "비싼 순"], ["up", "많이 오른 순"], ["down", "많이 내린 순"], ["rent", "월세 수익률 순"]].map(([k, l]) => '<button class="chip' + (S.sort === k ? " on" : "") + '" data-sort="' + k + '">' + l + "</button>").join("") + "</div>"
+      + '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:2px 4px"><b style="font-size:15px">' + (S.q ? "검색 결과" : "지도 안 단지") + " " + L2.length + '곳</b><span class="lbl">대표 평형 시세</span></div>'
+      + (L2.length ? L2.map(p => { const pr = repPrice(p, t), c = chg(p, t), U = unitsOf(p.id), forSale = p.units.length - Object.keys(U).length + Object.values(U).filter(x => x && x.ask).length, mine = Object.values(H).filter(h => h.pid === p.id).length;
+        return '<div class="row" data-sel="' + p.id + '"><div class="ic" style="background:' + TYPES[p.type] + '">' + p.type.slice(0, 2) + '</div><div class="m"><div class="n">' + esc(p.name) + (mine ? ' <span class="badge" style="background:#FFF5D6;color:#B07A00">내 집 ' + mine + "</span>" : "") + '</div><div class="s">' + esc(p.area) + " · 매물 " + forSale + " · " + p.units.length + "세대</div></div>"
+          + '<div class="r"><div class="p">' + short(pr) + '</div><div class="c ' + cls(c) + '">' + pct(c) + "</div></div></div>"; }).join("") : '<div class="empty">이 지역에 단지가 없어요.<br>지도를 움직이거나 확대해 보세요.</div>'); }
+  function listings(p, t) { const U = unitsOf(p.id), dl = dealNow(t), out = [];
+    p.units.forEach(u => { const x = U[u.k], mp = uprice(p, u, t);
+      if (!x) out.push({ u, price: dl.p.id === p.id && dl.u && dl.u.k === u.k ? Math.round(mp * (1 - dl.d) / 10000) * 10000 : mp, mp, seller: null, deal: dl.p.id === p.id && dl.u && dl.u.k === u.k });
+      else if (x.ask) out.push({ u, price: x.ask, mp, seller: x.o, sn: x.on, mine: x.o === me }); });
+    return out.sort((a, b) => b.deal - a.deal || a.price - b.price); }
+  function detailView() { const p = byId[S.sel], t = Date.now(), pr = repPrice(p, t), c = chg(p, t), U = unitsOf(p.id), ll = landlord(p.id), dls = Object.values((EST[p.id] || {}).deals || {}).sort((a, b) => b.ts - a.ts);
+    let body = "";
+    if (S.dtab === "list") { const L2 = listings(p, t);
+      body = '<div class="lbl" style="padding:0 2px">중개사무소 매물은 시세대로, 집주인 매물은 집주인이 정한 호가로 거래돼요.</div>' + (L2.length ? L2.map(x => { const vs = (x.price - x.mp) / x.mp * 100;
+        return '<div class="unit" style="' + (x.deal ? "border-color:#FFB020;background:#FFF8E6" : x.mine ? "background:#F9FAFB" : "") + '"><div class="m"><div class="n">' + (x.deal ? "⚡ " : "") + x.u.label + " · " + x.u.py + "평 · " + x.u.fl + '층</div><div class="s">' + (x.seller ? "집주인 " + esc(x.sn) + (x.mine ? " (나)" : "") + " · 시세 대비 " + (vs >= 0 ? "+" : "") + vs.toFixed(1) + "%" : x.deal ? "급매 · " + Math.round((1 - x.price / x.mp) * 100) + "% 싸게" : "우준공인중개사 · 시세 매물") + '</div></div><div><div class="p">' + short(x.price) + '</div></div>'
+          + (x.mine ? '<button class="sm-btn" data-unlist="' + x.u.k + '" style="background:#F2F4F6;color:#4E5968">내리기</button>' : '<button class="sm-btn" data-contract="' + x.u.k + '" style="background:' + (x.deal ? "#FFB020" : "#3182F6") + ";color:" + (x.deal ? "#191F28" : "#fff") + '">계약</button>') + "</div>"; }).join("") : '<div class="empty">지금 나온 매물이 없어요.<br>집주인이 내놓을 때까지 기다려 보세요.</div>'); }
+    else if (S.dtab === "deals") body = dls.length ? dls.slice(0, 20).map((d, i) => { const hi = !dls.slice(i + 1).some(o => o.py === d.py && o.price >= d.price) && dls.slice(i + 1).some(o => o.py === d.py); return '<div class="unit"><div class="m"><div class="n">' + esc(d.label || d.k) + " · " + d.py + '평</div><div class="s">' + esc(d.bn || "?") + "님 매수 · " + ago(d.ts) + '</div></div><div class="p">' + short(d.price) + (hi ? '<div><span class="badge" style="background:#FFF0F2;color:#F04452">신고가</span></div>' : "") + "</div></div>"; }).join("") : '<div class="empty">아직 실거래가 없어요</div>';
+    else { const own = {}; Object.values(U).forEach(x => { if (x && x.o) own[x.o] = (own[x.o] || 0) + 1; }); const top = Object.keys(own).sort((a, b) => own[b] - own[a]).slice(0, 5), evs = news(200).filter(e => e.p.id === p.id).slice(0, 4);
+      body = '<div class="grid2"><div class="card"><div class="lbl">세대수</div><div class="val">' + p.units.length + '세대</div></div><div class="card"><div class="lbl">입주율</div><div class="val">' + Math.round(soldRatio(p) * 100) + '%</div></div><div class="card"><div class="lbl">평당 시세</div><div class="val">' + short(ppy(p, t)) + '</div></div><div class="card"><div class="lbl">월세 수익률</div><div class="val">연 ' + Math.round(RENT[p.type] * 36500) + "%</div></div>" + '<div class="card"><div class="lbl">세입자 구할 확률</div><div class="val" style="color:' + (occP(p.id, me) < .6 ? "#F04452" : "#00A661") + '">' + Math.round(occP(p.id, me) * 100) + '%</div></div><div class="card"><div class="lbl">공실 관리비</div><div class="val">하루 0.05%</div></div></div>'
+        + '<div class="card" style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">👑</span><div style="flex:1"><div style="font-size:14px;font-weight:800">' + (ll ? "건물주 " + esc(((S.users[ll] || {}).name) || "?") + (ll === me ? " (나)" : "") : "아직 건물주가 없어요") + '</div><div class="lbl">3채 이상 가진 1등이 건물주예요. 이 단지 월세를 1.5배로 받아요.</div></div></div>'
+        + (top.length ? '<div><b style="font-size:15px">집주인</b>' + top.map((k, i) => '<div style="display:flex;justify-content:space-between;padding:7px 2px;font-size:14px"><span><b style="color:#8B95A1;margin-right:8px">' + (i + 1) + "</b>" + esc(((S.users[k] || {}).name) || "?") + (k === me ? " (나)" : "") + "</span><b>" + own[k] + "채</b></div>").join("") + "</div>" : "")
+        + (evs.length ? '<div><b style="font-size:15px">단지 소식</b>' + evs.map(e => '<div class="news" style="padding:10px 2px;cursor:default"><span class="dot" style="background:' + (e.good ? "#F04452" : "#3182F6") + '"></span><div><div style="font-size:14px;font-weight:700">' + e.text + '</div><div class="lbl">' + ago(e.start) + " · " + (e.good ? "+" : "") + (e.mag * 100).toFixed(1) + "%</div></div></div>").join("") + "</div>" : ""); }
+    return '<button class="back" data-back="1">‹ 목록으로</button>'
+      + '<div><span class="badge" style="background:' + TYPES[p.type] + '1A;color:' + TYPES[p.type] + '">' + p.type + '</span> <span class="lbl">' + esc(p.area) + "</span></div>"
+      + '<div style="font-size:24px;font-weight:900;letter-spacing:-0.6px;margin-top:-4px">' + esc(p.name) + "</div>"
+      + '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="lbl">' + p.repPy + '평 시세</span><span style="font-size:28px;font-weight:900;letter-spacing:-1px">' + short(pr) + '준</span><span class="' + cls(c) + '" style="font-size:14px;font-weight:800">' + pct(c) + "</span></div>"
+      + '<div class="seg">' + [[7, "1주"], [30, "1개월"], [90, "3개월"], [365, "1년"]].map(([d, l]) => '<button data-range="' + d + '" class="' + (S.range === d ? "on" : "") + '">' + l + "</button>").join("") + "</div>" + chart(p, S.range)
+      + '<div class="seg">' + [["list", "매물 " + listings(p, t).length], ["deals", "실거래 " + dls.length], ["info", "단지 정보"]].map(([k, l]) => '<button data-dtab="' + k + '" class="' + (S.dtab === k ? "on" : "") + '">' + l + "</button>").join("") + "</div>" + body; }
+  function mineView() { const t = Date.now(), H = homes(), ids = Object.keys(H), r = rentDue();
+    let val = 0, debt = 0, cost = 0; ids.forEach(id => { const h = H[id], p = byId[h.pid], un = p && p.units.find(x => x.k === h.k); if (!un) return; val += uprice(p, un, t) * (1 + .08 * (h.rm || 0)); debt += loanNow(h); cost += h.buy; });
+    const rich = Object.keys(S.users).map(k => { const Hs = (S.users[k] || {}).homes || {}; let v = 0; Object.values(Hs).forEach(h => { const p = byId[h.pid], un = p && p.units.find(x => x.k === h.k); if (un) v += uprice(p, un, t) * (1 + .08 * (h.rm || 0)); }); return [k, v, Object.keys(Hs).length]; }).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    return '<div style="background:#191F28;color:#fff;border-radius:20px;padding:20px"><div style="font-size:13px;color:#B0B8C1;font-weight:700">내 집 ' + ids.length + "채 · 시세 합계</div><div style=\"font-size:30px;font-weight:900;letter-spacing:-1px;margin-top:4px\">" + fmt(val) + '준</div><div style="display:flex;gap:14px;margin-top:8px;font-size:13px;color:#B0B8C1"><span>대출 ' + short(debt) + '</span><span>순자산 <b style="color:#fff">' + short(val - debt) + '</b></span><span style="color:' + (val - cost >= 0 ? "#FF8A9A" : "#8EC0FF") + '">시세차익 ' + (val - cost >= 0 ? "+" : "") + short(val - cost) + "</span></div></div>"
+      + '<div class="card" style="display:flex;align-items:center;gap:12px;background:#FFF8E6"><div style="flex:1"><div style="font-size:15px;font-weight:800;color:' + ((r.due - r.taxDue - r.fix) >= 0 ? "#191F28" : "#F04452") + '">정산 ' + ((r.due - r.taxDue - r.fix) >= 0 ? "+" : "") + fmt(r.due - r.taxDue - r.fix) + '준</div><div class="lbl" style="margin-top:2px">월세 +' + fmt(r.due) + "준 · 보유세 −" + fmt(r.taxDue) + "준 · 관리비·수리 −" + fmt(r.fix) + "준" + (r.vac >= .1 ? " · 공실 " + r.vac.toFixed(1) + "일" : "") + (r.acc ? " · 사고 발생" : "") + " · 현금이 모자라면 빚이 돼요</div></div><button class=\"big-btn\" data-rent=\"1\" style=\"height:44px;padding:0 16px;font-size:14px;background:" + (r.due + r.taxDue + r.fix >= 1 ? "#191F28" : "#F2F4F6") + ";color:" + (r.due + r.taxDue + r.fix >= 1 ? "#fff" : "#B0B8C1") + '">정산하기</button></div>'
+      + '<div class="card" style="font-size:12px;color:#4E5968;line-height:1.7"><b style="font-size:13px;color:#191F28">부동산은 주식·코인과 달라요</b><br>· 세입자가 들어와야 월세가 나와요. 같은 단지에 다른 플레이어가 없으면 공실이 잦아요 (세입자 확률 30% + 이웃 1명당 20%)<br>· 공실이어도 관리비·보유세는 매일 나가고, 가끔 누수·화재 수리비(집값 2%)가 터져요. 현금이 없으면 바로 빚이에요<br>· 집 한 채 단위로 계약하고, 대출(LTV 70%)을 끼고 살 수 있어요<br>· 월세(매일 수입) / 전세(목돈을 미리 받고 팔 때 반환) / 실거주(보유세 면제) 중에 골라요<br>· 매일 보유세 0.03%가 나가요 · 3채부터 취득세 +5%p, 양도세 40%<br>· 리모델링하면 집값 +8%, 월세 +10% (최대 3번)<br>· 시세는 천천히 움직이지만 호재·악재에 크게 흔들려요</div>'
+      + (ids.length ? ids.map(id => { const h = H[id], p = byId[h.pid], un = p && p.units.find(x => x.k === h.k); if (!un) return ""; const v = uprice(p, un, t) * (1 + .08 * (h.rm || 0)), ln = loanNow(h), x = unitsOf(p.id)[un.k] || {}, pl = v - h.buy;
+        return '<div class="card" style="display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid #F2F4F6"><div style="display:flex;justify-content:space-between;gap:8px;cursor:pointer" data-sel="' + p.id + '"><div><div style="font-size:15px;font-weight:800">' + esc(p.name) + '</div><div class="lbl">' + un.label + " · " + un.py + "평 · " + un.fl + '층</div></div><div style="text-align:right"><div style="font-size:16px;font-weight:900">' + short(v) + '</div><div class="' + cls(pl) + '" style="font-size:12px;font-weight:800">' + (pl >= 0 ? "+" : "") + short(pl) + "</div></div></div>"
+          + '<div class="lbl">매입가 ' + short(h.buy) + " · 대출 " + (ln ? short(ln) : "없음") + (x.ask ? ' · <b style="color:#3182F6">매물로 내놓음 ' + short(x.ask) + "</b>" : "") + "</div>"
+          + '<div class="seg">' + ["월세", "전세", "실거주"].map(m => '<button data-mode="' + id + "|" + m + '" class="' + ((h.mode || "월세") === m ? "on" : "") + '">' + m + "</button>").join("") + "</div>"
+          + '<div class="lbl">' + ((h.mode || "월세") === "월세" ? "하루 월세 " + fmt(hval(h, t) * RENT[p.type] * (1 + .1 * (h.rm || 0))) + "준" : h.mode === "전세" ? "전세금 " + fmt(h.jd || 0) + "준 받음 · 월세 없음 · 팔 때 돌려줘요" : "내가 사는 집 · 월세 없음 · 보유세 면제") + " · 리모델링 " + (h.rm || 0) + "/" + RM_MAX + "</div>"
+          + '<div style="display:flex;gap:6px;flex-wrap:wrap">' + ((h.rm || 0) < RM_MAX ? '<button class="sm-btn" data-rm="' + id + '" style="background:#FFF8E6;color:#B07A00">리모델링</button>' : "") + (x.ask ? '<button class="sm-btn" data-unlist2="' + id + '" style="background:#F2F4F6;color:#4E5968">매물 내리기</button>' : '<button class="sm-btn" data-list="' + id + '" style="background:#3182F6;color:#fff">매물 내놓기</button>') + '<button class="sm-btn" data-quick="' + id + '" style="background:#FFF0F2;color:#F04452">중개사에 바로 팔기</button>' + (ln ? '<button class="sm-btn" data-repay="' + id + '" style="background:#F2F4F6;color:#4E5968">대출 갚기</button>' : "") + "</div></div>"; }).join("") : '<div class="empty">아직 내 집이 없어요.<br>지도에서 단지를 눌러 매물을 계약해 보세요.<br>대출을 끼면 현금이 적어도 살 수 있어요.</div>')
+      + (() => { const G = {}; Object.keys(S.users).forEach(k => { Object.values((S.users[k] || {}).homes || {}).forEach(h => { const p = byId[h.pid], un = p && p.units.find(x => x.k === h.k); if (!un) return; const gu = p.area.startsWith("성남") ? p.area.split(" ").slice(0, 2).join(" ") : p.area.split(" ")[0]; G[gu] = G[gu] || {}; G[gu][k] = (G[gu][k] || 0) + uprice(p, un, t) * (1 + .08 * (h.rm || 0)); }); });
+        const rows = Object.keys(G).map(gu => { const best = Object.keys(G[gu]).sort((a, b) => G[gu][b] - G[gu][a])[0]; return [gu, best, G[gu][best]]; }).sort((a, b) => b[2] - a[2]);
+        return '<b style="font-size:15px;padding:8px 4px 0">땅따먹기 · 동네 지배자</b>' + (rows.length ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">' + rows.map(([gu, k, v]) => '<div class="card" style="padding:10px 12px;' + (k === me ? "background:#E8F3FF" : "") + '"><div class="lbl">' + esc(gu) + '</div><div style="font-size:14px;font-weight:800;margin-top:2px">👑 ' + esc(((S.users[k] || {}).name) || "?") + '</div><div class="lbl">' + short(v) + "준</div></div>").join("") + "</div>" : '<div class="lbl" style="padding:0 6px">아직 지배자가 없어요. 먼저 깃발을 꽂으세요</div>'); })()
+      + '<b style="font-size:15px;padding:8px 4px 0">부동산 부자</b>' + (rich.length ? rich.map(([k, v, n], i) => '<div style="display:flex;align-items:center;gap:10px;padding:8px 6px"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:' + (["#FFC342", "#B0B8C1", "#D9925B"][i] || "#8B95A1") + '">' + (i + 1) + '</span><span style="flex:1;font-weight:700;font-size:14px">' + esc((S.users[k] || {}).name || "?") + (k === me ? " (나)" : "") + ' <span class="lbl">' + n + "채</span></span><b style=\"font-size:14px\">" + short(v) + "준</b></div>").join("") : '<div class="lbl" style="padding:0 6px">아직 아무도 집을 안 샀어요</div>'); }
+  function newsView() { const L2 = news(40); return '<b style="font-size:15px;padding:0 4px">최근 3주 부동산 소식</b>' + (L2.length ? L2.map(e => '<div class="news" data-sel="' + e.p.id + '"><span class="dot" style="background:' + (e.good ? "#F04452" : "#3182F6") + '"></span><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">' + esc(e.p.name) + ", " + e.text + '</div><div class="lbl" style="margin-top:2px">' + esc(e.p.area) + " · " + ago(e.start) + '</div></div><span class="' + (e.good ? "up" : "dn") + '" style="font-size:13px;font-weight:800;flex:none">' + (e.good ? "+" : "") + (e.mag * 100).toFixed(1) + "%</span></div>").join("") : '<div class="empty">조용한 시장이에요</div>'); }
+  let rq = 0; function renderSoon() { if (rq) return; rq = requestAnimationFrame(() => { rq = 0; render(); }); }
+  function render() { const body = $("pbody"), a = document.activeElement; if (a && a.id === "q") { const v = a.selectionStart; body.innerHTML = S.tab === "map" ? (S.sel ? detailView() : listView()) : S.tab === "mine" ? mineView() : newsView(); const el = $("q"); if (el) { el.focus(); try { el.setSelectionRange(v, v); } catch (e) {} } return; }
+    body.innerHTML = S.tab === "map" ? (S.sel ? detailView() : listView()) : S.tab === "mine" ? mineView() : newsView(); }
+
+  // ---------- 계약서 ----------
+  function openContract(pid, key) { const p = byId[pid], u = p.units.find(x => x.k === key); const x = listings(p, Date.now()).find(l => l.u.k === key); if (!x) return toast("이미 팔린 매물이에요"); S.sheet = { pid, key, price: x.price, seller: x.seller, sn: x.sn, deal: x.deal, ltv: Math.min(LTV_MAX, x.price > (S.user.cash || 0) ? 60 : 0), done: false }; drawSheet(); }
+  function drawSheet() { const sh = S.sheet, el = $("sheet"); if (!sh) { el.classList.remove("on"); return; } el.classList.add("on");
+    const p = byId[sh.pid], u = p.units.find(x => x.k === sh.key), loan = Math.round(sh.price * sh.ltv / 100 / 10000) * 10000, tax = Math.ceil(sh.price * acqR(sh.price)), fee = Math.ceil(sh.price * BROKER), need = sh.price - loan + tax + fee, cash = (S.user && S.user.cash) || 0, ok = cash >= need;
+    $("sheetIn").innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px">' + "매매 계약" + '</b><button class="sm-btn" data-close="1" style="background:#F2F4F6;color:#4E5968">닫기</button></div>'
+      + '<div class="doc"><h4>부동산 매매 계약서</h4>'
+      + '<div class="ln"><span>소재지</span><b>' + esc(p.area) + " " + esc(p.name) + " " + u.label + "</b></div>"
+      + '<div class="ln"><span>면적 · 층</span><b>' + u.py + "평 · " + u.fl + "층</b></div>"
+      + '<div class="ln"><span>매도인</span><b>' + (sh.seller ? esc(sh.sn) : "우준공인중개사") + '</b></div><div class="ln"><span>매수인</span><b>' + esc(myName()) + "</b></div>"
+      + '<div class="ln"><span>매매대금</span><b>' + fmt(sh.price) + "준" + (sh.deal ? " ⚡급매" : "") + "</b></div>"
+      + '<div class="ln"><span>주택담보대출 (LTV ' + sh.ltv + '%)</span><b>' + fmt(loan) + "준</b></div>"
+      + '<div class="ln"><span>취득세 ' + Math.round(acqR(sh.price) * 100) + '%</span><b>' + fmt(tax) + '준</b></div><div class="ln"><span>중개수수료 0.4%</span><b>' + fmt(fee) + "준</b></div>"
+      + '<div class="ln" style="font-size:15px"><span>내가 낼 현금</span><b style="color:' + (ok ? "#191F28" : "#F04452") + '">' + fmt(need) + "준</b></div>"
+      + "</div>"
+      + (sh.done ? '<button class="big-btn" data-close="1" style="background:#191F28;color:#fff">확인</button>'
+        : '<div><div style="display:flex;justify-content:space-between"><span class="lbl">대출 비율 (LTV)</span><b style="font-size:13px">' + sh.ltv + "% · 하루 이자 약 " + fmt(loan * LOAN_DAY) + '준</b></div><input type="range" id="ltv" min="0" max="' + LTV_MAX + '" step="10" value="' + sh.ltv + '"></div>'
+        + '<div class="lbl">내 현금 ' + fmt(cash) + "준" + (ok ? "" : ' · <b style="color:#F04452">' + fmt(need - cash) + "준 부족해요. 대출 비율을 올려 보세요</b>") + "</div>"
+        + '<button class="big-btn" data-sign="1" style="background:' + (ok ? "#3182F6" : "#F2F4F6") + ";color:" + (ok ? "#fff" : "#B0B8C1") + '">도장 찍고 계약하기</button>'); }
+  async function sign() { const sh = S.sheet; if (!sh || sh.busy) return; const p = byId[sh.pid], u = p.units.find(x => x.k === sh.key), price = sh.price, loan = Math.round(price * sh.ltv / 100 / 10000) * 10000, tax = Math.ceil(price * acqR(price)), fee = Math.ceil(price * BROKER), need = price - loan + tax + fee;
+    if (nHomes() >= MAX_HOMES) return toast("집은 최대 " + MAX_HOMES + "채까지 가질 수 있어요"); if ((S.user.cash || 0) < need) return toast("현금이 부족해요"); sh.busy = true; const t0 = Date.now(), hid = p.id + "_" + u.k; let seller = null, sLoan = 0, sBuy = 0, err = "";
+    const r1 = await db.ref("estate/" + p.id + "/units/" + u.k).transaction(x => { err = ""; seller = null;
+      if (sh.seller) { if (!x || x.o !== sh.seller || x.ask !== price) { err = "호가가 바뀌었거나 이미 팔렸어요"; return; } seller = x.o; sLoan = x.loan || 0; sBuy = x.buy || 0; }
+      else if (x) { err = "방금 다른 사람이 계약했어요"; return; }
+      return { o: me, on: myName(), buy: price, ts: t0 }; }).catch(() => ({ committed: false }));
+    if (!r1.committed) { sh.busy = false; S.sheet = null; drawSheet(); return toast(err || "계약하지 못했어요", "😭"); }
+    let ok = false; const r2 = await db.ref("users/" + me).transaction(x => { if (!x) return x; if ((x.cash || 0) < need) { ok = false; return; } ok = true; x.cash -= need; x.homes = x.homes || {}; x.homes[hid] = { pid: p.id, k: u.k, buy: price, loan, lt: t0, ts: t0 }; if (!x.rentAt) x.rentAt = t0; return x; }).catch(() => ({ committed: false }));
+    if (!r2.committed || !ok) { await db.ref("estate/" + p.id + "/units/" + u.k).set(sh.seller ? { o: sh.seller, on: sh.sn, ask: price, buy: sBuy, ts: t0 } : null); sh.busy = false; return toast("현금이 부족해요"); }
+    if (seller) { const sv = (await db.ref("users/" + seller + "/homes/" + hid).once("value").catch(() => null)), sh2 = sv && sv.val(), sl = sh2 ? loanNow(sh2) : 0, gain = Math.max(0, price - (sh2 ? sh2.buy : sBuy)), pay = Math.round(price - sl - Math.ceil(price * BROKER) - gain * GAIN_TAX - ((sh2 && sh2.jd) || 0));
+      await db.ref("users/" + seller + "/homes/" + hid).remove().catch(() => {}); await WJ.addCash(seller, pay, true); WJ.log(seller, "sell", { stock: p.name + " " + u.label + " (부동산)", qty: 1, price }); }
+    db.ref("estate/" + p.id + "/deals").push({ k: u.k, label: u.label, py: u.py, price, bn: myName(), ts: t0 }).catch(() => {});
+    WJ.log(me, "buy", { stock: p.name + " " + u.label + " (부동산)", qty: 1, price });
+    sh.done = true; sh.busy = false; drawSheet(); WJ.sfx("win"); try { WJ.confetti(.8, ["#E5483A", "#FFC342", "#3182F6"]); } catch (e) {} toast("<b>" + esc(p.name) + " " + u.label + "</b> 계약 완료!", "🏠"); }
+  async function listUnit(hid) { const h = homes()[hid]; if (!h) return; const p = byId[h.pid], u = p.units.find(x => x.k === h.k), mp = uprice(p, u, Date.now()), v = prompt("얼마에 내놓을까요? (시세 " + fmt(mp) + "준)", String(Math.round(mp * 1.05 / 10000) * 10000)); if (v == null) return; const ask = Math.round((+String(v).replace(/\D/g, "") || 0) / 10000) * 10000; if (ask < mp * .3) return toast("호가가 너무 낮아요");
+    await db.ref("estate/" + p.id + "/units/" + u.k).transaction(x => { if (!x || x.o !== me) return; x.ask = ask; return x; }); toast(u.label + " 매물로 내놓았어요 · " + short(ask) + "준", "📋"); }
+  async function unlist(pid, key) { await db.ref("estate/" + pid + "/units/" + key).transaction(x => { if (!x || x.o !== me) return; x.ask = null; return x; }); toast("매물을 내렸어요"); }
+  async function quickSell(hid) { const h = homes()[hid]; if (!h) return; const p = byId[h.pid], u = p.units.find(x => x.k === h.k), mp = uprice(p, u, Date.now()), price = Math.round(mp * BANK_BUY / 10000) * 10000, ln = loanNow(h), gain = Math.max(0, price - h.buy), pay = Math.round(price - ln - Math.ceil(price * BROKER) - gain * gainR() - (h.jd || 0));
+    if (!confirm("중개사에 시세의 95%인 " + fmt(price) + "준에 팔까요?\n대출 상환 " + fmt(ln) + "준 · 세금·수수료 빼고 " + fmt(pay) + "준이 들어와요" + (pay < 0 ? "\n(현금에서 " + fmt(-pay) + "준이 빠져요)" : ""))) return;
+    let ok = false; const r = await db.ref("users/" + me).transaction(x => { ok = false; if (!x || !x.homes || !x.homes[hid]) return; delete x.homes[hid]; x.cash = (x.cash || 0) + pay; ok = true; return x; }).catch(() => ({ committed: false }));
+    if (!r.committed || !ok) return toast("팔지 못했어요");
+    await db.ref("estate/" + p.id + "/units/" + u.k).remove().catch(() => {}); db.ref("estate/" + p.id + "/deals").push({ k: u.k, label: u.label, py: u.py, price, bn: "우준공인중개사", ts: Date.now() }).catch(() => {});
+    WJ.log(me, "sell", { stock: p.name + " " + u.label + " (부동산)", qty: 1, price }); WJ.sfx("coin"); toast(u.label + " 매도 · " + (pay >= 0 ? "+" : "") + fmt(pay) + "준", "🏠"); }
+  async function repay(hid) { const h = homes()[hid]; if (!h) return; const ln = loanNow(h); if (!ln) return; const v = prompt("얼마를 갚을까요? (대출 " + fmt(ln) + "준)", String(Math.min(ln, (S.user.cash || 0)))); if (v == null) return; const a = Math.min(ln, +String(v).replace(/\D/g, "") || 0); if (a <= 0) return;
+    let ok = false; await db.ref("users/" + me).transaction(x => { ok = false; if (!x || !x.homes || !x.homes[hid] || (x.cash || 0) < a) return; const hh = x.homes[hid], cur = loanNow(hh); hh.loan = Math.max(0, cur - a); hh.lt = Date.now(); x.cash -= Math.min(a, cur); ok = true; return x; });
+    toast(ok ? "대출 " + fmt(a) + "준 상환" : "현금이 부족해요", "🏦"); }
+  async function claimRent(silent) { let rent = 0, tax = 0, fix = 0, debt = 0, vac = 0, acc = 0; const r = await db.ref("users/" + me).transaction(u => { rent = 0; tax = 0; fix = 0; debt = 0; if (!u || !u.homes) return; const t = Date.now(), c = settleCalc(u, t, me);
+      rent = c.due; tax = c.taxDue; fix = c.fix; vac = c.vac; acc = c.acc; if (rent < 1 && tax < 1 && fix < 1) return; let cash = (u.cash || 0) + rent - tax - fix; if (cash < 0) { debt = -cash; cash = 0; u.loan = (u.loan || 0) + debt; if (!u.loanDue) u.loanDue = t + 3 * DAY; } u.cash = cash; u.rentAt = t; return u; }).catch(() => ({ committed: false }));
+    if (!r.committed) { if (!silent) toast("아직 정산할 게 없어요"); return; }
+    if (rent) WJ.log(me, "daily", { text: "부동산 월세", amount: rent }); if (tax) WJ.log(me, "autorepay", { text: "부동산 보유세", amount: -tax }); if (fix) WJ.log(me, "autorepay", { text: "부동산 관리비·수리비", amount: -fix });
+    const net = rent - tax - fix; if (net >= 50000) { WJ.sfx("win"); try { WJ.confetti(.7, ["#FFC342", "#F04452", "#3182F6"]); } catch (e) {} } else WJ.sfx(net < 0 ? "lose" : "coin");
+    toast("월세 +" + fmt(rent) + "준 · 보유세 −" + fmt(tax) + "준" + (fix ? " · 관리비·수리 −" + fmt(fix) + "준" : "") + (vac >= .5 ? " · 공실 " + vac.toFixed(1) + "일" : "") + (acc ? " · <b>사고 발생!</b>" : "") + (debt ? " · <b>빚 +" + fmt(debt) + "준</b>" : ""), net < 0 ? "🏚️" : "💰"); }
+  async function setMode(hid, mode) { await claimRent(true); const h = homes()[hid]; if (!h || (h.mode || "월세") === mode) return; if (mode === "실거주" && Object.values(homes()).some(x => x.mode === "실거주")) return toast("실거주는 한 채만 할 수 있어요");
+    let err = "", dep = 0; const r = await db.ref("users/" + me).transaction(x => { err = ""; dep = 0; if (!x || !x.homes || !x.homes[hid]) return; const hh = x.homes[hid];
+      if (hh.mode === "전세") { if ((x.cash || 0) < (hh.jd || 0)) { err = "전세금 " + fmt(hh.jd) + "준을 돌려줄 현금이 없어요"; return; } x.cash -= hh.jd || 0; hh.jd = 0; }
+      if (mode === "전세") { dep = Math.round(hval(hh) * JEONSE / 10000) * 10000; x.cash = (x.cash || 0) + dep; hh.jd = dep; } hh.mode = mode; return x; }).catch(() => ({ committed: false }));
+    if (!r.committed) return toast(err || "바꾸지 못했어요"); toast(mode === "전세" ? "전세 세입자 입주 · 전세금 +" + fmt(dep) + "준 (팔 때 돌려줘요)" : mode === "실거주" ? "내가 들어가 살아요 · 보유세 면제" : "월세 세입자를 받았어요", "🔑"); }
+  async function remodel(hid) { const h = homes()[hid]; if (!h) return; const lv = h.rm || 0; if (lv >= RM_MAX) return toast("리모델링을 다 했어요"); const cost = Math.round(hval(h) * .05 * (lv + 1) / 10000) * 10000;
+    if (!confirm("리모델링 " + (lv + 1) + "단계 · " + fmt(cost) + "준\n집값 +8%, 월세 +10%")) return;
+    let ok = false; await db.ref("users/" + me).transaction(x => { ok = false; if (!x || !x.homes || !x.homes[hid] || (x.cash || 0) < cost) return; x.cash -= cost; x.homes[hid].rm = (x.homes[hid].rm || 0) + 1; ok = true; return x; }).catch(() => {});
+    toast(ok ? "리모델링 완료! 집값이 올랐어요" : "현금이 부족해요", "🛠️"); }
+  // 예전 평 단위 보유분은 시세대로 돌려준다
+  async function migrate() { const E = (S.user && S.user.estate) || null; if (!E) return; const t = Date.now(); let back = 0; Object.keys(E).forEach(id => { const p = byId[id]; if (p) back += (E[id].q || 0) * ppy(p, t); });
+    const r = await db.ref("users/" + me).transaction(x => { if (!x || !x.estate) return; x.cash = (x.cash || 0) + Math.round(back); x.estate = null; return x; }).catch(() => ({ committed: false }));
+    if (r.committed) { Object.keys(E).forEach(id => db.ref("estate/" + id + "/own/" + me).remove().catch(() => {})); if (back > 0) toast("부동산이 집 단위 거래로 바뀌어 예전 지분을 시세로 돌려드렸어요 <b>+" + fmt(back) + "준</b>", "🏠"); } }
+
+  // ---------- 이벤트 ----------
+  document.addEventListener("click", e => { const t = e.target.closest("[data-tab],[data-sel],[data-back],[data-sort],[data-range],[data-dtab],[data-rent],[data-type],[data-contract],[data-close],[data-sign],[data-list],[data-unlist],[data-unlist2],[data-quick],[data-repay],[data-mode],[data-rm],[data-all]"); if (!t) return; const d = t.dataset;
+    if (d.tab) { S.tab = d.tab; if (d.tab !== "map") S.sel = null; setTabs(); drawPins(); render(); }
+    else if (d.all) { if (map && KOR) map.flyToBounds(KOR, { duration: .8 }); }
+    else if (d.type) { S.type = d.type; renderCtl(); drawPins(); render(); }
+    else if (d.contract) openContract(S.sel, d.contract);
+    else if (d.close) { S.sheet = null; drawSheet(); }
+    else if (d.sign) sign();
+    else if (d.list) listUnit(d.list);
+    else if (d.unlist) unlist(S.sel, d.unlist);
+    else if (d.unlist2) { const h = homes()[d.unlist2]; if (h) unlist(h.pid, h.k); }
+    else if (d.quick) quickSell(d.quick);
+    else if (d.repay) repay(d.repay);
+    else if (d.mode) { const [hid, m] = d.mode.split("|"); setMode(hid, m); }
+    else if (d.rm) remodel(d.rm);
+    else if (d.sel) select(d.sel, true);
+    else if (d.back) { S.sel = null; drawPins(); render(); }
+    else if (d.sort) { S.sort = d.sort; render(); }
+    else if (d.range) { S.range = +d.range; render(); }
+    else if (d.dtab) { S.dtab = d.dtab; render(); }
+    else if (d.rent) claimRent(); });
+  document.addEventListener("input", e => { if (e.target.id === "q") { S.q = e.target.value.trim(); drawPins(); render(); } else if (e.target.id === "ltv" && S.sheet) { S.sheet.ltv = +e.target.value; drawSheet(); const el = $("ltv"); if (el) el.focus(); } });
+  $("sheet").addEventListener("click", e => { if (e.target.id === "sheet") { S.sheet = null; drawSheet(); } });
+  $("logout").addEventListener("click", () => window.WJ && WJ.logout());
+
+  (async function boot() {
+    initMap(); render();
+    while (!window.WJ) await new Promise(r => setTimeout(r, 40));
+    await WJ.authReady; me = WJ.uid(); if (!me) { WJ.requireUser(); return; }
+    db = await WJ.ready; WJ.presence(me).catch(() => {});
+    let first = true;
+    db.ref("users/" + me).on("value", s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); S.user = u; $("cash").textContent = fmt(u.cash) + "준"; if (first) { first = false; migrate(); setTimeout(() => claimRent(true), 1500); } drawPins(); renderSoon(); if (S.sheet && !S.sheet.busy && !S.sheet.done) drawSheet(); });
+    const loadUsers = () => db.ref("users").once("value").then(s => { S.users = s.val() || {}; drawPins(); if (S.tab === "mine" || S.sel) renderSoon(); }).catch(() => {}); loadUsers(); setInterval(loadUsers, 60000);
+    db.ref("estate").on("value", s => { EST = s.val() || {}; drawPins(); renderSoon(); }, e => toast(/permission/i.test(String(e)) ? "Firebase 규칙에 estate 경로를 추가해야 해요" : "불러오지 못했어요", "⚠️"));
+    setInterval(() => { drawPins(); const a = document.activeElement; if (!(a && a.id === "q") && !S.sheet) render(); }, 10000);
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+{
+  "rules": {
+    "admin": {
+      ".read": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true",
+      ".write": false,
+      "authorizedUids": {
+        "$uid": { ".read": "auth != null && auth.uid === $uid" }
+      }
+    },
+
+    "users": {
+      ".read": "auth != null",
+      ".indexOn": ["loanDue"],
+      "$key": {
+        ".write": "auth != null",
+        "banned": { ".write": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true" },
+        "altOk": { ".write": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true" }
+      }
+    },
+
+    "authLinks": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "legacyLinks": {
+      "$key": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.val() === auth.uid)"
+      }
+    },
+
+    "history": {
+      "$key": {
+        ".read": "auth != null",
+        "$id": { ".write": "auth != null && !data.exists()" }
+      }
+    },
+    "withdrawals": {
+      ".read": "auth != null",
+      ".indexOn": ["uid"],
+      "$id": {
+        ".write": "auth != null && (!data.exists() || root.child('admin/authorizedUids/' + auth.uid).val() === true)"
+      }
+    },
+    "transfers": {
+      ".read": "auth != null",
+      "$id": { ".write": "auth != null && !data.exists()" }
+    },
+    "tstats": { ".read": "auth != null", ".write": "auth != null" },
+    "feed": {
+      ".read": "auth != null",
+      "$id": { ".write": "auth != null && !data.exists()" }
+    },
+    "jackpot": { ".read": "auth != null", ".write": "auth != null" },
+    "online": {
+      ".read": "auth != null",
+      "$key": { ".write": "auth != null" }
+    },
+
+    "companies": { ".read": "auth != null", "$cid": { ".write": "auth != null" } },
+    "companyLog": { ".read": "auth != null", "$cid": { ".write": "auth != null" } },
+    "companyChat": { ".read": "auth != null", "$cid": { ".write": "auth != null" } },
+    "cwars": { ".read": "auth != null", ".indexOn": ["ts"], "$id": { ".write": "auth != null" } },
+    "coGrave": { ".read": "auth != null", "$id": { ".write": "auth != null && !data.exists()" } },
+    "estate": { ".read": "auth != null", "$pid": { ".write": "auth != null" } },
+    "tourney": { ".read": "auth != null", ".write": "auth != null" },
+
+    "tables": {
+      ".read": "auth != null",
+      ".indexOn": ["ts", "st"],
+      "$id": { ".write": "auth != null" }
+    },
+
+    "friendQuizzes": {
+      ".read": "auth != null",
+      ".indexOn": ["createdAt"],
+      "$quizId": {
+        ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('authorAuthUid').val() === auth.uid) || (data.exists() && !newData.exists() && data.child('authorAuthUid').val() === auth.uid))",
+        ".validate": "newData.hasChildren(['question', 'choices', 'answer', 'authorKey', 'authorAuthUid', 'authorName', 'createdAt']) && newData.child('question').isString() && newData.child('choices').hasChildren(['0', '1', '2', '3']) && newData.child('answer').isNumber() && newData.child('answer').val() >= 0 && newData.child('answer').val() <= 3 && newData.child('authorKey').isString() && newData.child('authorAuthUid').val() === auth.uid && newData.child('authorName').isString() && newData.child('createdAt').isNumber()"
+      }
+    },
+
+    "coins": {
+      ".read": "auth != null",
+      "$coinId": {
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['name', 'sym', 'by', 'ts', 's']) && newData.child('s').isNumber() && newData.child('s').val() >= 0"
+      }
+    },
+    "coinTx": {
+      ".read": "auth != null",
+      "$coinId": {
+        ".write": "auth != null && !newData.exists() && !root.child('coins/' + $coinId).exists()",
+        "$txId": { ".write": "auth != null && !data.exists()" }
+      }
+    },
+    "coinChat": {
+      ".read": "auth != null",
+      "$coinId": {
+        ".write": "auth != null && !newData.exists() && !root.child('coins/' + $coinId).exists()",
+        "$msgId": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.child('t').isString() && newData.child('t').val().length <= 120"
+        }
+      }
+    },
+
+    "bans": {
+      ".read": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true",
+      ".write": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true",
+      "devices": { "$did": { ".read": true } },
+      "uids": { "$uid": { ".read": "auth != null && auth.uid === $uid" } }
+    },
+
+    "currency": {
+      ".read": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true",
+      ".write": false
+    },
+
+    "config": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admin/authorizedUids/' + auth.uid).val() === true"
+    },
+    "treasury": {
+      ".read": "auth != null",
+      "tax": { ".write": "auth != null", ".validate": "newData.isNumber()" }
+    },
+    "hackLog": {
+      "$key": {
+        ".read": "auth != null",
+        "$id": { ".write": "auth != null && !data.exists()" }
+      }
+    },
+    "lotto": {
+      ".read": "auth != null",
+      "pot": { ".write": "auth != null", ".validate": "newData.isNumber() && newData.val() >= 0" },
+      "last": { ".write": "auth != null" },
+      "wins": { "$id": { ".write": "auth != null && !data.exists()" } }
+    },
+    "deviceOwners": {
+      "$did": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || root.child('admin/authorizedUids/' + auth.uid).val() === true)"
+      }
+    }
+  }
+}

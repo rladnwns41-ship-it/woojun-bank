@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우준은행 · 보드게임</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%233182F6%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3EW%3C/text%3E%3C/svg%3E">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<script src="physics.js"></script>
+<script src="boards.js"></script>
+<script src="arcade-games.js"></script>
+<script src="arcade-art.js"></script>
+<script src="games-extra.js"></script>
+<script src="games-more.js"></script>
+<script src="games-uno.js"></script>
+<script src="games-golf.js"></script>
+<script src="game-skin.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*::-webkit-scrollbar-thumb:hover{background:#B0B8C1}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjblink{50%{opacity:.3}}
+@keyframes wjslide{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wjin{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes wjdot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+@keyframes wjCard{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes wjFocus{0%,100%{box-shadow:0 0 0 3px #3182F6}50%{box-shadow:0 0 0 7px rgba(49,130,246,.25)}}
+@keyframes wjMyTurn{0%,100%{box-shadow:0 0 0 3px #3182F6,0 18px 50px rgba(0,27,55,.16)}50%{box-shadow:0 0 0 6px rgba(49,130,246,.35),0 18px 50px rgba(0,27,55,.16)}}
+.wj-gcard{transition:transform .2s ease,box-shadow .2s ease;animation:wjCard .32s ease both}
+.wj-gcard:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,27,55,.10)!important}
+.wj-gcard{border:0}
+.wj-gcard .thumbSurface{transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.wj-gcard:hover .thumbSurface{transform:scale(1.045)}
+.wj-gcard.wj-focus{animation:wjFocus 1s ease 3}
+.wj-desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wj-board.wj-mine{animation:wjMyTurn 1.6s ease-in-out infinite}
+.wj-chips{scrollbar-width:none}.wj-chips::-webkit-scrollbar{display:none}
+@media(prefers-reduced-motion:reduce){.wj-gcard,.wj-board.wj-mine{animation:none!important}.wj-gcard,.wj-gcard .thumbSurface{transition:none}}
+@media(max-width:780px){.wj-lobby-aside{position:static!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">보유 현금</div><div style="font-weight:800;font-size:16px">{{ cashStr }}준</div></div>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+
+<sc-if value="{{ isLobby }}" hint-placeholder-val="{{ true }}">
+  <main style="flex:1;width:100%;max-width:1320px;margin:0 auto;padding:20px 20px 72px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;align-content:flex-start">
+    <section style="flex:3 1 680px;min-width:0;display:flex;flex-direction:column;gap:14px">
+
+      <div style="border-radius:26px;padding:26px 28px;background:#191F28;color:#fff;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between;position:relative;overflow:visible;z-index:5">
+        <div style="flex:1 1 280px"><div style="font-size:13px;font-weight:800;color:#8EC0FF;letter-spacing:1px">1:1 실시간 대국</div><div style="font-size:clamp(24px,3vw,34px);font-weight:900;letter-spacing:-1px;margin-top:6px">게임을 고르고 상대를 기다리세요</div><div style="font-size:14px;color:#B0B8C1;margin-top:8px">게임별 제한시간 · 시간 초과 시 패배 · 이긴 쪽이 판돈 전부</div></div>
+        <div style="flex:0 1 300px;position:relative">
+          <div style="font-size:12px;color:#B0B8C1;font-weight:700;margin-bottom:6px">판돈</div>
+          <button onClick="{{ toggleStake }}" style="width:100%;height:52px;border-radius:14px;border:0;background:#fff;color:#191F28;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer">{{ stakeLabel }}<span style="color:#8B95A1;font-size:10px">{{ stakeCaret }}</span></button>
+          <sc-if value="{{ stakeOpen }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ closeStake }}" style="position:fixed;inset:0;z-index:30"></div>
+            <div style="position:absolute;top:82px;left:0;right:0;z-index:31;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.3);max-height:300px;overflow-y:auto;padding:8px 6px;animation:wjslide .15s ease-out">
+              <sc-for list="{{ stakeItems }}" as="o" hint-placeholder-count="6">
+                <div onClick="{{ o.pick }}" style="padding:12px;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:{{ o.color }};background:{{ o.bg }}" style-hover="background:#F2F4F6">{{ o.label }}<span style="font-size:13px;color:#8B95A1;font-weight:600">{{ o.sub }}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+        <sc-for list="{{ lobbyStats }}" as="s" hint-placeholder-count="3"><div style="background:#fff;border-radius:18px;padding:16px 18px;min-width:0"><div style="font-size:13px;color:#8B95A1">{{ s.label }}</div><div style="font-size:22px;font-weight:800;margin-top:5px;letter-spacing:-0.5px;color:{{ s.color }}">{{ s.value }}</div><div style="font-size:12px;color:#B0B8C1;margin-top:3px">{{ s.sub }}</div></div></sc-for>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div class="wj-chips" style="display:flex;background:#fff;border-radius:12px;padding:4px;gap:2px;overflow-x:auto;max-width:100%">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5"><button onClick="{{ f.pick }}" style="flex:none;height:34px;padding:0 13px;border:0;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button></sc-for>
+        </div>
+        <input value="{{ gq }}" onInput="{{ setGq }}" placeholder="게임 이름 검색" style="flex:1 1 160px;min-width:0;height:42px;border:0;border-radius:12px;background:#fff;color:#191F28;padding:0 14px;font-size:14px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6">
+      </div>
+
+      <sc-if value="{{ noFavorites }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:22px;padding:32px;text-align:center"><div style="font-size:30px;color:#FFC342">★</div><div style="margin:6px 0;font-size:17px;font-weight:800">아직 즐겨찾는 게임이 없어요</div><div style="color:#8B95A1;font-size:14px">게임 카드의 별을 누르면 여기에 모여요</div><button onClick="{{ pickPopular }}" style="margin-top:16px;height:40px;border:0;border-radius:12px;padding:0 16px;background:#3182F6;color:#fff;font-weight:700;cursor:pointer">추천 게임 보기</button></div></sc-if>
+      <sc-if value="{{ noSearch }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:22px;padding:32px;text-align:center;color:#8B95A1;font-size:14px">'{{ gq }}'에 맞는 게임이 없어요</div></sc-if>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px">
+        <sc-for list="{{ cards }}" as="g" hint-placeholder-count="8">
+          <div id="{{ g.anchor }}" class="{{ g.cls }}" style="background:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:{{ g.ring }}">
+            <div onClick="{{ g.match }}" role="button" aria-label="{{ g.name }} 대국 시작" style="position:relative;aspect-ratio:1.35;background-color:{{ g.tintBg }};overflow:hidden;cursor:pointer">
+              <img class="thumbSurface" src="{{ g.thumbSrc }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block">
+              <sc-if value="{{ g.waiting }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;background:#fff;color:#F04452;box-shadow:0 6px 16px rgba(0,0,0,.18)"><span style="width:7px;height:7px;border-radius:50%;background:#F04452;animation:wjblink 1.4s infinite"></span>{{ g.waiting }}명 대기 중</span></sc-if>
+            </div>
+            <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+                <div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="flex:none;white-space:nowrap;font-size:11px;font-weight:800;padding:4px 8px;border-radius:7px;background:#F2F4F6;color:#4E5968">{{ g.tag }}</span><div style="font-size:16px;font-weight:800;letter-spacing:-0.4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ g.name }}</div></div>
+                <button onClick="{{ g.favorite }}" aria-label="{{ g.favoriteLabel }}" title="{{ g.favoriteLabel }}" style="flex:none;width:32px;height:32px;min-height:32px;border:0;border-radius:9px;background:transparent;color:{{ g.favoriteColor }};font-size:19px;line-height:1;cursor:pointer" style-hover="background:#F2F4F6">{{ g.favoriteIcon }}</button>
+              </div>
+              <div style="font-size:12px;color:#8B95A1;font-weight:600">{{ g.meta }}</div>
+              <div class="wj-desc" style="font-size:13px;color:#6B7684;line-height:1.5;flex:1">{{ g.desc }}</div>
+              <div style="display:flex;gap:6px;margin-top:6px">
+                <button onClick="{{ g.match }}" style="flex:1;height:44px;border:0;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;background:{{ g.btnBg }};color:{{ g.btnFg }}" style-active="transform:scale(.97)">{{ g.btn }}</button>
+                <button onClick="{{ g.invite }}" aria-label="친구 초대방 만들기" title="친구 초대방 만들기" style="flex:none;width:44px;height:44px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:16px;cursor:pointer" style-hover="background:#E8F3FF;color:#3182F6">🔗</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <aside class="wj-lobby-aside" style="flex:1 1 300px;min-width:280px;display:flex;flex-direction:column;gap:14px;position:sticky;top:74px">
+      <div style="background:#fff;border-radius:22px;padding:22px">
+        <div style="font-size:14px;color:#4E5968;font-weight:600">{{ myName }}님 대국 전적</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-top:6px"><span style="font-size:28px;font-weight:800;letter-spacing:-1px">{{ myW }}승 {{ myL }}패</span><span style="font-size:14px;font-weight:700;color:#3182F6">{{ myRate }}</span></div>
+        <div style="height:8px;border-radius:6px;background:#F2F4F6;overflow:hidden;margin-top:12px"><div style="height:100%;border-radius:6px;background:linear-gradient(90deg,#3182F6,#6AA9FF);width:{{ myRateW }}"></div></div>
+        <div style="font-size:14px;font-weight:700;margin-top:10px;color:{{ myEarnColor }}">대국 수익 {{ myEarn }}</div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+        <div style="display:flex;justify-content:space-between;padding:0 6px 8px"><div style="font-size:16px;font-weight:800">대기 중인 대국</div><span style="font-size:12px;color:#8B95A1">{{ waitingN }}개</span></div>
+        <div style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:6px">
+          <sc-for list="{{ waiting }}" as="r" hint-placeholder-count="0">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:#F9FAFB">
+              <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">{{ r.game }}</div><div style="font-size:12px;color:#8B95A1">{{ r.host }} · {{ r.stake }}</div></div>
+              <button onClick="{{ r.join }}" style="height:34px;padding:0 14px;border:0;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:{{ r.bg }};color:{{ r.fg }}">{{ r.btn }}</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noWaiting }}" hint-placeholder-val="{{ true }}"><div style="padding:10px 6px;font-size:13px;color:#8B95A1;line-height:1.5">대기 중인 대국이 없어요. 게임을 골라 먼저 방을 열어 보세요.</div></sc-if>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+        <div style="font-size:16px;font-weight:800;padding:0 6px 8px">진행 중 · 최근 결과</div>
+        <div style="max-height:300px;overflow-y:auto">
+          <sc-for list="{{ results }}" as="r" hint-placeholder-count="0">
+            <div onClick="{{ r.watch }}" style="padding:10px 6px;border-bottom:1px solid #F2F4F6;cursor:{{ r.cursor }};border-radius:10px" style-hover="background:#F9FAFB">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:{{ r.tagBg }};color:{{ r.tagFg }}">{{ r.tag }}</span><span style="font-size:12px;color:#8B95A1">{{ r.game }} · {{ r.moves }}수</span></div>
+              <div style="font-size:14px;font-weight:600;margin-top:5px"><b style="color:{{ r.aC }}">{{ r.a }}</b> vs <b style="color:{{ r.bC }}">{{ r.b }}</b> <span style="color:#8B95A1;font-size:12px">{{ r.why }}</span></div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noResults }}" hint-placeholder-val="{{ true }}"><div style="padding:10px 6px;font-size:13px;color:#8B95A1">아직 대국 기록이 없어요</div></sc-if>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:18px 20px">
+        <div style="font-size:16px;font-weight:800;margin-bottom:6px">대국 랭킹</div>
+        <sc-for list="{{ board }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 0"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:{{ r.bg }}">{{ r.rank }}</span><span style="flex:1;font-weight:700;font-size:14px">{{ r.n }}</span><span style="font-size:13px;font-weight:700;color:#4E5968">{{ r.w }}승 {{ r.l }}패</span></div>
+        </sc-for>
+        <sc-if value="{{ noBoard }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#8B95A1">아직 기록이 없어요</div></sc-if>
+      </div>
+    </aside>
+  </main>
+</sc-if>
+
+<sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+  <main style="flex:1;width:100%;max-width:1180px;margin:0 auto;padding:16px 20px 72px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;align-content:flex-start;justify-content:center">
+    <div style="flex:0 1 600px;min-width:0;display:flex;flex-direction:column;gap:12px">
+      <sc-if value="{{ showRotate }}" hint-placeholder-val="{{ false }}"><div class="wj-rotate-bar" role="note"><span class="ic">📱</span><span>가로로 돌리면 판이 더 크게 보여요</span><button onClick="{{ dismissRotate }}">닫기</button></div></sc-if>
+      <div style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:{{ oppGlow }};transition:box-shadow .25s">
+        <div style="width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;overflow:hidden;white-space:nowrap;background:{{ oppSideBg }};color:{{ oppSideFg }};box-shadow:inset 0 0 0 2px #E5E8EB">{{ oppSide }}</div>
+        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">{{ oppName }}</div><div style="font-size:12px;color:#8B95A1">{{ oppExtra }}</div></div>
+        <div style="font-size:20px;font-weight:800;padding:6px 12px;border-radius:12px;background:{{ oppClockBg }};color:{{ oppClockFg }}">{{ oppClock }}</div>
+      </div>
+      <div style="padding:10px;border-radius:32px;background:{{ frameBg }};box-shadow:0 24px 60px rgba(0,27,55,.22),inset 0 1px 0 rgba(255,255,255,.18)">
+      <div ref="{{ boardRef }}" class="{{ boardClass }}" style="position:relative;width:100%;aspect-ratio:1;border-radius:24px;overflow:hidden;box-shadow:0 2px 0 rgba(255,255,255,.12),0 10px 24px rgba(0,0,0,.28)">
+        <canvas ref="{{ cvRef }}" onPointerDown="{{ pDown }}" onPointerMove="{{ pMove }}" onPointerUp="{{ pUp }}" onPointerCancel="{{ pUp }}" onPointerLeave="{{ pLeave }}" style="width:100%;height:100%;display:block;cursor:{{ cursor }};touch-action:none"></canvas>
+        <button onClick="{{ toggleFullscreen }}" aria-label="게임판 전체 화면" style="position:absolute;top:10px;right:10px;z-index:6;min-height:32px;border:0;border-radius:10px;background:rgba(25,31,40,.72);color:#fff;padding:0 11px;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)">{{ fsLabel }}</button>
+        <sc-if value="{{ ovWait }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;background:rgba(25,31,40,.86);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;backdrop-filter:blur(4px)">
+            <div style="font-size:12px;font-weight:700;letter-spacing:3px;color:#B0B8C1">WAITING</div>
+            <div style="font-size:clamp(22px,4vw,28px);font-weight:800">상대를 기다리는 중<span style="animation:wjdot 1.2s infinite">.</span><span style="animation:wjdot 1.2s .2s infinite">.</span><span style="animation:wjdot 1.2s .4s infinite">.</span></div>
+            <div style="font-size:14px;color:#D1D6DB;max-width:380px;line-height:1.6">{{ mDesc }}</div>
+            <div style="font-size:13px;font-weight:700;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.12)">판돈 {{ mStake }} · {{ mTurnLabel }}</div>
+            <button onClick="{{ copyInvite }}" style="height:42px;padding:0 16px;border:0;border-radius:12px;background:#3182F6;color:#fff;font-size:14px;font-weight:700;cursor:pointer">🔗 초대 링크 복사</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ ovResult }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;background:rgba(25,31,40,.82);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;animation:wjin .3s ease-out;backdrop-filter:blur(4px)">
+            <div style="font-size:clamp(44px,9vw,64px);font-weight:800;letter-spacing:-2px;color:{{ resColor }}">{{ resTitle }}</div>
+            <div style="font-size:22px;font-weight:800">{{ resAmount }}</div>
+            <div style="font-size:14px;color:#D1D6DB">{{ resWhy }}</div>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center">
+              <button onClick="{{ again }}" style="height:46px;padding:0 18px;border:0;border-radius:14px;background:#3182F6;color:#fff;font-size:15px;font-weight:700;cursor:pointer">{{ againLabel }}</button>
+              <button onClick="{{ viewBoard }}" style="height:46px;padding:0 16px;border:0;border-radius:14px;background:rgba(255,255,255,.15);color:#fff;font-size:15px;font-weight:700;cursor:pointer">판 보기</button>
+              <button onClick="{{ toLobby }}" style="height:46px;padding:0 16px;border:0;border-radius:14px;background:rgba(255,255,255,.15);color:#fff;font-size:15px;font-weight:700;cursor:pointer">로비로</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:{{ myGlow }};transition:box-shadow .25s">
+        <div style="width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:{{ mySideBg }};color:{{ mySideFg }};box-shadow:inset 0 0 0 2px #E5E8EB">{{ mySide }}</div>
+        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">{{ myName }} (나)</div><div style="font-size:12px;color:#8B95A1">{{ myExtra }}</div></div>
+        <div style="font-size:20px;font-weight:800;padding:6px 12px;border-radius:12px;background:{{ myClockBg }};color:{{ myClockFg }}">{{ myClock }}</div>
+      </div>
+    </div>
+
+    <aside style="flex:1 1 300px;max-width:380px;display:flex;flex-direction:column;gap:12px">
+      <div style="background:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;font-weight:700;padding:4px 9px;border-radius:7px;background:#F2F4F6;color:#4E5968">{{ mTag }}</span><span style="font-size:13px;color:#8B95A1">{{ moveN }}수째 · {{ mTurnLabel }}</span></div>
+        <div style="font-size:24px;font-weight:800;letter-spacing:-0.6px">{{ mName }}</div>
+        <div style="border-radius:16px;overflow:hidden;background:{{ turnBg }}">
+          <div style="padding:14px;text-align:center;font-size:17px;font-weight:800;color:{{ turnFg }}">{{ turnText }}</div>
+          <div style="height:4px;background:rgba(0,0,0,.06)"><div style="height:100%;width:{{ timePct }};background:{{ timeColor }};transition:width .25s linear"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:#8B95A1">이기면 받는 돈</span><b style="color:#F04452">{{ potStr }}</b></div>
+        <div style="font-size:13px;color:#6B7684;line-height:1.6">{{ mDesc }}</div>
+        <sc-if value="{{ mKeys }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#4E5968;background:#F9FAFB;border-radius:10px;padding:9px 11px">⌨️ {{ mKeys }}</div></sc-if>
+        <button onClick="{{ copyInvite }}" style="height:42px;border:0;border-radius:12px;background:#E8F3FF;color:#3182F6;font-size:14px;font-weight:700;cursor:pointer">🔗 친구 초대 · 관전 링크 복사</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button onClick="{{ resign }}" style="height:44px;border:0;border-radius:12px;background:#FFF0F2;color:#F04452;font-size:14px;font-weight:700;cursor:pointer">{{ resignLabel }}</button>
+          <button onClick="{{ leave }}" style="height:44px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:14px;font-weight:700;cursor:pointer">{{ leaveLabel }}</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:15px;font-weight:800">대국 채팅</div>
+        <div style="display:flex;flex-direction:column;gap:6px;max-height:180px;min-height:40px;overflow-y:auto">
+          <sc-for list="{{ chat }}" as="c" hint-placeholder-count="0"><div style="font-size:13px;padding:7px 10px;border-radius:12px;max-width:85%;word-break:break-word;align-self:{{ c.al }};background:{{ c.bg }};color:{{ c.fg }}"><b>{{ c.n }}</b> {{ c.t }}</div></sc-for>
+          <sc-if value="{{ noChat }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px;color:#B0B8C1">아직 대화가 없어요</div></sc-if>
+        </div>
+        <sc-if value="{{ canChat }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ emotes }}" as="e" hint-placeholder-count="6"><button onClick="{{ e.send }}" style="height:32px;min-height:32px;padding:0 11px;border:0;border-radius:999px;background:#F2F4F6;color:#333D4B;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#E8F3FF;color:#3182F6">{{ e.t }}</button></sc-for>
+          </div>
+          <div style="display:flex;gap:6px">
+            <input value="{{ chatText }}" onInput="{{ setChatText }}" onKeyDown="{{ chatKey }}" maxlength="40" placeholder="메시지 입력 (40자)" style="flex:1;min-width:0;height:40px;border:0;border-radius:10px;background:#F2F4F6;color:#191F28;padding:0 12px;font-size:14px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+            <button onClick="{{ sendChat }}" style="flex:none;height:40px;padding:0 14px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-size:14px;font-weight:700;cursor:pointer">보내기</button>
+          </div>
+        </sc-if>
+      </div>
+    </aside>
+  </main>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", BL = "#3182F6", MU = "#8B95A1", INK = "#191F28";
+const STAKES = [[0, "친선 대국", "돈 안 걸고"], [10000, "1만준", ""], [50000, "5만준", ""], [100000, "10만준", ""], [500000, "50만준", ""], [1000000, "100만준", "고수방"]];
+const EMO = ["좋은 수!", "잘 부탁해요", "고민 중…", "아차", "한 판 더?", "GG"];
+const POPULAR = ["uno", "minigolf", "pool", "chicken", "cucaracha", "yut", "marble", "omok", "janggi", "baduk", "chess", "indian", "baseball", "battleship", "marbles", "halligalli", "rummikub", "othello"];
+const QUICK = new Set(["uno", "minigolf", "marbles", "neon4", "race21", "halligalli", "kebab", "blackjack", "memory", "mines", "bingo", "indian", "baseball", "chicken", "cucaracha"]);
+const LIGHT = c => c === "#FFFFFF" || c === "#E5E8EB" || c === "#FFC342";
+
+class Component extends DCLogic {
+  state = { v: 0, stakeOpen: false, user: null, online: 1, tables: {}, bstats: {}, favorites: [], stake: 10000, category: "popular", gq: "", focus: "", msg: "", view: "lobby", room: null, R: null, sel: -1, hover: -1, hideRes: false, rotateOff: false, pseudoFs: false, chatText: "" };
+  cvRef = React.createRef(); boardRef = React.createRef(); off = 0;
+
+  toggleFullscreen = () => {
+    const el = this.boardRef.current; if (!el) return;
+    if (this.state.pseudoFs) { this.setState({ pseudoFs: false }); return; }
+    if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); try { screen.orientation.unlock(); } catch (_) {} return; }
+    if (el.requestFullscreen) {
+      el.requestFullscreen().then(() => { try { screen.orientation.lock("landscape").catch(() => {}); } catch (_) {} }).catch(() => this.setState({ pseudoFs: true }));
+    } else this.setState({ pseudoFs: true });
+  };
+  async componentDidMount() {
+    while (!window.WJ || !window.BG) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady;
+    const params = new URLSearchParams(location.search);
+    const uid = WJ.uid(); if (!uid) { const room = params.get("room"); if (room && /^[-0-9A-Z_a-z]{20}$/.test(room)) location.href = "index.html?return=" + encodeURIComponent("games.dc.html?room=" + room); else WJ.requireUser(); return; } this.uid = uid;
+    try { const saved = JSON.parse(localStorage.getItem("wj-game-favorites-" + uid) || "[]"); if (Array.isArray(saved)) this.setState({ favorites: saved.filter(id => BG.GAMES.some(g => g.id === id)) }); } catch (_) {}
+    try { this.setState({ rotateOff: localStorage.getItem("wj_rotate_off") === "1", stake: +(localStorage.getItem("wj_stake") ?? 10000) }); } catch (_) {}
+    if (!STAKES.some(s => s[0] === this.state.stake)) this.setState({ stake: 10000 });
+    const db = await WJ.ready; this.db = db; WJ.presence(uid);
+    this.subs = [
+      [db.ref(".info/serverTimeOffset"), s => { this.off = s.val() || 0; }],
+      [db.ref("users/" + uid), s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); this.setState({ user: u }); }],
+      [db.ref("online"), s => this.setState({ online: Math.max(1, WJ.onlineCount(s.val())) })],
+      [db.ref("tables").orderByChild("ts").limitToLast(80), s => { this.setState({ tables: s.val() || {} }); this.sweep(); }],
+      [db.ref("tstats"), s => this.setState({ bstats: s.val() || {} })]
+    ];
+    this.subs.forEach(([r, f]) => r.on("value", f));
+    this.iv = setInterval(() => { if (this.state.view === "match") { this.tickMatch(); this.bump(); } }, 250);
+    this.kd = e => {
+      if (e.key === "Escape" && this.state.pseudoFs) { this.setState({ pseudoFs: false }); return; }
+      const R = this.state.R; if (this.state.view !== "match" || !R || R.st !== "play") return; const g = this.gdef(R.g); if (!g.key || /INPUT|TEXTAREA/.test(e.target.tagName)) return; const mi = this.meIdx(R); if (R.h !== this.uid && R.gu !== this.uid) return; const r = g.key(this.S, e.code, { me: mi, myTurn: this.myTurn(), ui: this.ui || (this.ui = {}) }); if (r) { e.preventDefault(); if (r.move != null) this.play(r.move); else WJ.sfx("click"); } };
+    window.addEventListener("keydown", this.kd);
+    this.slow = setInterval(() => this.state.view === "lobby" && this.bump(), 4000);
+    const focus = params.get("focus");
+    if (focus && this.gdef(focus) && !params.get("room")) {
+      this.setState({ category: "all", focus }, () => setTimeout(() => { const el = document.getElementById("game-" + focus); el && el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 350));
+      setTimeout(() => this.setState({ focus: "" }), 3800);
+      try { const url = new URL(location.href); url.searchParams.delete("focus"); history.replaceState(null, "", url); } catch (_) {}
+    }
+    this.openLinkedRoom();
+    this.bump();
+  }
+  componentWillUnmount() { this.unmounted = true; (this.subs || []).forEach(([r]) => r.off()); this.roomRef && this.roomRef.off(); clearInterval(this.iv); clearInterval(this.slow); cancelAnimationFrame(this.raf); window.removeEventListener("keydown", this.kd); }
+  bump() { this.setState({ v: this.state.v + 1 }); }
+  now() { return Date.now() + this.off; }
+  name() { return (this.state.user && this.state.user.name) || "익명"; }
+  gdef(id) { return BG.GAMES.find(g => g.id === id); }
+  tsec(g) { return (g && g.turnSec) || BG.TURN; }
+  turnLabel(g) { const t = this.tsec(g); return t >= 900 ? "시간 제한 없음" : "한 수 " + t + "초"; }
+  say(m) { if (window.WJUI) WJUI.toast(m, { icon: "🎲" }); }
+  toggleFavorite(id) { this.setState(s => { const favorites = s.favorites.includes(id) ? s.favorites.filter(x => x !== id) : s.favorites.concat(id); try { localStorage.setItem("wj-game-favorites-" + this.uid, JSON.stringify(favorites)); } catch (_) {} return { favorites }; }); WJ.sfx("click"); }
+  roomUrl(id = this.state.room) { const url = new URL(location.href); if (id) url.searchParams.set("room", id); else url.searchParams.delete("room"); return url; }
+  setRoomUrl(id) { try { history.replaceState(null, "", this.roomUrl(id)); } catch (_) {} }
+  copyInvite = async () => { if (!this.state.room) return; const url = this.roomUrl().href; try { await navigator.clipboard.writeText(url); window.WJUI ? WJUI.toast("초대 링크를 복사했어요", { icon: "🔗" }) : this.say("초대 링크를 복사했어요"); WJ.sfx("click"); } catch (_) { window.prompt("초대 링크를 복사해 친구에게 보내세요", url); } };
+  async openLinkedRoom() {
+    const id = new URLSearchParams(location.search).get("room"); if (!id) return;
+    if (!/^[-0-9A-Z_a-z]{20}$/.test(id)) { this.setRoomUrl(null); this.say("초대 링크가 올바르지 않아요"); return; }
+    try {
+      const snap = await this.db.ref("tables/" + id).once("value"), room = snap.val();
+      if (!room || room.st === "done" || (room.st === "wait" && this.now() - (room.ts || 0) > 600000)) { this.setRoomUrl(null); this.say("종료되었거나 만료된 대국이에요"); return; }
+      if (!this.gdef(room.g)) { this.setRoomUrl(null); this.say("지원하지 않는 게임이에요"); return; }
+      if (room.st === "wait" && room.h !== this.uid && !(await this.joinRoom(id, room))) { this.setRoomUrl(null); return; }
+      this.enterRoom(id);
+    } catch (_) { this.setRoomUrl(null); this.say("초대방을 불러오지 못했어요"); }
+  }
+  replay(R) { const g = this.gdef(R.g); let s = g.init(R.seed); (R.m || []).forEach(m => { s = g.apply(s, m); }); return s; }
+  meIdx(R) { return R.p0 === this.uid ? 0 : 1; }
+
+  async createRoom(gid, stake, invite = false) {
+    if (stake > 0 && !(await WJ.addCash(this.uid, -stake))) { WJ.sfx("lose"); this.say("현금이 부족해요"); return null; }
+    try { const ref = this.db.ref("tables").push(); await ref.set({ g: gid, stake, h: this.uid, hn: this.name(), st: "wait", invite, ts: this.now() }); return ref.key; }
+    catch (_) { if (stake > 0) await WJ.addCash(this.uid, stake, true); this.say("대국을 만들지 못했어요"); return null; }
+  }
+  async joinRoom(id, linkedRoom = null) {
+    const r0 = linkedRoom || this.state.tables[id]; if (!r0 || r0.st !== "wait") return false; const stake = r0.stake || 0;
+    if (stake > 0 && await WJ.isLinked(this.uid, r0.h)) { WJ.sfx("lose"); this.say("같은 기기에서 쓴 계정끼리는 돈 걸린 대국을 할 수 없어요"); return false; }
+    if (stake > 0 && !(await WJ.addCash(this.uid, -stake))) { WJ.sfx("lose"); this.say("현금이 부족해요"); return false; }
+    const me = this.uid, nm = this.name(), now = this.now(), first = Math.random() < .5;
+    let res; try { res = await this.db.ref("tables/" + id).transaction(r => { if (!r || r.st !== "wait" || r.h === me) return; r.gu = me; r.gn = nm; r.st = "play"; r.p0 = first ? r.h : me; r.seed = Math.floor(Math.random() * 2e9); r.dl = now + ((BG.GAMES.find(q => q.id === r.g) || {}).turnSec || BG.TURN) * 1000 + 3000; r.m = []; return r; }); } catch (_) { if (stake > 0) await WJ.addCash(me, stake, true); this.say("대국 연결에 실패했어요"); return false; }
+    if (!res.committed) { if (stake > 0) await WJ.addCash(me, stake, true); this.say("이미 시작된 대국이에요"); return false; }
+    return true;
+  }
+  async match(gid) {
+    if (this.state.room) return; WJ.sfx("click"); window.WJUI && WJUI.askNotify();
+    const stake = this.state.stake, now = this.now(), T = this.state.tables;
+    const mine = Object.keys(T).find(k => T[k].st === "wait" && T[k].h === this.uid && T[k].g === gid);
+    if (mine) return this.enterRoom(mine);
+    const cand = Object.keys(T).filter(k => { const r = T[k]; return r.st === "wait" && !r.invite && r.h !== this.uid && r.g === gid && (r.stake || 0) === stake && now - r.ts < 600000; }).sort((a, b) => T[a].ts - T[b].ts);
+    for (const k of cand) if (await this.joinRoom(k)) return this.enterRoom(k);
+    const id = await this.createRoom(gid, stake); if (id) { WJ.sfx("coin"); this.enterRoom(id); }
+  }
+  async createInvite(gid) {
+    if (this.state.room) return; window.WJUI && WJUI.askNotify();
+    const own = Object.keys(this.state.tables).find(k => { const r = this.state.tables[k]; return r.st === "wait" && r.h === this.uid && r.g === gid; });
+    if (own) return this.enterRoom(own);
+    try { const id = await this.createRoom(gid, this.state.stake, true); if (id) { this.enterRoom(id); this.copyInvite(); } } catch (_) { this.say("초대방을 만들지 못했어요"); }
+  }
+  enterRoom(id) {
+    this.setRoomUrl(id);
+    this.roomRef && this.roomRef.off(); this.done = false; this.lastLen = -1; this.wasMyTurn = false;
+    this.roomRef = this.db.ref("tables/" + id);
+    this.roomRef.on("value", s => { const R = s.val(); if (R && R.st !== "wait") { const len = (R.m || []).length; if (this.lastLen >= 0 && len > this.lastLen) WJ.sfx("flip"); if (this.lastLen === -1 && R.st === "play") WJ.sfx("bell"); this.lastLen = len; const rk = id + ":" + R.seed; if (this.rpKey === rk && this.S && this.rpN <= len) { const gd = this.gdef(R.g); for (let k = this.rpN; k < len; k++) this.S = gd.apply(this.S, R.m[k]); } else this.S = this.replay(R); this.rpKey = rk; this.rpN = len; } else { this.rpKey = null; this.S = R ? this.gdef(R.g).init(R.seed) : null; } if (R && R.st === "play" && this.prevSt === "wait") { WJ.sfx("bell"); if (document.hidden && window.WJUI) { WJUI.blink("● 대국 시작!"); WJUI.notify("우준은행 보드게임", "상대가 들어왔어요. 대국이 시작됐어요!"); } } this.prevSt = R && R.st; this.setState({ R, sel: -1 }); });
+    this.setState({ view: "match", room: id, hideRes: false, chatText: "" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    let lastFrame = 0, lastStamp = ""; const loop = ts => { const rect = this.boardRef.current?.getBoundingClientRect(), visible = rect && rect.bottom > 0 && rect.top < innerHeight; if (!document.hidden && visible) { const drag = this.ui?.drag, stamp = [this.state.v, (this.state.R?.m || []).length, this.state.R?.st, this.state.sel, this.state.hover, this.state.pseudoFs, drag?.tx, drag?.ty, this.ui?.hovT].join("|"); const anim = (this.ui?.animUntil || 0) > Date.now(), gap = anim ? 14 : drag ? 16 : 80; if (ts - lastFrame >= gap && (anim || drag || stamp !== lastStamp)) { this.draw(); lastFrame = ts; lastStamp = stamp; } } this.raf = requestAnimationFrame(loop); }; cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(loop);
+  }
+  draw() {
+    const c = this.cvRef.current, R = this.state.R; if (!c || !R) return; const g = this.gdef(R.g), s = this.S || g.init(R.seed);
+    const size = Math.min(1120, Math.max(560, Math.round(c.getBoundingClientRect().width * Math.min(devicePixelRatio || 1, 2)))); if (c.width !== size) { c.width = size; c.height = size; } const x = c.getContext("2d"); x.setTransform(size / BG.S, 0, 0, size / BG.S, 0, 0); x.clearRect(0, 0, BG.S, BG.S);
+    const me = R.st === "wait" ? 0 : this.meIdx(R); if (!this.ui || this.uiRoom !== this.state.room) { this.ui = {}; this.uiRoom = this.state.room; } g.draw(x, s, { me, sel: this.state.sel, hover: this.state.hover, myTurn: this.myTurn(), ui: this.ui });
+  }
+  isPlayer(R) { return !!R && (R.h === this.uid || R.gu === this.uid); }
+  myTurn() { const R = this.state.R; if (!R || R.st !== "play" || !this.S || !this.isPlayer(R)) return false; return this.gdef(R.g).turn(this.S) === this.meIdx(R); }
+  pt(e) { const r = e.currentTarget.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * BG.S, (e.clientY - r.top) / r.height * BG.S]; }
+  async play(m) {
+    const R = this.state.R, id = this.state.room, g = this.gdef(R.g), len = (R.m || []).length, me = this.uid, now = this.now();
+    let paid = null;
+    const res = await this.db.ref("tables/" + id).transaction(r => { paid = null; if (!r || r.st !== "play" || (r.m || []).length !== len) return; let s = g.init(r.seed); (r.m || []).forEach(mm => { s = g.apply(s, mm); }); const mi = r.p0 === me ? 0 : 1, turnUid = g.turn(s) === 0 ? r.p0 : (r.p0 === r.h ? r.gu : r.h); const isFree = g.free && g.free(s, m, mi); if (turnUid !== me && !isFree) return; const next = g.apply(s, m); if (next === s) return; s = next; r.m = (r.m || []).concat([m]); if (!isFree || g.turnSec >= 900) r.dl = now + (g.turnSec || BG.TURN) * 1000;
+      let res2 = g.result(s); while (!res2) { const L = g.legal(s); if (L.length === 1 && L[0] === "pass") { s = g.apply(s, "pass"); r.m.push("pass"); res2 = g.result(s); } else break; }
+      if (res2) { r.st = "done"; r.why = res2.why; r.win = res2.w === -1 ? "draw" : res2.w === 0 ? r.p0 : (r.p0 === r.h ? r.gu : r.h); r.fin = now; paid = Object.assign({}, r); } return r; });
+    if (res.committed) { WJ.sfx(m && m.a === "ring" ? "bell" : "click"); if (paid) this.payout(paid); }
+  }
+  // 보드게임 승리 보너스: 판돈 걸린 대국은 판돈의 20%, 친선 대국은 5,000준 (하루 10번). 은행이 따로 준다.
+  async winBonus(id, r, st) {
+    if (!id || r.win !== this.uid || ((r.m || []).length < 4)) return;
+    if (await WJ.isLinked(r.h, r.gu)) return;
+    const claim = await this.db.ref("tables/" + id + "/bonus").transaction(v => v ? undefined : this.uid).catch(() => ({ committed: false }));
+    if (!claim.committed) return;
+    const day = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10), mul = await WJ.boost(this.uid).catch(() => 1), bonus = Math.round((st ? Math.floor(st * 0.2) : 5000) * mul / 100) * 100; let ok = false;
+    const res = await this.db.ref("users/" + this.uid).transaction(u => { if (!u) return u; const b = u.gbonus && u.gbonus.day === day ? u.gbonus : { day, n: 0 }; if (!st && b.n >= 10) { ok = false; return; } ok = true; if (!st) b.n++; u.gbonus = b; u.cash = (u.cash || 0) + bonus; return u; });
+    if (res.committed && ok) { WJ.log(this.uid, "game", { text: this.gdef(r.g).name + " 승리 보너스", amount: bonus }); window.WJUI && WJUI.toast("<b>승리 보너스 +" + WJ.fmt(bonus) + "준</b>" + (st ? " · 판돈 대국" : " · 친선 대국"), { icon: "🏆", html: true, ms: 4200 }); }
+  }
+  async finish(id, kind) {
+    const me = this.uid, now = this.now(); let paid = null;
+    const res = await this.db.ref("tables/" + id).transaction(r => { paid = null; if (!r || r.st !== "play") return; const g = this.gdef(r.g); let s = g.init(r.seed); (r.m || []).forEach(mm => { s = g.apply(s, mm); }); const other = u => u === r.h ? r.gu : r.h;
+      if (kind === "resign") { r.win = other(me); r.why = "기권"; } else { if (now < (r.dl || 0) + 1500) return; const turnUid = g.turn(s) === 0 ? r.p0 : other(r.p0); r.win = other(turnUid); r.why = "시간 초과"; }
+      r.st = "done"; r.fin = now; paid = Object.assign({}, r); return r; });
+    if (res.committed && paid) this.payout(paid);
+  }
+  async payout(r) {
+    const st = r.stake || 0;
+    if (st > 0) { if (r.win === "draw") { await WJ.addCash(r.h, st, true); await WJ.addCash(r.gu, st, true); } else { await WJ.addCash(r.win, st * 2, true); WJ.log(r.win, "game", { text: this.gdef(r.g).name + " 대국 승리", amount: st }); WJ.log(r.win === r.h ? r.gu : r.h, "game", { text: this.gdef(r.g).name + " 대국 패배", amount: -st }); } }
+    [[r.h, r.hn], [r.gu, r.gn]].forEach(([u, n]) => this.db.ref("tstats/" + u).transaction(s => { s = s || { w: 0, l: 0, d: 0, earn: 0 }; s.n = n; if (r.win === "draw") s.d++; else if (r.win === u) { s.w++; s.earn += st; } else { s.l++; s.earn -= st; } return s; }));
+  }
+  tickMatch() {
+    const R = this.state.R; if (!R) return;
+    if (R.st === "play" && this.now() > (R.dl || 0) + 1500) this.finish(this.state.room, "timeout");
+    const mt = this.myTurn();
+    if (mt && !this.wasMyTurn && document.hidden && window.WJUI) { WJUI.blink("● 내 차례!"); WJUI.notify("우준은행 보드게임", this.gdef(R.g).name + " · 내 차례예요!"); }
+    this.wasMyTurn = mt;
+    if (R.st === "done" && !this.done) { this.done = true; const win = R.win === this.uid; if (win) { WJ.sfx("win"); this.winBonus(this.state.room, R, R.stake || 0); } else if (R.win !== "draw" && this.isPlayer(R)) WJ.sfx("lose"); }
+  }
+  sweep() { const now = this.now(), T = this.state.tables; Object.keys(T).forEach(k => { const r = T[k]; if (r.st === "play" && now > (r.dl || 0) + 10000) this.finish(k, "timeout"); if (r.st === "wait" && r.h === this.uid && now - r.ts > 600000 && k !== this.state.room) this.cancel(k, r); }); }
+  async cancel(id, r) { const res = await this.db.ref("tables/" + id).transaction(x => { if (!x || x.st !== "wait") return; return null; }); if (res.committed && (r.stake || 0) > 0) await WJ.addCash(r.h, r.stake, true); }
+  async leave() {
+    const R = this.state.R, id = this.state.room;
+    if (R && R.st === "wait" && R.h === this.uid) { await this.cancel(id, R); this.say("대기를 취소하고 판돈을 돌려받았어요"); }
+    else if (R && R.st === "play" && this.isPlayer(R)) { if (!confirm("나가면 기권 처리돼요. 나갈까요?")) return; await this.finish(id, "resign"); }
+    this.roomRef && this.roomRef.off(); this.roomRef = null; cancelAnimationFrame(this.raf); this.setState({ view: "lobby", room: null, R: null, pseudoFs: false });
+    this.setRoomUrl(null);
+  }
+  sendChat = (text) => {
+    const t = String(typeof text === "string" ? text : this.state.chatText).trim().slice(0, 40); if (!t || !this.roomRef) return;
+    const now = Date.now(); if (now - (this.lastChat || 0) < 1200) { window.WJUI && WJUI.toast("천천히 보내 주세요", { icon: "⏳" }); return; }
+    this.lastChat = now; this.roomRef.child("chat").push({ u: this.uid, n: this.name(), t, ts: this.now() });
+    if (typeof text !== "string") this.setState({ chatText: "" });
+  };
+
+  renderVals() {
+    const st = this.state, W = window.WJ, B = window.BG, u = st.user || {}, F = n => W ? W.fmt(n) : String(n || 0), now = this.now();
+    const games = B ? B.GAMES.slice().sort((a, b) => { const x = POPULAR.indexOf(a.id), y = POPULAR.indexOf(b.id); return (x < 0 ? 99 : x) - (y < 0 ? 99 : y); }) : [], T = st.tables, keys = Object.keys(T).sort((a, b) => (T[b].ts || 0) - (T[a].ts || 0));
+    const q = st.gq.trim();
+    let shown = q ? games : st.category === "all" ? games : st.category === "strategy" ? games.filter(g => ["전략", "두뇌", "추리", "전통"].includes(g.tag)) : st.category === "quick" ? games.filter(g => QUICK.has(g.id)) : st.category === "favorite" ? games.filter(g => st.favorites.includes(g.id)) : games.filter(g => POPULAR.includes(g.id));
+    if (q) shown = shown.filter(g => (g.name + " " + g.tag).includes(q));
+    const waitK = keys.filter(k => T[k].st === "wait" && !T[k].invite && now - T[k].ts < 600000), ownWaitK = keys.filter(k => T[k].st === "wait" && T[k].invite && T[k].h === this.uid && now - T[k].ts < 600000), visibleWaitK = waitK.concat(ownWaitK), stakeL = s => s ? F(s) + "준" : "친선";
+    const my = st.bstats[this.uid] || { w: 0, l: 0, d: 0, earn: 0 }, tot = my.w + my.l + (my.d || 0);
+    const out = {
+      onlineLabel: st.online + "명 접속 중", cashStr: F(u.cash), waitingN: visibleWaitK.length, myName: this.name(), isLobby: st.view === "lobby", isMatch: st.view === "match", msg: st.view === "lobby" ? st.msg : "",
+      logout: () => W && W.logout(),
+      stakeLabel: (STAKES.find(s => s[0] === st.stake) || STAKES[1])[1], stakeCaret: st.stakeOpen ? "▲" : "▼", stakeOpen: !!st.stakeOpen,
+      toggleStake: () => this.setState({ stakeOpen: !st.stakeOpen }), closeStake: () => this.setState({ stakeOpen: false }),
+      stakeItems: STAKES.map(([v, l, sub]) => ({ label: l, sub, color: v === st.stake ? BL : INK, bg: v === st.stake ? "#E8F3FF" : "transparent", pick: () => { WJ.sfx("click"); try { localStorage.setItem("wj_stake", v); } catch (_) {} this.setState({ stake: v, stakeOpen: false }); } })),
+      filters: [["popular", "추천"], ["all", "전체 " + games.length], ["favorite", "★ 즐겨찾기 " + st.favorites.length], ["strategy", "전략·두뇌"], ["quick", "빠른 게임"]].map(([id, label]) => ({ label, bg: st.category === id && !q ? "#E8F3FF" : "transparent", fg: st.category === id && !q ? BL : MU, pick: () => this.setState({ category: id, gq: "" }) })),
+      gq: st.gq, setGq: e => this.setState({ gq: e.target.value }),
+      noFavorites: !q && st.category === "favorite" && st.favorites.length === 0, noSearch: !!q && shown.length === 0, pickPopular: () => this.setState({ category: "popular" }),
+      cards: shown.map((g, idx) => { const w = waitK.filter(k => T[k].g === g.id && T[k].h !== this.uid).length, mine = visibleWaitK.some(k => T[k].g === g.id && T[k].h === this.uid), favorite = st.favorites.includes(g.id), live = keys.filter(k => T[k].g === g.id && T[k].st === "play").length;
+        return { anchor: "game-" + g.id, cls: "wj-gcard" + (st.focus === g.id ? " wj-focus" : ""), name: g.name, tag: g.tag, desc: g.desc, tint: (g.color || "#3182F6") + "1F", thumbSrc: B.thumb ? B.thumb(g.id) : "", tintBg: g.color || "#3182F6", waiting: w,
+          meta: this.turnLabel(g) + (live ? " · 진행 중 " + live + "판" : ""), btn: mine ? "내 대기방으로" : w ? "바로 대국 · " + w + "명 대기" : "대국 시작", btnBg: mine ? "#F2F4F6" : w ? UP : BL, btnFg: mine ? INK : "#fff", ring: w ? "0 0 0 2px #F04452" : "none",
+          favoriteIcon: favorite ? "★" : "☆", favoriteLabel: favorite ? g.name + " 즐겨찾기 해제" : g.name + " 즐겨찾기", favoriteColor: favorite ? "#FFB020" : "#B0B8C1", favorite: () => this.toggleFavorite(g.id), invite: () => this.createInvite(g.id), match: () => this.match(g.id) }; }),
+      lobbyStats: [{ label: "게임", value: games.length + "종", sub: "전략·순발력·캐주얼", color: INK }, { label: "대기 중인 방", value: waitK.length + "개", sub: "눌러서 바로 참가", color: BL }, { label: "진행 중 대국", value: keys.filter(k => T[k].st === "play").length + "판", sub: "실시간 관전 가능", color: UP }],
+      myW: my.w, myL: my.l, myRate: tot ? "승률 " + Math.round(my.w / tot * 100) + "%" : "첫 대국을 해보세요", myRateW: (tot ? Math.round(my.w / tot * 100) : 0) + "%", myEarn: (my.earn >= 0 ? "+" : "") + F(my.earn) + "준", myEarnColor: my.earn >= 0 ? UP : BL,
+      waiting: visibleWaitK.slice(0, 20).map(k => { const r = T[k], mine = r.h === this.uid, gd = this.gdef(r.g); return { game: gd ? gd.name : r.g, host: r.hn, stake: stakeL(r.stake), btn: mine ? "내 방" : "참가", bg: mine ? "#F2F4F6" : BL, fg: mine ? MU : "#fff", join: async () => { if (mine) return this.enterRoom(k); if (await this.joinRoom(k)) this.enterRoom(k); } }; }),
+      noWaiting: visibleWaitK.length === 0,
+      results: keys.filter(k => T[k].st !== "wait").slice(0, 20).map(k => { const r = T[k], gd = this.gdef(r.g), live = r.st === "play"; return { tag: live ? "LIVE" : stakeL(r.stake), tagBg: live ? "#FFF0F2" : "#F2F4F6", tagFg: live ? UP : "#4E5968", game: gd ? gd.name : "", moves: (r.m || []).length, a: r.hn, b: r.gn || "?", aC: r.win === r.h ? UP : INK, bC: r.win === r.gu ? UP : INK, why: live ? "대국 중 · 눌러서 관전" : r.why || "", cursor: live ? "pointer" : "default", watch: () => live && this.enterRoom(k) }; }),
+      noResults: !keys.some(k => T[k].st !== "wait"),
+      board: Object.keys(st.bstats).map(k => st.bstats[k]).sort((a, b) => b.w - a.w || b.earn - a.earn).slice(0, 8).map((s, i) => ({ rank: i + 1, n: s.n || "?", w: s.w, l: s.l, bg: ["#FFC342", "#B0B8C1", "#D9925B"][i] || MU })),
+      noBoard: Object.keys(st.bstats).length === 0, cvRef: this.cvRef, boardRef: this.boardRef, toggleFullscreen: this.toggleFullscreen, copyInvite: this.copyInvite
+    };
+    Object.assign(out, {
+      showRotate: false, dismissRotate: () => { try { localStorage.setItem("wj_rotate_off", "1"); } catch (_) {} this.setState({ rotateOff: true }); },
+      frameBg: "#191F28", boardClass: "wj-board" + (st.pseudoFs ? " wj-pseudo-fs" : ""), fsLabel: st.pseudoFs ? "✕ 닫기" : "⛶ 전체 화면",
+      oppGlow: "none", oppSideBg: "#F2F4F6", oppSideFg: INK, oppSide: "", oppName: "", oppExtra: "",
+      oppClockBg: "#F2F4F6", oppClockFg: MU, oppClock: "—", pDown: () => {}, pMove: () => {}, pUp: () => {}, pLeave: () => {},
+      cursor: "default", ovWait: false, mDesc: "", mStake: "", mTurnLabel: "", mKeys: "", ovResult: false, resColor: "#fff", resTitle: "", resAmount: "", resWhy: "",
+      againLabel: "한 판 더", again: () => {}, viewBoard: () => {}, toLobby: () => {}, myGlow: "none", mySideBg: "#F2F4F6", mySideFg: INK, mySide: "",
+      myExtra: "", myClockBg: "#F2F4F6", myClockFg: MU, myClock: "—", mTag: "", moveN: 0, mName: "", turnBg: "#F2F4F6",
+      turnFg: INK, turnText: "", timePct: "0%", timeColor: BL, potStr: "", resign: () => {}, resignLabel: "", leave: () => {}, leaveLabel: "", emotes: [], chat: [], noChat: true, canChat: false,
+      chatText: st.chatText, setChatText: e => this.setState({ chatText: e.target.value }), chatKey: e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) { e.preventDefault(); this.sendChat(); } }, sendChat: () => this.sendChat()
+    });
+    if (st.view !== "match") return out;
+    const R = st.R; if (!R) return Object.assign(out, { ovResult: true, resTitle: "대국이 닫혔어요", again: () => this.leave(), toLobby: () => this.leave(), leave: () => this.leave(), resignLabel: "—", leaveLabel: "로비로" });
+    const g = this.gdef(R.g), s = this.S || g.init(R.seed), player = this.isPlayer(R), mi = R.st === "wait" ? 0 : this.meIdx(R), oi = 1 - mi;
+    const myUid = this.uid, oppN = R.h === myUid ? (R.gn || "상대 대기 중") : R.hn;
+    const tsec = this.tsec(g), noLimit = tsec >= 900;
+    const turnI = R.st === "play" ? g.turn(s) : -1, myT = R.st === "play" && turnI === mi && player;
+    const left = R.st === "play" ? Math.max(0, Math.ceil(((R.dl || 0) - now) / 1000)) : tsec;
+    const ex = g.extra ? g.extra(s) : ["", ""], done = R.st === "done", win = R.win === myUid, draw = R.win === "draw", stake = R.stake || 0;
+    const urgent = !noLimit && left <= 10;
+    const clock = on => ({ t: on ? (noLimit ? "자유" : left + "초") : "—", bg: on ? (urgent ? "#FFF0F2" : "#E8F3FF") : "#F2F4F6", fg: on ? (urgent ? UP : BL) : MU });
+    const mc = clock(R.st === "play" && turnI === mi), oc = clock(R.st === "play" && turnI === oi);
+    const chat = Object.values(R.chat || {}).slice(-20).map(c => ({ n: c.u === myUid ? "나" : c.n, t: c.t, al: c.u === myUid ? "flex-end" : "flex-start", bg: c.u === myUid ? "#E8F3FF" : "#F2F4F6", fg: c.u === myUid ? BL : INK }));
+    const isPortraitPhone = typeof innerWidth === "number" && innerWidth <= 600 && innerHeight > innerWidth;
+    return Object.assign(out, {
+      showRotate: R.st === "play" && player && !st.rotateOff && !st.pseudoFs && isPortraitPhone,
+      boardClass: "wj-board" + (myT && !st.pseudoFs ? " wj-mine" : "") + (st.pseudoFs ? " wj-pseudo-fs" : ""),
+      frameBg: "#2A2520", mName: g.name, mTag: g.tag, mDesc: g.desc, mKeys: g.keys || "", mStake: stakeL(stake), mTurnLabel: this.turnLabel(g), moveN: (R.m || []).length,
+      mySide: g.sides[mi], mySideBg: g.sideColor[mi], mySideFg: LIGHT(g.sideColor[mi]) ? INK : "#fff", myExtra: g.sides[mi] + (ex[mi] ? " · " + ex[mi] : ""),
+      oppSide: [...String(g.sides[oi] || "")][0] || "", oppSideBg: g.sideColor[oi], oppSideFg: LIGHT(g.sideColor[oi]) ? INK : "#fff", oppName: oppN, oppExtra: R.st === "wait" ? "매칭 대기" : g.sides[oi] + (ex[oi] ? " · " + ex[oi] : ""),
+      myClock: mc.t, myClockBg: mc.bg, myClockFg: mc.fg, oppClock: oc.t, oppClockBg: oc.bg, oppClockFg: oc.fg,
+      myGlow: myT ? "0 0 0 3px #3182F6" : "none", oppGlow: R.st === "play" && turnI === oi ? "0 0 0 3px #F04452" : "none",
+      turnText: R.st === "wait" ? "상대를 기다리는 중" : done ? (draw ? "무승부" : win ? "승리!" : player ? "패배" : "대국 종료") : !player ? "관전 중" : myT ? "내 차례" + (noLimit ? "" : " · " + left + "초") : "상대 차례",
+      turnBg: myT ? BL : done ? (win ? "#FFF0F2" : "#F2F4F6") : "#F2F4F6", turnFg: myT ? "#fff" : done && win ? UP : INK,
+      timePct: R.st === "play" && !noLimit ? Math.max(0, Math.min(100, left / tsec * 100)).toFixed(1) + "%" : R.st === "play" ? "100%" : "0%",
+      timeColor: myT ? (urgent ? "#FFC342" : "rgba(255,255,255,.85)") : urgent ? UP : "#B0B8C1",
+      potStr: stake ? F(stake * 2) + "준" : "친선",
+      cursor: myT ? "pointer" : "default",
+      pDown: e => { if (R.st !== "play" || !player || (!myT && !g.anyTime && !g.ui)) return; const [X, Y] = this.pt(e), ui = this.ui || (this.ui = {}); if (g.dragStart) { const i = g.dragStart(s, X, Y, { me: mi, ui }); if (i != null) { ui.drag = { i, x: X, y: Y, tx: X, ty: Y }; e.currentTarget.setPointerCapture?.(e.pointerId); } return; } const r = g.hit(s, X, Y, { me: mi, sel: st.sel, myTurn: myT, ui }); if (!r) return; if (r.move != null) { this.setState({ sel: -1 }); this.play(r.move); } else if (r.sel != null) { WJ.sfx("click"); this.setState({ sel: r.sel }); } else if (r.ui) WJ.sfx("click"); },
+      pMove: e => { const [X, Y] = this.pt(e); if (this.ui?.drag) { this.ui.drag.tx = X; this.ui.drag.ty = Y; return; } if (!g.hover) return; const h = g.hover(s, X, Y, { me: mi }); if (g.aimHover) { (this.ui || (this.ui = {})).hovT = h; return; } if (h !== st.hover) this.setState({ hover: h }); },
+      pUp: e => { if (!g.dragEnd || !this.ui?.drag) return; const [X, Y] = this.pt(e), m = g.dragEnd(s, X, Y, { me: mi, ui: this.ui }); this.ui.drag = null; if (m) this.play(m); },
+      pLeave: () => { if (!this.ui?.drag) this.setState({ hover: -1 }); },
+      ovWait: R.st === "wait", ovResult: done && !st.hideRes,
+      resTitle: draw ? "무승부" : win ? "승리!" : player ? "패배" : "대국 종료", resColor: win ? "#FF8A9A" : draw ? "#fff" : "#8EC0FF",
+      resAmount: !player ? (R.win === R.h ? R.hn : R.gn) + " 승리" : R.tid ? "토너먼트 " + (R.tr || "") + (win ? " 승리 · 다음 라운드로" : draw ? " 무승부 · 재경기" : " 탈락") : stake ? (win ? "+" + F(stake * 2) + "준" : draw ? "판돈 환불" : "-" + F(stake) + "준") : "친선 대국", resWhy: R.why || "",
+      againLabel: R.tid ? "대진표 보기" : "한 판 더", again: () => { if (R.tid) { location.href = "tournament.dc.html"; return; } const gg = R.g; this.roomRef && this.roomRef.off(); this.roomRef = null; this.setState({ room: null, R: null, view: "lobby", pseudoFs: false }, () => this.match(gg)); },
+      viewBoard: () => this.setState({ hideRes: true }), toLobby: () => this.leave(), leave: () => this.leave(),
+      resign: () => { if (R.st === "play" && player && confirm("기권할까요?")) this.finish(this.state.room, "resign"); }, resignLabel: R.st === "play" && player ? "기권" : "—", leaveLabel: R.st === "wait" ? "대기 취소" : done || !player ? "로비로" : "나가기",
+      emotes: player ? EMO.map(t => ({ t, send: () => this.sendChat(t) })) : [], chat, noChat: chat.length === 0, canChat: player
+    });
+  }
+}
+</script>
+</body>
+</html>

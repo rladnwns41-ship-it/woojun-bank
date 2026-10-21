@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우준은행 · 거래소</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%233182F6%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3EW%3C/text%3E%3C/svg%3E">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<script src="company-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*::-webkit-scrollbar-thumb:hover{background:#B0B8C1}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wjpop{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}18%{transform:translate(-50%,-50%) scale(1.04);opacity:1}30%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(.96);opacity:0}}
+@keyframes wjblink{50%{opacity:.3}}
+@keyframes wjslide{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wjshake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;animation:{{ shakeAnim }}">
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">{{ userName }}님 총자산</div><div style="font-weight:800;font-size:16px;color:{{ netColor }}">{{ netStr }}준</div></div>
+      <button onClick="{{ toggleMute }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600">{{ muteLabel }}</button>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+  <div style="background:#fff;border-bottom:1px solid #E5E8EB">
+    <div class="wj-livebar" style="max-width:1320px;margin:0 auto;height:48px;display:flex;align-items:center;gap:14px;padding:0 20px">
+      <div class="wj-live-label" style="flex:none;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#F04452"><span style="width:7px;height:7px;border-radius:50%;background:#F04452;animation:wjblink 2.5s infinite"></span>LIVE</div>
+      <div class="wj-headline" onClick="{{ headClick }}" key="{{ headKey }}" style="flex:none;max-width:42%;display:flex;align-items:center;gap:8px;cursor:pointer;animation:wjslide .35s ease-out;min-width:0">
+        <span style="flex:none;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:{{ headBg }};color:{{ headFg }}">{{ headTag }}</span>
+        <span class="wj-headline-text" style="font-size:15px;font-weight:700;color:#191F28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ headText }}</span>
+        <span style="flex:none;font-size:15px;font-weight:800;color:{{ headValColor }}">{{ headVal }}</span>
+      </div>
+      <div class="wj-livebar-divider" style="width:1px;height:20px;background:#E5E8EB;flex:none"></div>
+      <div class="wj-ticker-viewport" aria-label="실시간 속보 목록" style="flex:1;min-width:0;overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)">
+        <div class="wj-ticker-track" style="display:inline-flex;gap:28px;animation:wjmarq 900s linear infinite;padding-left:12px" style-hover="animation-play-state:paused">
+          <sc-for list="{{ ticker }}" as="t" hint-placeholder-count="20">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px"><span style="font-size:12px;font-weight:600;color:#8B95A1">{{ t.tag }}</span><span style="font-weight:600;color:#333D4B">{{ t.text }}</span><span style="font-weight:700;color:{{ t.color }}">{{ t.val }}</span></span>
+          </sc-for>
+        </div>
+      </div>
+      <a class="wj-online" href="games.dc.html" style="flex:none;display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700" style-hover="background:#E8F3FF;color:#3182F6"><span style="width:6px;height:6px;border-radius:50%;background:#00B76A"></span>{{ onlineN }}명 접속 중</a>
+    </div>
+  </div>
+  <main style="flex:1;width:100%;max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:14px;padding:14px 20px 40px;align-items:flex-start">
+    <section style="flex:1 1 290px;max-width:360px;min-width:270px;background:#fff;border-radius:22px;display:flex;flex-direction:column;height:calc(100vh - 128px);min-height:560px;position:sticky;top:74px">
+      <div style="padding:20px 18px 10px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:19px;font-weight:800">실시간 종목</div><div style="font-size:13px;color:#8B95A1">{{ listCount }}개</div></div>
+        <input value="{{ q }}" onInput="{{ setQ }}" placeholder="종목 검색" style="height:44px;border-radius:12px;border:0;background:#F2F4F6;color:#191F28;font-size:15px;padding:0 14px;outline:none">
+        <div style="display:flex;gap:8px">
+          <div style="position:relative;flex:1">
+            <button onClick="{{ toggleSector }}" style="width:100%;height:36px;border-radius:10px;border:1px solid #E5E8EB;background:#fff;color:#191F28;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer">{{ sector }}<span style="color:#8B95A1;font-size:10px">{{ sectorCaret }}</span></button>
+            <sc-if value="{{ sectorOpen }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ closeSector }}" style="position:fixed;inset:0;z-index:30"></div>
+              <div style="position:absolute;top:42px;left:0;width:220px;z-index:31;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,27,55,.16);max-height:320px;overflow-y:auto;padding:8px 6px;animation:wjslide .15s ease-out">
+                <sc-for list="{{ sectorItems }}" as="o" hint-placeholder-count="6">
+                  <div onClick="{{ o.pick }}" style="padding:11px 12px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;color:{{ o.color }};background:{{ o.bg }}" style-hover="background:#F2F4F6">{{ o.label }}<span style="color:#B0B8C1;font-size:13px">{{ o.n }}</span></div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="display:flex;background:#F2F4F6;border-radius:10px;padding:3px;gap:2px">
+              <sc-for list="{{ sorts }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="border:0;border-radius:8px;height:30px;padding:0 11px;font-size:13px;font-weight:700;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};box-shadow:{{ o.sh }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:2px 8px 14px">
+        <sc-for list="{{ list }}" as="s" hint-placeholder-count="12">
+          <div onClick="{{ s.pick }}" style="display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:14px;cursor:pointer;background:{{ s.bg }}" style-hover="background:#F9FAFB">
+            <div style="width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:{{ s.avBg }};color:{{ s.avFg }}">{{ s.initial }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:center;gap:5px"><span style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</span><sc-if value="{{ s.hot }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:2px 5px;border-radius:5px;animation:wjblink 1.2s infinite;background:{{ s.hotBg }};color:#fff">{{ s.hot }}</span></sc-if></div>
+              <div style="font-size:12px;color:#8B95A1">{{ s.held }}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:700;font-size:15px;color:{{ s.flash }}">{{ s.price }}</div>
+              <div style="display:flex;justify-content:flex-end;align-items:center;gap:4px"><sc-if value="{{ s.lim }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:800;padding:2px 5px;border-radius:5px;background:{{ s.limBg }};color:#fff">{{ s.limTag }}</span></sc-if><span style="font-size:13px;font-weight:600;color:{{ s.color }}">{{ s.pct }}</span></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    <section style="flex:3 1 540px;min-width:0;display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px">
+        <sc-for list="{{ marketCards }}" as="m" hint-placeholder-count="3"><div style="background:#fff;border-radius:16px;padding:14px 16px"><div style="font-size:12px;color:#8B95A1;font-weight:700">{{ m.label }}</div><div style="font-size:19px;font-weight:900;margin-top:5px;color:{{ m.color }}">{{ m.value }}</div><div style="font-size:11px;color:#8B95A1;margin-top:3px">{{ m.sub }}</div></div></sc-for>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:24px 24px 14px">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-start">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:#8B95A1;font-weight:500"><span style="font-weight:700;color:#191F28;font-size:17px">{{ selName }}</span>{{ selCode }} · {{ selSector }}<span style="display:inline-flex;align-items:center;gap:4px;color:{{ liveColor }};font-weight:700;font-size:12px;margin-left:4px"><span style="width:6px;height:6px;border-radius:50%;background:{{ liveColor }};animation:wjblink 1s infinite"></span>{{ liveLabel }}</span></div>
+            <div style="font-weight:800;font-size:40px;letter-spacing:-1.2px;margin-top:6px;line-height:1.1">{{ selPrice }}준</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap"><span style="font-weight:600;font-size:15px;color:{{ selColor }}">전일 대비 {{ selDiff }}준 ({{ selPct }})</span><sc-if value="{{ selLim }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:800;padding:3px 8px;border-radius:6px;background:{{ selLimBg }};color:#fff">{{ selLimTag }}</span></sc-if></div>
+            <div style="display:flex;gap:14px;font-size:13px;color:#8B95A1;margin-top:6px;flex-wrap:wrap"><span>전일 종가 {{ selPrev }}</span><span>시가 {{ selOpen }}</span><span>1분 {{ sel1m }}</span><span>상한가 <b style="color:#F04452;font-weight:700">{{ selUp }}</b></span><span>하한가 <b style="color:#3182F6;font-weight:700">{{ selDn }}</b></span></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end">
+            <div style="display:flex;background:#F2F4F6;border-radius:10px;padding:3px;gap:2px">
+              <sc-for list="{{ tfs }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="border:0;border-radius:8px;height:30px;padding:0 11px;font-size:13px;font-weight:700;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};box-shadow:{{ o.sh }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+            <div style="display:flex;background:#F2F4F6;border-radius:10px;padding:3px;gap:2px">
+              <sc-for list="{{ ctypes }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="border:0;border-radius:8px;height:30px;padding:0 11px;font-size:13px;font-weight:700;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};box-shadow:{{ o.sh }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;height:360px;margin-top:14px">
+          <canvas ref="{{ cvRef }}" onMouseMove="{{ hover }}" onMouseLeave="{{ unhover }}" style="width:100%;height:100%;display:block;cursor:crosshair"></canvas>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:22px 24px">
+        <div style="font-size:17px;font-weight:800;margin-bottom:14px">내 {{ selName }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px">
+          <div><div style="font-size:13px;color:#8B95A1">보유수량</div><div style="font-weight:700;font-size:19px;margin-top:4px">{{ posQty }}주</div></div>
+          <div><div style="font-size:13px;color:#8B95A1">평균단가</div><div style="font-weight:700;font-size:19px;margin-top:4px">{{ posAvg }}</div></div>
+          <div><div style="font-size:13px;color:#8B95A1">평가금액</div><div style="font-weight:700;font-size:19px;margin-top:4px">{{ posVal }}</div></div>
+          <div style="border-radius:14px;padding:10px 12px;margin:-10px -12px;background:{{ posBg }}"><div style="font-size:13px;color:#8B95A1">평가손익</div><div style="font-weight:800;font-size:19px;margin-top:4px;color:{{ posColor }}">{{ posPnl }} <span style="font-size:14px;font-weight:700">{{ posPct }}</span></div></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:22px 14px 12px">
+        <div style="font-size:17px;font-weight:800;padding:0 10px 8px">실시간 뉴스</div>
+        <div style="max-height:250px;overflow-y:auto">
+          <sc-for list="{{ newsList }}" as="n" hint-placeholder-count="5">
+            <div onClick="{{ n.pick }}" style="display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:12px;cursor:pointer" style-hover="background:#F9FAFB">
+              <span style="font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;flex:none;background:{{ n.tagBg }};color:{{ n.tagFg }}">{{ n.tag }}</span>
+              <span style="flex:1;font-size:15px;font-weight:600;color:#333D4B">{{ n.text }}</span>
+              <span style="font-size:13px;color:#B0B8C1;flex:none">{{ n.ago }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+    <section style="flex:1 1 290px;max-width:360px;min-width:270px;display:flex;flex-direction:column;gap:14px;position:sticky;top:74px">
+      <div style="background:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;background:#F2F4F6;border-radius:12px;padding:4px;gap:4px">
+          <button onClick="{{ sideBuy }}" style="height:40px;border:0;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;background:{{ buyTabBg }};color:{{ buyTabFg }}">구매</button>
+          <button onClick="{{ sideSell }}" style="height:40px;border:0;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;background:{{ sellTabBg }};color:{{ sellTabFg }}">판매</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;color:#8B95A1">시장가</span><span style="font-weight:700;font-size:17px">{{ selPrice }}준</span></div>
+        <div>
+          <div style="font-size:14px;color:#8B95A1;margin-bottom:8px">수량</div>
+          <div style="display:flex;align-items:center;background:#F2F4F6;border-radius:14px;height:56px;padding:0 6px">
+            <button onClick="{{ qtyDec }}" style="width:44px;height:44px;border-radius:10px;border:0;background:transparent;color:#4E5968;font-size:22px;cursor:pointer" style-hover="background:#E5E8EB">−</button>
+            <input type="text" inputmode="numeric" pattern="[0-9]*" value="{{ qty }}" onInput="{{ setQty }}" aria-label="거래 수량" style="flex:1;min-width:0;height:100%;border:0;background:transparent;color:#191F28;font-size:22px;font-weight:800;text-align:center;outline:none">
+            <button onClick="{{ qtyInc }}" style="width:44px;height:44px;border-radius:10px;border:0;background:transparent;color:#4E5968;font-size:22px;cursor:pointer" style-hover="background:#E5E8EB">+</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+          <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.pick }}" style="height:36px;border-radius:10px;border:0;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer" style-hover="background:#E8F3FF;color:#3182F6">{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;border-top:1px solid #F2F4F6">
+          <div style="display:flex;justify-content:space-between;color:#8B95A1;padding-top:12px"><span>{{ availLabel }}</span><span style="color:#4E5968;font-weight:600">{{ availStr }}</span></div>
+          <sc-if value="{{ showTax }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;color:#8B95A1"><span>{{ taxRate }}</span><span style="color:#F04452;font-weight:600">{{ taxEst }}준</span></div></sc-if>
+          <div style="display:flex;justify-content:space-between;color:#8B95A1;align-items:baseline"><span>{{ totalLabel }}</span><span style="color:#191F28;font-weight:800;font-size:19px">{{ orderTotal }}준</span></div>
+        </div>
+        <div style="padding:10px 12px;border-radius:11px;background:{{ marketBg }};color:{{ marketFg }};font-size:13px;font-weight:800;text-align:center">{{ marketLabel }}</div>
+        <button onClick="{{ submit }}" disabled="{{ marketClosed }}" style="height:56px;border:0;border-radius:16px;font-size:17px;font-weight:700;cursor:pointer;color:#fff;background:{{ submitBg }};opacity:{{ submitOpacity }}" style-active="transform:scale(0.97)" style-hover="filter:brightness(.95)">{{ submitLabel }}</button>
+        <sc-if value="{{ msg }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;text-align:center;font-weight:600;color:{{ msgColor }}">{{ msg }}</div></sc-if>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div><div style="font-size:13px;color:#8B95A1">주문 가능 현금</div><div style="font-weight:700;font-size:16px;margin-top:3px">{{ cashStr }}</div></div>
+          <div><div style="font-size:13px;color:#8B95A1">대출</div><div style="font-weight:700;font-size:16px;margin-top:3px;color:{{ loanColor }}">{{ loanStr }}</div></div>
+          <div><div style="font-size:13px;color:#8B95A1">실현손익</div><div style="font-weight:700;font-size:16px;margin-top:3px;color:{{ realColor }}">{{ realStr }}</div></div>
+          <div><div style="font-size:13px;color:#8B95A1">납부한 세금</div><div style="font-weight:700;font-size:16px;margin-top:3px">{{ taxPaidStr }}</div></div>
+        </div>
+        <div style="font-size:17px;font-weight:800;padding-top:6px">보유 종목</div>
+        <div style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;margin:-4px -8px 0;padding:4px 0">
+          <sc-for list="{{ holdings }}" as="h" hint-placeholder-count="0">
+            <div onClick="{{ h.pick }}" style="display:flex;justify-content:space-between;align-items:center;padding:10px 8px;border-radius:12px;cursor:pointer" style-hover="background:#F9FAFB">
+              <div><div style="font-weight:700;font-size:15px">{{ h.name }}</div><div style="font-size:12px;color:#8B95A1">{{ h.qty }}주 · 평단 {{ h.avg }}</div></div>
+              <div style="text-align:right"><div style="font-weight:700;font-size:15px;color:{{ h.color }}">{{ h.pnl }}</div><div style="font-size:12px;font-weight:600;color:{{ h.color }}">{{ h.pct }}</div></div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noHoldings }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:#8B95A1;padding:8px">아직 보유한 종목이 없어요</div></sc-if>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:17px;font-weight:800">🔔 가격 알림</div>
+        <div style="font-size:12px;color:#8B95A1">이 브라우저에서 목표가에 도달하면 알려드려요.</div>
+        <div style="display:flex;gap:7px"><input type="text" inputmode="numeric" pattern="[0-9]*" value="{{ alertTarget }}" onInput="{{ setAlertTarget }}" placeholder="목표 가격" aria-label="가격 알림 목표" style="min-width:0;flex:1;height:42px;padding:0 12px;border:0;border-radius:10px;background:#F2F4F6;outline:none"><button onClick="{{ addAlert }}" style="border:0;border-radius:10px;background:#3182F6;color:#fff;padding:0 13px;font-weight:800">설정</button></div>
+        <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;background:#F9FAFB;font-size:12px"><span style="flex:1;font-weight:700">{{ a.name }} {{ a.direction }} {{ a.price }}준</span><button onClick="{{ a.remove }}" aria-label="알림 삭제" style="border:0;background:transparent;color:#8B95A1;font-size:16px">×</button></div></sc-for>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", DN = "#3182F6", AC = "#3182F6", MU = "#8B95A1";
+const TF = [{ label: "1분", span: 60 }, { label: "5분", span: 300 }, { label: "30분", span: 1800 }, { label: "3시간", span: 10800 }, { label: "1일", span: 86400 }];
+const col = (v) => v > 0 ? UP : v < 0 ? DN : MU;
+class Component extends DCLogic {
+  state = { t: 0, user: null, sel: 0, q: "", sector: "전체", sectorOpen: false, sort: "chg", side: "buy", qty: 1, tf: 1, ctype: "line", msg: "", msgColor: MU, big: null, streak: 0, shake: false, mute: false, alerts: [], alertTarget: "" };
+  cvRef = React.createRef();
+  prev = {}; flash = {};
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady;
+    const uid = WJ.requireUser(); if (!uid) return;
+    this.uid = uid;
+    let alerts = []; try { alerts = JSON.parse(localStorage.getItem("wj_alerts_" + uid) || "[]").filter(a => Number.isInteger(a.i) && Number.isFinite(a.target)); } catch (e) {}
+    this.setState({ t: WJ.now(), mute: localStorage.getItem("wj_mute") === "1", streak: +(localStorage.getItem("wj_streak") || 0), sel: +(localStorage.getItem("wj_sel") || 0), alerts });
+    const db = await WJ.ready;
+    this.ref = db.ref("users/" + uid);
+    this.ref.on("value", s => { const u = s.val(); if (!u) return WJ.logout(); if (u.banned) return WJ.logout(); this.setState({ user: u }); });
+    WJ.presence(uid);
+    this.lsubs = [[db.ref("users"), s => this.setState({ users: s.val() || {} })], [db.ref("feed").limitToLast(30), s => { const a = []; s.forEach(c => { a.push(c.val()); }); this.setState({ feed: a.reverse() }); }], [db.ref("online"), s => this.setState({ online: Math.max(1, WJ.onlineCount(s.val())) })], [db.ref("jackpot"), s => this.setState({ jackpot: s.val() || WJ.JP0 })]];
+    this.lsubs.forEach(([r, f]) => r.on("value", f));
+    this.iv = setInterval(() => this.tick(), 500);
+    this.ro = new ResizeObserver(() => this.draw()); if (this.cvRef.current) this.ro.observe(this.cvRef.current);
+    this.tick();
+  }
+  componentWillUnmount() { (this.lsubs || []).forEach(([r]) => r.off()); clearInterval(this.iv); this.ref && this.ref.off(); this.ro && this.ro.disconnect(); }
+  tick() {
+    const t = WJ.now();
+    for (const s of WJ.STOCKS) { const p = WJ.price(s.i, t); const o = this.prev[s.i]; if (o != null && p !== o) this.flash[s.i] = p > o ? UP : DN; else if (o != null) this.flash[s.i] = null; this.prev[s.i] = p; }
+    const fired = this.state.alerts.filter(a => a.up ? WJ.price(a.i, t) >= a.target : WJ.price(a.i, t) <= a.target);
+    if (fired.length) { const alerts = this.state.alerts.filter(a => !fired.includes(a)); localStorage.setItem("wj_alerts_" + this.uid, JSON.stringify(alerts)); this.setState({ alerts }); fired.forEach(a => window.WJUI && WJUI.toast(WJ.stockAt(a.i).name + " 목표가 " + WJ.fmt(a.target) + " 도달", { icon: "🔔", ms: 4200 })); WJ.sfx("bell"); }
+    this.setState({ t }, () => this.draw());
+  }
+  draw() {
+    const c = this.cvRef.current; if (!c || !window.WJ) return;
+    const W = c.clientWidth, H = c.clientHeight, dpr = devicePixelRatio || 1;
+    if (c.width !== Math.round(W * dpr) || c.height !== Math.round(H * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+    const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    const t = WJ.now(), i = this.state.sel, span = TF[this.state.tf].span;
+    const pR = 76, pB = 26, pT = 10, cw = W - pR, ch = H - pT - pB;
+    const candle = this.state.ctype === "candle";
+    let pts = [], cds = [];
+    if (candle) {
+      const N = 48, st = span / N;
+      for (let k = 0; k < N; k++) { const a = t - span + k * st; let o = WJ.price(i, a), h = o, l = o, cl = o; for (let m = 1; m <= 8; m++) { const v = WJ.price(i, Math.min(t, a + st * m / 8)); h = Math.max(h, v); l = Math.min(l, v); cl = v; } cds.push({ o, h, l, c: cl }); }
+    } else { const N = 180; for (let k = 0; k < N; k++) pts.push(WJ.price(i, t - span + span * k / (N - 1))); }
+    const vals = candle ? cds.flatMap(d => [d.h, d.l]) : pts;
+    let mn = Math.min(...vals), mx = Math.max(...vals);
+    const h = this.state.user && this.state.user.holdings && this.state.user.holdings[WJ.hk(i)];
+    const avg = h && h.q > 0 ? h.avg : null;
+    if (avg) { mn = Math.min(mn, avg); mx = Math.max(mx, avg); }
+    const padv = (mx - mn) * 0.08 || mx * 0.01; mn -= padv; mx += padv;
+    const y = v => pT + (mx - v) / (mx - mn) * ch;
+    g.font = "11px JetBrains Mono, monospace"; g.textBaseline = "middle";
+    for (let k = 0; k <= 4; k++) { const v = mn + (mx - mn) * k / 4, yy = y(v); g.strokeStyle = "#F2F4F6"; g.lineWidth = 1; g.beginPath(); g.moveTo(0, yy); g.lineTo(cw, yy); g.stroke(); g.fillStyle = "#8B95A1"; g.fillText(WJ.fmt(v), cw + 8, yy); }
+    g.textBaseline = "alphabetic";
+    for (let k = 0; k <= 4; k++) { const tt = t - span + span * k / 4; const d = new Date((tt + 1760000000) * 1000); const lab = span <= 1800 ? d.toLocaleTimeString("ko-KR", { minute: "2-digit", second: "2-digit" }) : d.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false }); g.fillStyle = "#8B95A1"; g.textAlign = k === 0 ? "left" : k === 4 ? "right" : "center"; g.fillText(lab, cw * k / 4, H - 6); }
+    g.textAlign = "left";
+    const last = candle ? cds[cds.length - 1].c : pts[pts.length - 1];
+    const first = candle ? cds[0].o : pts[0];
+    const lc = last >= first ? UP : DN;
+    if (candle) {
+      const bw = cw / cds.length;
+      cds.forEach((d, k) => { const x = k * bw + bw / 2, cc = d.c >= d.o ? UP : DN; g.strokeStyle = cc; g.fillStyle = cc; g.beginPath(); g.moveTo(x, y(d.h)); g.lineTo(x, y(d.l)); g.stroke(); const top = y(Math.max(d.o, d.c)), bot = y(Math.min(d.o, d.c)); g.fillRect(x - bw * 0.35, top, bw * 0.7, Math.max(1.5, bot - top)); });
+    } else {
+      const x = k => k / (pts.length - 1) * cw;
+      const gr = g.createLinearGradient(0, pT, 0, pT + ch); gr.addColorStop(0, lc + "55"); gr.addColorStop(1, lc + "00");
+      g.beginPath(); pts.forEach((v, k) => k ? g.lineTo(x(k), y(v)) : g.moveTo(0, y(v))); g.lineTo(cw, pT + ch); g.lineTo(0, pT + ch); g.closePath(); g.fillStyle = gr; g.fill();
+      g.beginPath(); pts.forEach((v, k) => k ? g.lineTo(x(k), y(v)) : g.moveTo(0, y(v))); g.strokeStyle = lc; g.lineWidth = 2.2; g.lineJoin = "round"; g.stroke();
+    }
+    if (avg) { const ya = y(avg); g.setLineDash([5, 5]); g.strokeStyle = "#FFB020"; g.lineWidth = 1; g.beginPath(); g.moveTo(0, ya); g.lineTo(cw, ya); g.stroke(); g.setLineDash([]); g.fillStyle = "#FFB020"; g.fillRect(cw + 2, ya - 10, pR - 4, 20); g.fillStyle = "#FFFFFF"; g.font = "bold 11px Pretendard Variable, sans-serif"; g.textBaseline = "middle"; g.fillText("평단 " + WJ.fmt(avg), cw + 6, ya); }
+    const yl = y(last); g.setLineDash([2, 3]); g.strokeStyle = lc; g.beginPath(); g.moveTo(0, yl); g.lineTo(cw, yl); g.stroke(); g.setLineDash([]);
+    g.fillStyle = lc; g.fillRect(cw + 2, yl - 11, pR - 4, 22); g.fillStyle = "#fff"; g.font = "bold 12px JetBrains Mono, monospace"; g.textBaseline = "middle"; g.fillText(WJ.fmt(last), cw + 6, yl);
+    if (this.hx != null && this.hx < cw) {
+      const tt = t - span + span * this.hx / cw, v = WJ.price(i, tt), yy = y(v);
+      g.strokeStyle = "#B0B8C1"; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(this.hx, pT); g.lineTo(this.hx, pT + ch); g.stroke(); g.setLineDash([]);
+      g.beginPath(); g.arc(this.hx, yy, 5, 0, 7); g.fillStyle = "#fff"; g.fill();
+      const lab = WJ.fmt(v) + "  " + new Date((tt + 1760000000) * 1000).toLocaleTimeString("ko-KR", { hour12: false });
+      g.font = "bold 12px JetBrains Mono, monospace"; const tw = g.measureText(lab).width + 16; const bx = Math.min(cw - tw, Math.max(0, this.hx - tw / 2));
+      g.fillStyle = "#191F28"; g.fillRect(bx, pT, tw, 24); g.fillStyle = "#FFFFFF"; g.fillText(lab, bx + 8, pT + 12);
+    }
+  }
+  note(m, icon, ms) { if (window.WJUI) WJUI.toast(m, { icon: icon || "⚠️", html: true, ms: ms || 3200 }); }
+  pick = (i) => { WJ.sfx("click"); localStorage.setItem("wj_sel", i); this.setState({ sel: i, qty: 1, msg: "" }, () => this.draw()); };
+  addAlert = () => { const target = Math.floor(+this.state.alertTarget), i = this.state.sel; if (!(target > 0)) return this.note("목표 가격을 입력하세요"); const up = target >= WJ.price(i, WJ.now()), alerts = this.state.alerts.filter(a => a.i !== i).concat({ i, target, up }); localStorage.setItem("wj_alerts_" + this.uid, JSON.stringify(alerts)); this.setState({ alerts, alertTarget: "" }); this.note(WJ.stockAt(i).name + " 가격 알림을 설정했어요", "🔔"); };
+  removeAlert = i => { const alerts = this.state.alerts.filter(a => a.i !== i); localStorage.setItem("wj_alerts_" + this.uid, JSON.stringify(alerts)); this.setState({ alerts }); };
+  vco() { return window.WJC && this.state.sel >= WJC.BASE ? [WJC.cidOf(this.state.sel), WJC.co(WJC.cidOf(this.state.sel))] : null; }
+  maxQty() { const u = this.state.user; if (!u) return 0; const p = WJ.price(this.state.sel, WJ.now()); const vc = this.vco(); if (vc) { if (!vc[1]) return 0; return this.state.side === "buy" ? Math.floor((u.cash || 0) / (p * 1.01)) : ((vc[1].sh || {})[this.uid] || 0); } if (this.state.side === "buy") return Math.floor((u.cash || 0) / (p * (1 + WJ.TAX.buy))); const h = u.holdings && u.holdings[WJ.hk(this.state.sel)]; return h ? h.q : 0; }
+  submit = async () => {
+    if (!WJ.marketOpen()) return this.note(WJ.marketStatus(), "⏰");
+    const qty = Math.floor(+this.state.qty); const i = this.state.sel, k = WJ.hk(i), side = this.state.side;
+    if (!(qty > 0)) return this.note("수량을 입력하세요");
+    const vc = this.vco(); if (vc) { if (!vc[1]) return this.note("상장 폐지된 종목이에요"); const r = side === "buy" ? await WJC.buy(vc[0], vc[1], qty) : await WJC.sell(vc[0], vc[1], qty); if (!r.ok) return this.note(r.err || "주문 실패"); WJ.sfx && WJ.sfx("coin"); this.setState({ qty: 0 }); return this.note(vc[1].name + " " + qty + "주 " + (side === "buy" ? "매수" : "매도") + " 완료", "✅"); }
+    const p = WJ.price(i, WJ.now()), gm = this.gm(); let res = null;
+    const r = await this.ref.transaction(u => {
+      if (!WJ.marketOpen()) { res = "closed"; return; }
+      if (!u) return u; u.holdings = u.holdings || {}; const h = u.holdings[k] || { q: 0, avg: 0 };
+      if (side === "buy") { const fee = Math.ceil(qty * p * WJ.TAX.buy), cost = qty * p + fee; if ((u.cash || 0) < cost) { res = "cash"; return; } u.cash -= cost; h.avg = (h.avg * h.q + cost) / (h.q + qty); h.q += qty; h.t = Date.now(); u.holdings[k] = h; u.taxPaid = (u.taxPaid || 0) + fee; res = { cost, fee }; }
+      else { if (h.q < qty) { res = "qty"; return; } if (h.t && Date.now() - h.t < WJ.MIN_HOLD) { res = "hold:" + Math.ceil((WJ.MIN_HOLD - (Date.now() - h.t)) / 1000); return; } const gross = qty * p, pnl = (p - h.avg) * qty, tax = WJ.taxOf(gross, pnl, gm); u.cash = (u.cash || 0) + gross - tax; u.realized = (u.realized || 0) + pnl - tax; u.taxPaid = (u.taxPaid || 0) + tax; h.q -= qty; if (h.q <= 0) delete u.holdings[k]; else u.holdings[k] = h; res = { pnl: pnl - tax, tax, pct: (pnl - tax) / (h.avg * qty) * 100 }; }
+      u.trades = (u.trades || 0) + 1; return u;
+    });
+    if (!r.committed || typeof res === "string") { WJ.sfx("lose"); return this.note(res === "closed" ? WJ.marketStatus() : String(res).startsWith("hold:") ? "산 뒤 5분이 지나야 팔 수 있어요 (" + Math.floor(+res.slice(5) / 60) + "분 " + (+res.slice(5) % 60) + "초 남음)" : res === "qty" ? "보유 수량이 부족합니다" : "현금이 부족합니다"); }
+    const s = WJ.stockAt(i);
+    WJ.log(this.uid, side, { stock: s.name, qty, price: p, pnl: res.pnl || 0, tax: res.tax || 0 });
+    if (res.tax > 0) WJ.db().ref("treasury/tax").transaction(v => (v || 0) + res.tax).catch(() => {});
+    const taxTxt = res.tax > 0 ? " · 세금 " + WJ.fmt(res.tax) + "준" : "";
+    if (side === "buy") { WJ.sfx("buy"); this.note(`<b>${s.name} ${WJ.fmt(qty)}주 매수</b> · ${WJ.fmt(p)}준 · 수수료 ${WJ.fmt(res.fee)}준`, "🛒"); return; }
+    if (res.pnl > 0) {
+      const streak = this.state.streak + 1; localStorage.setItem("wj_streak", streak);
+      WJ.sfx("win"); this.note(`<b>${streak >= 2 ? streak + "연속 익절" : "익절"} +${WJ.fmt(res.pnl)}준</b> · ${s.name} ${WJ.pct(res.pct)}${taxTxt}`, "📈", 4200); this.setState({ streak });
+    } else {
+      localStorage.setItem("wj_streak", 0); WJ.sfx("lose");
+      this.note(`<b>${res.pnl < 0 ? "손절" : "본전"} ${WJ.signed(res.pnl)}준</b> · ${s.name} ${WJ.pct(res.pct)}${taxTxt}`, "📉", 4200); this.setState({ streak: 0 });
+    }
+  };
+  liveBar(W, t, rows, news) {
+    const st = this.state, F = W.fmt, users = st.users || {}, UPc = "#F04452", DNc = "#3182F6";
+    const rank = Object.keys(users).filter(k => !users[k].banned).map(k => ({ n: users[k].name, v: W.netWorth(users[k], t) })).sort((a, b) => b.v - a.v);
+    const mv = rows.slice().sort((a, b) => b.c - a.c), hot = rows.slice().sort((a, b) => Math.abs(b.m1) - Math.abs(a.m1));
+    const T = [];
+    news.slice(0, 4).forEach(n => T.push({ tag: n.good ? "호재" : "악재", tb: n.good ? "#FFF0F2" : "#EEF5FF", tf: n.good ? UPc : DNc, text: n.text, val: "", color: "#191F28", i: n.i }));
+    rank.slice(0, 3).forEach((r, i) => T.push({ tag: "자산 " + (i + 1) + "위", tb: "#FFF6E0", tf: "#E07B00", text: r.n, val: F(r.v) + "준", color: "#191F28" }));
+    mv.slice(0, 3).forEach(r => T.push({ tag: "상승", tb: "#FFF0F2", tf: UPc, text: r.s.name, val: W.pct(r.c), color: UPc, i: r.s.i }));
+    mv.slice(-2).forEach(r => T.push({ tag: "하락", tb: "#EEF5FF", tf: DNc, text: r.s.name, val: W.pct(r.c), color: DNc, i: r.s.i }));
+    hot.slice(0, 2).forEach(r => T.push({ tag: "1분 " + (r.m1 > 0 ? "급등" : "급락"), tb: r.m1 > 0 ? "#FFF0F2" : "#EEF5FF", tf: r.m1 > 0 ? UPc : DNc, text: r.s.name, val: W.pct(r.m1), color: r.m1 > 0 ? UPc : DNc, i: r.s.i }));
+    const k = Math.floor(Date.now() / 30000) % T.length, hd = T[k];
+    return { ticker: T.concat(T), headKey: String(k), headTag: hd.tag, headBg: hd.tb, headFg: hd.tf, headText: hd.text, headVal: hd.val, headValColor: hd.color, headClick: () => hd.i != null && this.pick(hd.i), onlineN: st.online || 1 };
+  }
+  gm() { return this.state.users && window.WJ ? WJ.eqTax(this.state.users, this.uid) : 1; }
+  taxVals(W, buy, hh, sp) { const q = +this.state.qty || 0, gross = q * sp; if (buy) { const fee = Math.ceil(gross * W.TAX.buy); return { showTax: q > 0, taxRate: "매수 수수료 " + +(W.TAX.buy * 100).toFixed(2) + "%", taxEst: W.fmt(fee), totalLabel: "총 결제금액", orderTotal: W.fmt(gross + fee) }; } if (!hh) return { showTax: false, taxRate: "", taxEst: "0", totalLabel: "총 주문금액", orderTotal: W.fmt(gross) }; const tax = W.taxOf(gross, (sp - hh.avg) * Math.min(q, hh.q), this.gm()); return { showTax: true, taxRate: "예상 세금", taxEst: W.fmt(tax), totalLabel: "세후 받을 금액", orderTotal: W.fmt(gross - tax) }; }
+  renderVals() {
+    const st = this.state, W = window.WJ, t = st.t, u = st.user || {};
+    if (!W || !t) {
+      const empty = {};
+      "userName taxRate taxEst taxPaidStr totalLabel netStr muteLabel headKey headTag headText headVal onlineN listCount sector sectorCaret selName selCode selSector liveLabel selPrice selDiff selPct selOpen sel1m posQty posAvg posVal posPnl posPct availLabel availStr orderTotal marketLabel submitLabel cashStr loanStr realStr streakStr q alertTarget qty msg bigTitle bigAmount bigSub newsTopText".split(" ").forEach(k => empty[k] = "");
+      "tape ticker list sectorItems sorts tfs ctypes chips holdings newsList marketCards alerts".split(" ").forEach(k => empty[k] = []);
+      "setQ setQty setAlertTarget addAlert toggleSector closeSector hover unhover sideBuy sideSell qtyDec qtyInc submit toggleMute logout headClick newsTopClick".split(" ").forEach(k => empty[k] = () => {});
+      Object.assign(empty, { true: true, false: false, sectorOpen: false, marketClosed: true, noHoldings: true, showTax: false, big: false, cvRef: this.cvRef,
+        netColor: MU, headBg: "#F2F4F6", headFg: MU, headValColor: MU, liveColor: MU,
+        selColor: MU, posColor: MU, posBg: "transparent", posBorder: "#F2F4F6",
+        buyTabBg: "#fff", buyTabFg: UP, sellTabBg: "transparent", sellTabFg: MU,
+        marketBg: "#FFF0F2", marketFg: UP, submitBg: "#B0B8C1", submitOpacity: .7, submitGlow: "none",
+        msgColor: MU, loanColor: MU, realColor: MU, bigColor: UP, shakeAnim: "none",
+        qty: st.qty, q: st.q, alertTarget: st.alertTarget, sector: st.sector, sectorCaret: "▼",
+        marketLabel: "시장을 불러오는 중…", submitLabel: "불러오는 중…", muteLabel: "소리 켜짐", selUp: "-", selDn: "-", selPrev: "-", selLim: false });
+      return empty;
+    }
+    const vH = {}; if (window.WJC) WJC.vstocks().forEach(v => { const x = WJC.co(v.cid) || {}, q = (x.sh || {})[this.uid] || 0; if (q > 0) vH[W.hk(v.i)] = { q, avg: (x.sha || {})[this.uid] || W.price(v.i, t) }; });
+    const H = Object.assign({}, u.holdings || {}, vH);
+    const rows = W.STOCKS.concat(window.WJC ? WJC.vstocks() : []).map(s => { const p = W.price(s.i, t), c = W.change(s.i, t), p1 = W.price(s.i, t - 60), m1 = (p - p1) / p1 * 100; return { s, p, c, m1 }; });
+    const tape = rows.concat(rows).map(r => ({ name: r.s.name, pct: W.pct(r.c), color: col(r.c) }));
+    const ql = st.q.trim();
+    let list = rows.filter(r => (st.sector === "전체" || r.s.sector === st.sector) && (!ql || r.s.name.includes(ql)));
+    if (st.sort === "chg") list.sort((a, b) => b.c - a.c); else if (st.sort === "hot") list.sort((a, b) => Math.abs(b.m1) - Math.abs(a.m1)); else list.sort((a, b) => a.s.name.localeCompare(b.s.name));
+    const listV = list.map(r => { const h = H[W.hk(r.s.i)]; const hot = r.m1 > 2.5 ? "급등" : r.m1 < -2.5 ? "급락" : ""; return {
+      name: r.s.name, sector: r.s.sector, held: h ? h.q + "주 보유" : r.s.code, initial: r.s.name[0], price: W.fmt(r.p), pct: W.pct(r.c), color: col(r.c),
+      flash: this.flash[r.s.i] || "#191F28", lim: W.limitState(r.s.i, t) !== 0, limTag: W.limitState(r.s.i, t) > 0 ? "상한" : "하한", limBg: W.limitState(r.s.i, t) > 0 ? UP : DN, held: h ? h.q + "주 보유 · " + r.s.sector : r.s.sector, hot, hotBg: r.m1 > 0 ? UP : DN, bg: r.s.i === st.sel ? "#E8F3FF" : "transparent",
+      avBg: h ? AC : "#F2F4F6", avFg: h ? "#FFFFFF" : "#4E5968", pick: () => this.pick(r.s.i) }; });
+    const sectorItems = W.SECTORS.concat(window.WJC && WJC.vstocks().length ? ["친구 증권사"] : []).map(sec => ({ label: sec, n: sec === "전체" ? W.STOCKS.length + (window.WJC ? WJC.vstocks().length : 0) : W.STOCKS.concat(window.WJC ? WJC.vstocks() : []).filter(s => s.sector === sec).length, color: sec === st.sector ? AC : "#191F28", bg: sec === st.sector ? "#E8F3FF" : "transparent", pick: () => this.setState({ sector: sec, sectorOpen: false }) }));
+    const seg = (arr, cur, key) => arr.map((o, k) => ({ label: o.label, bg: (o.v ?? k) === cur ? "#FFFFFF" : "transparent", color: (o.v ?? k) === cur ? "#191F28" : MU, sh: (o.v ?? k) === cur ? "0 1px 3px rgba(0,0,0,.08)" : "none", pick: () => this.setState({ [key]: o.v ?? k }, () => this.draw()) }));
+    const sel = W.stockAt(st.sel), sp = W.price(st.sel, t), so = W.open(st.sel), sc = (sp - so) / so * 100, s1 = W.price(st.sel, t - 60);
+    const hh = H[W.hk(st.sel)]; const hq = hh ? hh.q : 0; const pnl = hh ? (sp - hh.avg) * hq : 0; const ppct = hh ? (sp - hh.avg) / hh.avg * 100 : 0;
+    const max = this.maxQty();
+    const holdings = Object.keys(H).map(k => { const i = +k.slice(1), h = H[k], p = W.price(i, t), pl = (p - h.avg) * h.q; return { name: W.stockAt(i).name, qty: W.fmt(h.q), avg: W.fmt(h.avg), pnl: W.signed(pl), pct: W.pct((p - h.avg) / h.avg * 100), color: col(pl), pick: () => this.pick(i), v: pl }; }).sort((a, b) => b.v - a.v);
+    const news = W.news(t, 14);
+    const top = news[0];
+    const net = st.user ? W.netWorth(u, t) : 0;
+    const buy = st.side === "buy";
+    return {
+      tape, list: listV, listCount: listV.length, q: st.q, setQ: e => this.setState({ q: e.target.value }),
+      liveColor: W.marketOpen() ? UP : MU, liveLabel: W.marketOpen() ? "LIVE" : "장마감",
+      marketCards: [
+        { label: "시장 상태", value: W.marketOpen() ? "거래 가능" : "장마감", sub: W.CONFIG.market === "open" ? "관리자 특별 개장" : W.CONFIG.market === "closed" ? "관리자 강제 마감" : "수·토·일 휴장 · 바로 매도 가능", color: W.marketOpen() ? "#00A661" : MU },
+        { label: "상승 종목", value: rows.filter(r => r.c > 0).length + "개", sub: "전체 " + rows.length + "개 종목", color: UP },
+        { label: "하락 종목", value: rows.filter(r => r.c < 0).length + "개", sub: "현재 시가 대비", color: DN }
+      ],
+      alertTarget: st.alertTarget, setAlertTarget: e => this.setState({ alertTarget: e.target.value.replace(/\D/g, "") }), addAlert: this.addAlert,
+      alerts: st.alerts.map(a => ({ name: W.stockAt(a.i).name, direction: a.up ? "▲" : "▼", price: W.fmt(a.target), remove: () => this.removeAlert(a.i) })),
+      sector: st.sector, sectorOpen: st.sectorOpen, sectorCaret: st.sectorOpen ? "▲" : "▼", sectorItems,
+      toggleSector: () => this.setState({ sectorOpen: !st.sectorOpen }), closeSector: () => this.setState({ sectorOpen: false }),
+      sorts: seg([{ label: "등락", v: "chg" }, { label: "급변", v: "hot" }, { label: "이름", v: "name" }], st.sort, "sort"),
+      tfs: seg(TF, st.tf, "tf"), ctypes: seg([{ label: "라인", v: "line" }, { label: "캔들", v: "candle" }], st.ctype, "ctype"),
+      selName: sel.name, selCode: sel.code, selSector: sel.sector, selPrice: W.fmt(sp), selColor: col(sc), selDiff: W.signed(sp - W.prevClose(sel.i, t)), selPct: W.pct(sc), selOpen: W.fmt(so), selUp: W.fmt(W.limits(sel.i, t).up), selDn: W.fmt(W.limits(sel.i, t).dn), selPrev: W.fmt(W.prevClose(sel.i, t)), selLim: W.limitState(sel.i, t) !== 0, selLimTag: W.limitState(sel.i, t) > 0 ? "상한가" : "하한가", selLimBg: W.limitState(sel.i, t) > 0 ? "#F04452" : "#3182F6", sel1m: W.pct((sp - s1) / s1 * 100),
+      cvRef: this.cvRef, hover: e => { this.hx = e.nativeEvent.offsetX; this.draw(); }, unhover: () => { this.hx = null; this.draw(); },
+      posQty: W.fmt(hq), posAvg: hh ? W.fmt(hh.avg) : "-", posVal: W.fmt(hq * sp), posPnl: W.signed(pnl), posPct: hh ? W.pct(ppct) : "-", posColor: col(pnl),
+      posBg: pnl > 0 ? "#FFF0F2" : pnl < 0 ? "#EEF5FF" : "transparent", posBorder: pnl > 0 ? "#FFD6DC" : pnl < 0 ? "#CFE2FF" : "#F2F4F6",
+      newsList: news.map(n => ({ text: n.text, tag: n.good ? "호재" : "악재", tagBg: n.good ? "#FFF0F2" : "#EEF5FF", tagFg: n.good ? UP : DN, ago: Math.max(0, Math.floor((t - n.at) / 60)) + "분 전", pick: () => this.pick(n.i) })),
+      newsTopText: top ? top.text : "", newsTopColor: "#191F28", newsTopClick: () => top && this.pick(top.i),
+      ...this.liveBar(W, t, rows, news),
+      sideBuy: () => this.setState({ side: "buy", qty: 1 }), sideSell: () => this.setState({ side: "sell", qty: Math.max(1, hq) }),
+      buyTabBg: buy ? "#fff" : "transparent", buyTabFg: buy ? UP : MU, sellTabBg: buy ? "transparent" : "#fff", sellTabFg: buy ? MU : DN,
+      qty: st.qty, setQty: e => this.setState({ qty: e.target.value.replace(/\D/g, "") }), qtyDec: () => this.setState({ qty: Math.max(1, (+st.qty || 1) - 1) }), qtyInc: () => this.setState({ qty: (+st.qty || 0) + 1 }),
+      chips: [["10%", 0.1], ["25%", 0.25], ["50%", 0.5], ["최대", 1]].map(([label, f]) => ({ label, pick: () => { WJ.sfx("click"); this.setState({ qty: Math.max(1, Math.floor(max * f)) }); } })),
+      availLabel: buy ? "매수 가능" : "매도 가능", availStr: W.fmt(max) + "주", ...this.taxVals(W, buy, hh, sp), taxPaidStr: W.fmt(u.taxPaid || 0),
+      marketClosed: !W.marketOpen(), marketLabel: W.marketStatus(), marketBg: W.marketOpen() ? "#E9F9F1" : "#FFF0F2", marketFg: W.marketOpen() ? "#00A661" : UP,
+      submitBg: W.marketOpen() ? (buy ? UP : DN) : "#B0B8C1", submitOpacity: W.marketOpen() ? 1 : .7, submitGlow: buy ? "rgba(255,77,106,.35)" : "rgba(77,141,255,.35)", submitLabel: W.marketOpen() ? `${W.fmt(+st.qty || 0)}주 ${buy ? "구매하기" : "판매하기"}` : "장마감", submit: this.submit,
+      msg: st.msg, msgColor: st.msgColor,
+      cashStr: W.fmt(u.cash), loanStr: W.fmt(u.loan), loanColor: u.loan > 0 ? UP : "#191F28", realStr: W.signed(u.realized || 0), realColor: col(u.realized || 0), streakStr: st.streak + "회",
+      holdings, noHoldings: holdings.length === 0,
+      userName: u.name || "", netStr: W.fmt(net), netColor: net >= W.START_CASH ? UP : DN,
+      muteLabel: st.mute ? "소리 꺼짐" : "소리 켜짐", toggleMute: () => { const m = !st.mute; localStorage.setItem("wj_mute", m ? "1" : "0"); this.setState({ mute: m }); },
+      logout: () => W.logout(),
+      big: !!st.big, bigColor: st.big ? st.big.color : UP, bigTitle: st.big ? st.big.title : "", bigAmount: st.big ? st.big.amount : "", bigSub: st.big ? st.big.sub : "",
+      shakeAnim: st.shake ? "wjshake .5s" : "none"
+    };
+  }
+}
+</script>
+</body>
+</html>

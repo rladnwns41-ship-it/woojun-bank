@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>우준은행 · 증권사</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<script src="company-core.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">보유 현금</div><div style="font-weight:800;font-size:16px">{{ cashStr }}준</div></div>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+
+<main style="flex:1;width:100%;max-width:1320px;margin:0 auto;padding:20px 20px 72px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;align-content:flex-start">
+  <section style="flex:3 1 680px;min-width:0;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;background:#fff;border-radius:12px;padding:4px;gap:2px;overflow-x:auto;align-self:flex-start;max-width:100%">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.pick }}" style="flex:none;height:36px;padding:0 14px;border:0;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button></sc-for>
+    </div>
+
+    <sc-if value="{{ isCo }}" hint-placeholder-val="{{ false }}">
+      <div style="border-radius:26px;padding:24px 26px;background:#191F28;color:#fff;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between">
+        <div style="flex:1 1 300px;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><sc-for list="{{ co.badges }}" as="b" hint-placeholder-count="1"><span style="font-size:11px;font-weight:800;padding:4px 9px;border-radius:7px;background:{{ b.bg }};color:#fff">{{ b.t }}</span></sc-for><span style="font-size:13px;font-weight:800;color:#8EC0FF">{{ co.sector }} · 회장 {{ co.ceoN }}</span></div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:12px"><span style="width:56px;height:56px;border-radius:17px;flex:none;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;background:{{ co.color }}">{{ co.ini }}</span><div style="font-size:clamp(26px,3.4vw,38px);font-weight:900;letter-spacing:-1px;line-height:1.2;min-width:0">{{ co.name }}</div></div>
+          <div style="font-size:14px;color:#B0B8C1;margin-top:10px">{{ co.sub }}</div>
+        </div>
+        <div style="flex:0 1 280px;text-align:right">
+          <div style="font-size:13px;color:#B0B8C1;font-weight:700">증권사 자금</div>
+          <div style="font-size:clamp(28px,3.6vw,40px);font-weight:900;letter-spacing:-1.2px;color:{{ co.fundColor }};margin-top:4px;white-space:nowrap">{{ co.fundBig }}</div>
+          <div style="font-size:13px;color:#B0B8C1;margin-top:2px;white-space:nowrap">{{ co.fundFull }}</div>
+          <div style="font-size:12px;color:{{ co.loanColor }};margin-top:4px">{{ co.loanLine }}</div>
+        </div>
+      </div>
+      <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="0">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;border-radius:18px;background:{{ a.bg }}">
+          <div style="flex:1 1 220px;min-width:0"><div style="font-size:15px;font-weight:800;color:{{ a.fg }}">{{ a.t }}</div><div style="font-size:12px;color:#6B7684;margin-top:2px;line-height:1.5">{{ a.sub }}</div></div>
+          <sc-if value="{{ a.b2 }}" hint-placeholder-val="{{ false }}"><button onClick="{{ a.go2 }}" style="height:38px;padding:0 14px;border:0;border-radius:11px;background:#fff;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer">{{ a.b2 }}</button></sc-if>
+          <sc-if value="{{ a.b1 }}" hint-placeholder-val="{{ false }}"><button onClick="{{ a.go1 }}" style="height:38px;padding:0 14px;border:0;border-radius:11px;background:{{ a.fg }};color:#fff;font-size:13px;font-weight:800;cursor:pointer">{{ a.b1 }}</button></sc-if>
+        </div>
+      </sc-for>
+      <div style="display:flex;background:#fff;border-radius:12px;padding:4px;gap:2px;overflow-x:auto">
+        <sc-for list="{{ subs }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.pick }}" style="flex:1 0 auto;height:38px;padding:0 14px;border:0;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button></sc-for>
+      </div>
+
+      <sc-if value="{{ sHome }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <sc-for list="{{ coStats }}" as="s" hint-placeholder-count="3"><div style="background:#fff;border-radius:18px;padding:16px 18px;min-width:0"><div style="font-size:13px;color:#8B95A1">{{ s.label }}</div><div style="font-size:21px;font-weight:800;margin-top:5px;color:{{ s.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.value }}</div><div style="font-size:12px;color:#B0B8C1;margin-top:3px">{{ s.sub }}</div></div></sc-for>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:16px;font-weight:800">오늘 출근</div><span style="font-size:12px;color:#8B95A1">{{ att.count }}</span></div>
+          <div style="font-size:13px;color:#6B7684;line-height:1.55">{{ att.desc }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ att.list }}" as="a" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:700;background:{{ a.bg }};color:{{ a.fg }}">{{ a.n }}</span></sc-for></div>
+          <button onClick="{{ att.go }}" style="height:46px;border:0;border-radius:13px;background:{{ att.bg }};color:{{ att.fg }};font-size:15px;font-weight:800;cursor:pointer">{{ att.btn }}</button>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div style="font-size:18px;font-weight:800">회사 자금 관리</div><span style="font-size:12px;color:#8B95A1">보너스도 이 금액을 써요</span></div>
+          <input value="{{ amtStr }}" onInput="{{ setAmt }}" inputmode="numeric" placeholder="금액 입력 (준)" style="height:56px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:22px;font-weight:800;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="height:34px;padding:0 12px;border:0;border-radius:10px;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer">{{ q.label }}</button></sc-for></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">
+            <button onClick="{{ deposit }}" style="height:48px;border:0;border-radius:13px;background:#3182F6;color:#fff;font-size:15px;font-weight:700;cursor:pointer">내 돈 입금</button>
+            <button onClick="{{ propose }}" style="height:48px;border:0;border-radius:13px;background:#191F28;color:#fff;font-size:15px;font-weight:700;cursor:pointer">회사 대출 제안</button>
+            <button onClick="{{ repay }}" style="height:48px;border:0;border-radius:13px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">대출 상환</button>
+          </div>
+          <sc-if value="{{ isCeo }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px;border-radius:16px;background:#FFF8E6">
+              <div><div style="font-size:15px;font-weight:800">오늘 월급 {{ payTotal }}준</div><div style="font-size:12px;color:#8B95A1;margin-top:2px">{{ payNote }}</div></div>
+              <button onClick="{{ payroll }}" style="height:44px;padding:0 18px;border:0;border-radius:12px;background:{{ payBtnBg }};color:{{ payBtnFg }};font-size:14px;font-weight:800;cursor:pointer">{{ payBtn }}</button>
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ ipoCard.show }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border-radius:22px;padding:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="flex:1 1 240px"><div style="font-size:16px;font-weight:800">{{ ipoCard.title }}</div><div style="font-size:13px;color:#6B7684;margin-top:4px;line-height:1.55">{{ ipoCard.desc }}</div></div>
+            <button onClick="{{ ipoCard.go }}" style="height:46px;padding:0 18px;border:0;border-radius:13px;background:{{ ipoCard.bg }};color:{{ ipoCard.fg }};font-size:14px;font-weight:800;cursor:pointer">{{ ipoCard.btn }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasProp }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:0 0 0 2px #3182F6">
+            <div style="font-size:13px;font-weight:800;color:#3182F6">회사 대출 투표 중</div>
+            <div style="font-size:22px;font-weight:800">{{ prop.amt }}준 빌리기</div>
+            <div style="font-size:13px;color:#6B7684">{{ prop.desc }}</div>
+            <div style="font-size:13px;color:#8B95A1">{{ prop.count }}</div>
+            <sc-if value="{{ prop.canVote }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1.6fr;gap:8px"><button onClick="{{ prop.no }}" style="height:46px;border:0;border-radius:13px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">반대</button><button onClick="{{ prop.yes }}" style="height:46px;border:0;border-radius:13px;background:#3182F6;color:#fff;font-size:15px;font-weight:700;cursor:pointer">찬성</button></div></sc-if>
+          </div>
+        </sc-if>
+        <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+          <div style="font-size:18px;font-weight:800;padding:0 6px 8px">회사 기록</div>
+          <div style="max-height:320px;overflow-y:auto"><sc-for list="{{ logs }}" as="l" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:10px 6px;border-top:1px solid #F2F4F6"><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600">{{ l.text }}</div><div style="font-size:12px;color:#8B95A1">{{ l.when }}</div></div><span style="font-size:14px;font-weight:800;color:{{ l.color }}">{{ l.amt }}</span></div></sc-for></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end"><button onClick="{{ leaveCo }}" style="height:40px;padding:0 16px;border:0;border-radius:12px;background:transparent;color:#F04452;font-size:13px;font-weight:700;cursor:pointer">{{ leaveLabel }}</button></div>
+      </sc-if>
+
+      <sc-if value="{{ sFund }}" hint-placeholder-val="{{ false }}">
+        <div style="border-radius:22px;padding:22px;background:#191F28;color:#fff;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between">
+            <div style="min-width:0"><div style="font-size:13px;font-weight:800;color:#8EC0FF">{{ fund.eyebrow }}</div><div style="font-size:13px;color:#B0B8C1;margin-top:10px">기준가 (시작 1,000)</div><div style="display:flex;align-items:baseline;gap:10px;margin-top:2px"><span style="font-size:clamp(30px,4vw,42px);font-weight:900;letter-spacing:-1px">{{ fund.nav }}</span><span style="font-size:20px;font-weight:900;color:{{ fund.retC }}">{{ fund.ret }}</span></div></div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,auto));gap:18px;text-align:right"><sc-for list="{{ fund.stats }}" as="x" hint-placeholder-count="3"><div><div style="font-size:12px;color:#B0B8C1">{{ x.label }}</div><div style="font-size:17px;font-weight:800;margin-top:3px;white-space:nowrap">{{ x.value }}</div></div></sc-for></div>
+          </div>
+          <div style="height:8px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ fund.barW }};background:{{ fund.barC }};border-radius:5px"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:#B0B8C1"><span>강제 청산 500</span><span>{{ fund.barNote }}</span></div>
+        </div>
+        <sc-if value="{{ fund.warn }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 16px;border-radius:18px;background:#FFF0F2;color:#F04452;font-size:14px;font-weight:800">{{ fund.warn }}</div></sc-if>
+        <div style="background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><div style="font-size:18px;font-weight:800">내 투자</div><span style="font-size:12px;color:#8B95A1">{{ fund.myCost }}</span></div>
+          <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-size:28px;font-weight:900">{{ fund.myVal }}</span><span style="font-size:16px;font-weight:800;color:{{ fund.myPnlC }}">{{ fund.myPnl }}</span></div>
+          <input value="{{ amtStr }}" onInput="{{ setAmt }}" inputmode="numeric" placeholder="투자할 금액 (준)" style="height:52px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:20px;font-weight:800;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="height:34px;padding:0 12px;border:0;border-radius:10px;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer">{{ q.label }}</button></sc-for></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">
+            <button onClick="{{ fund.invest }}" style="height:48px;border:0;border-radius:13px;background:#F04452;color:#fff;font-size:15px;font-weight:800;cursor:pointer">펀드에 투자</button>
+            <button onClick="{{ fund.redeem }}" style="height:48px;border:0;border-radius:13px;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:800;cursor:pointer">전액 환매</button>
+          </div>
+          <div style="font-size:12px;color:#8B95A1;line-height:1.6">직원이 아니어도 누구나 투자할 수 있어요. 환매할 때 수익의 20%는 운용 보수로 증권사 자금에 들어가요. 기준가가 500(−50%) 밑으로 떨어지면 펀드는 강제 청산되고 증권사도 망해요.</div>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 8px"><div style="font-size:18px;font-weight:800">펀드 보유 종목</div><span style="font-size:12px;color:#8B95A1">{{ fund.holdN }}</span></div>
+          <sc-if value="{{ fund.noHolds }}" hint-placeholder-val="{{ false }}"><div style="padding:20px 6px;font-size:13px;color:#8B95A1;border-top:1px solid #F2F4F6">아직 산 종목이 없어요. 전부 현금으로 들고 있어요.</div></sc-if>
+          <sc-for list="{{ fund.holds }}" as="h" hint-placeholder-count="0">
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 6px;border-top:1px solid #F2F4F6">
+              <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800">{{ h.name }}</div><div style="font-size:12px;color:#8B95A1">{{ h.sub }}</div></div>
+              <div style="text-align:right"><div style="font-size:15px;font-weight:800">{{ h.val }}</div><div style="font-size:12px;font-weight:800;color:{{ h.pnlC }}">{{ h.pnl }}</div></div>
+              <sc-if value="{{ h.can }}" hint-placeholder-val="{{ false }}"><button onClick="{{ h.sellAll }}" style="height:34px;padding:0 11px;border:0;border-radius:10px;background:#E8F3FF;color:#3182F6;font-size:12px;font-weight:800;cursor:pointer">전량 매도</button></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ fund.isMgr }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border-radius:22px;padding:18px 14px 12px;box-shadow:0 0 0 2px #191F28">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 4px;gap:10px;flex-wrap:wrap"><div style="font-size:18px;font-weight:800">펀드 운용 (직원 누구나)</div><span style="font-size:12px;font-weight:800;color:{{ fund.mktC }}">{{ fund.mkt }}</span></div>
+            <div style="font-size:12px;color:#8B95A1;padding:0 6px 10px">직원 누구나 펀드 현금 {{ fund.cash }}으로 거래소 종목을 사고팔 수 있어요. 펀드 성과가 우리 증권사 주가에 그대로 반영돼요 (기준가 +20% → 주가 약 +44%).</div>
+            <div style="display:flex;gap:8px;padding:0 6px 8px"><input value="{{ fq }}" onInput="{{ setFq }}" placeholder="종목 검색" style="flex:1;min-width:0;height:42px;border:0;border-radius:12px;background:#F2F4F6;padding:0 14px;font-size:14px;outline:none"><input value="{{ fqtyStr }}" onInput="{{ setFqty }}" inputmode="numeric" placeholder="수량" style="width:96px;height:42px;border:0;border-radius:12px;background:#F2F4F6;padding:0 12px;font-size:14px;font-weight:800;text-align:right;outline:none"></div>
+            <div style="max-height:360px;overflow-y:auto">
+              <sc-for list="{{ fund.trades }}" as="x" hint-placeholder-count="0">
+                <div style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-top:1px solid #F2F4F6">
+                  <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">{{ x.name }}</div><div style="font-size:12px;color:#8B95A1">{{ x.sub }}</div></div>
+                  <div style="text-align:right"><div style="font-size:14px;font-weight:800">{{ x.price }}</div><div style="font-size:12px;font-weight:800;color:{{ x.chgC }}">{{ x.chg }}</div></div>
+                  <button onClick="{{ x.buy }}" style="height:34px;padding:0 11px;border:0;border-radius:10px;background:#F04452;color:#fff;font-size:12px;font-weight:800;cursor:pointer">매수</button>
+                  <button onClick="{{ x.sell }}" style="height:34px;padding:0 11px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-size:12px;font-weight:800;cursor:pointer">매도</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+          <div style="font-size:18px;font-weight:800;padding:0 6px 8px">투자자 {{ fund.invN }}</div>
+          <sc-for list="{{ fund.invs }}" as="v" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:10px 6px;border-top:1px solid #F2F4F6"><div style="flex:1;min-width:0;font-size:14px;font-weight:700;color:{{ v.c }}">{{ v.n }}</div><span style="font-size:12px;color:#8B95A1">{{ v.share }}</span><span style="font-size:14px;font-weight:800;min-width:90px;text-align:right">{{ v.val }}</span></div></sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ sStaff }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:17px;font-weight:800">파업</div><span style="font-size:12px;font-weight:800;color:{{ strike.color }}">{{ strike.state }}</span></div>
+          <div style="font-size:13px;color:#6B7684;line-height:1.55">{{ strike.desc }}</div>
+          <sc-if value="{{ strike.btn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ strike.go }}" style="height:44px;border:0;border-radius:12px;background:{{ strike.bg }};color:{{ strike.fg }};font-size:14px;font-weight:800;cursor:pointer">{{ strike.btn }}</button></sc-if>
+        </div>
+        <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+          <div style="font-size:18px;font-weight:800;padding:0 6px 8px">직원 {{ nMem }}명</div>
+          <sc-for list="{{ members }}" as="m" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 6px;border-top:1px solid #F2F4F6">
+              <div style="flex:1 1 140px;min-width:0"><div style="font-size:15px;font-weight:800;color:{{ m.color }}">{{ m.n }} <span style="font-size:11px;padding:3px 7px;border-radius:6px;background:#F2F4F6;color:#4E5968">{{ m.role }}</span></div><div style="font-size:12px;color:#8B95A1;margin-top:2px">{{ m.sub }}</div></div>
+              <sc-if value="{{ m.edit }}" hint-placeholder-val="{{ false }}"><input value="{{ m.payStr }}" onInput="{{ m.setPay }}" onBlur="{{ m.savePay }}" inputmode="numeric" placeholder="월급" style="width:110px;height:36px;border:0;border-radius:10px;background:#F2F4F6;font-size:14px;font-weight:700;padding:0 10px;text-align:right;outline:none"></sc-if>
+              <sc-if value="{{ m.view }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;font-weight:700;color:#4E5968">월급 {{ m.payStr }}준</span></sc-if>
+              <sc-if value="{{ m.act }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px"><button onClick="{{ m.bonus }}" style="height:34px;padding:0 11px;border:0;border-radius:10px;background:#E8F3FF;color:#3182F6;font-size:12px;font-weight:700;cursor:pointer">보너스</button><button onClick="{{ m.transfer }}" style="height:34px;padding:0 11px;border:0;border-radius:10px;background:#F2F4F6;color:#4E5968;font-size:12px;font-weight:700;cursor:pointer">회장 위임</button><button onClick="{{ m.kick }}" style="height:34px;padding:0 11px;border:0;border-radius:10px;background:#FFF0F2;color:#F04452;font-size:12px;font-weight:700;cursor:pointer">해고</button></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ isCeo }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border-radius:22px;padding:18px 14px 12px">
+            <div style="font-size:18px;font-weight:800;padding:0 6px 8px">입사 지원</div>
+            <sc-for list="{{ apps }}" as="a" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:10px 6px;border-top:1px solid #F2F4F6"><div style="flex:1;font-size:15px;font-weight:700">{{ a.n }}</div><button onClick="{{ a.no }}" style="height:34px;padding:0 12px;border:0;border-radius:10px;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer">거절</button><button onClick="{{ a.yes }}" style="height:34px;padding:0 12px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-size:13px;font-weight:700;cursor:pointer">채용</button></div></sc-for>
+            <div style="font-size:18px;font-weight:800;padding:16px 6px 8px">영입하기</div>
+            <div style="padding:0 6px 8px"><input value="{{ q }}" onInput="{{ setQ }}" placeholder="닉네임 검색" style="width:100%;height:42px;border:0;border-radius:12px;background:#F2F4F6;padding:0 14px;font-size:14px;outline:none"></div>
+            <div style="max-height:260px;overflow-y:auto"><sc-for list="{{ recruits }}" as="r" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-top:1px solid #F2F4F6"><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">{{ r.n }}</div><div style="font-size:12px;color:#8B95A1">{{ r.sub }}</div></div><button onClick="{{ r.go }}" style="height:34px;padding:0 12px;border:0;border-radius:10px;background:{{ r.bg }};color:{{ r.fg }};font-size:13px;font-weight:700;cursor:pointer">{{ r.btn }}</button></div></sc-for></div>
+          </div>
+        </sc-if>
+      </sc-if>
+
+    </sc-if>
+
+    <sc-if value="{{ isMarket }}" hint-placeholder-val="{{ false }}">
+      <div style="border-radius:26px;padding:24px 26px;background:#191F28;color:#fff;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+        <div style="flex:1 1 300px"><div style="font-size:13px;font-weight:800;color:#8EC0FF">회사 증시</div><div style="font-size:clamp(24px,3vw,32px);font-weight:900;margin-top:6px">친구 회사에 투자하세요</div><div style="font-size:13px;color:#B0B8C1;margin-top:8px;line-height:1.55">주가 = 순자산 ÷ 1만 주 × 분위기 × 펀드 성과². 펀드가 잘 벌면 주가가 크게 뛰고, 망하면 휴지가 돼요. 산 돈은 증권사 자금으로 들어가요. 수수료 1%.</div></div>
+        <div style="flex:0 1 220px"><div style="font-size:12px;color:#B0B8C1;font-weight:700;margin-bottom:6px">수량 (주)</div><input value="{{ shqStr }}" onInput="{{ setShq }}" inputmode="numeric" style="width:100%;height:48px;border-radius:13px;border:0;background:#fff;font-size:18px;font-weight:800;padding:0 14px;outline:none"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+        <sc-for list="{{ stocks }}" as="s" hint-placeholder-count="0">
+          <div style="background:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:10px"><span style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;background:{{ s.color }}">{{ s.ini }}</span><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800">{{ s.name }}</div><div style="font-size:12px;color:#8B95A1">{{ s.sub }}</div></div><div style="text-align:right"><div style="font-size:17px;font-weight:900">{{ s.price }}</div><div style="font-size:12px;font-weight:800;color:{{ s.chgC }}">{{ s.chg }}</div></div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button onClick="{{ s.buy }}" style="height:40px;border:0;border-radius:11px;background:#F04452;color:#fff;font-size:14px;font-weight:800;cursor:pointer">매수</button><button onClick="{{ s.sell }}" style="height:40px;border:0;border-radius:11px;background:#3182F6;color:#fff;font-size:14px;font-weight:800;cursor:pointer">매도</button></div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ noStocks }}" hint-placeholder-val="{{ true }}"><div style="background:#fff;border-radius:22px;padding:32px;text-align:center;color:#8B95A1;font-size:14px">아직 상장한 회사가 없어요. 순자산 1,000만준이 넘으면 회장이 상장할 수 있어요.</div></sc-if>
+    </sc-if>
+
+    <sc-if value="{{ isBrowse }}" hint-placeholder-val="{{ true }}">
+      <div style="border-radius:26px;padding:26px 28px;background:#191F28;color:#fff;display:flex;flex-direction:column;gap:14px">
+        <div><div style="font-size:13px;font-weight:800;color:#8EC0FF">증권사 만들기</div><div style="font-size:clamp(24px,3vw,32px);font-weight:900;margin-top:6px">친구 돈을 굴리는 증권사를 차려 보세요</div><div style="font-size:14px;color:#B0B8C1;margin-top:8px;line-height:1.55">설립 자본금 100만준. 사람들이 맡긴 돈으로 펀드를 굴리고, 수익의 20%를 운용 보수로 받아요. 고정비는 매일 빠지고, 펀드가 반토막 나면 바로 망해요. 한 사람은 2곳까지 다닐 수 있어요.</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><input value="{{ newName }}" onInput="{{ setNewName }}" maxlength="12" placeholder="증권사 이름 (예: 우준증권)" style="flex:1 1 220px;min-width:0;height:52px;border-radius:14px;border:0;background:#fff;font-size:16px;font-weight:700;padding:0 16px;outline:none"><button onClick="{{ found }}" style="height:52px;padding:0 20px;border:0;border-radius:14px;background:#3182F6;color:#fff;font-size:15px;font-weight:800;cursor:pointer">설립하기</button></div>
+        <div style="display:flex;gap:8px"><sc-for list="{{ colors }}" as="o" hint-placeholder-count="6"><button onClick="{{ o.pick }}" aria-label="대표 색" style="width:34px;height:34px;border-radius:10px;border:0;cursor:pointer;background:{{ o.c }};box-shadow:{{ o.ring }}"></button></sc-for></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px">
+        <sc-for list="{{ list }}" as="c" hint-placeholder-count="2">
+          <div style="background:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px;box-shadow:{{ c.ring }}">
+            <div style="display:flex;align-items:center;gap:12px"><span style="width:46px;height:46px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:#fff;background:{{ c.color }}">{{ c.ini }}</span><div style="min-width:0;flex:1"><div style="font-size:16px;font-weight:800">{{ c.name }}</div><div style="font-size:12px;color:#8B95A1">{{ c.sub }}</div></div></div>
+            <div style="font-size:13px;color:#4E5968">{{ c.info }}</div>
+            <div style="display:flex;gap:6px"><button onClick="{{ c.go }}" style="flex:1;height:42px;border:0;border-radius:12px;background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:700;cursor:pointer">{{ c.btn }}</button><sc-if value="{{ c.acq }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.acqGo }}" style="height:42px;padding:0 12px;border:0;border-radius:12px;background:#191F28;color:#fff;font-size:13px;font-weight:700;cursor:pointer">{{ c.acq }}</button></sc-if></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+        <div style="font-size:18px;font-weight:800;padding:0 6px 8px">망한 회사</div>
+        <sc-for list="{{ grave }}" as="g" hint-placeholder-count="0"><div style="display:flex;gap:10px;padding:10px 6px;border-top:1px solid #F2F4F6"><div style="flex:1"><div style="font-size:14px;font-weight:700;color:#4E5968">✕ {{ g.name }}</div><div style="font-size:12px;color:#8B95A1">{{ g.sub }}</div></div></div></sc-for>
+      </div>
+    </sc-if>
+  </section>
+
+  <aside style="flex:1 1 300px;min-width:280px;display:flex;flex-direction:column;gap:14px">
+    <div style="background:#fff;border-radius:22px;padding:22px">
+      <div style="font-size:14px;color:#4E5968;font-weight:600">{{ myName }}님 직장 {{ jobN }} / 2</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px"><sc-for list="{{ myJobs }}" as="j" hint-placeholder-count="0"><div onClick="{{ j.pick }}" style="display:flex;justify-content:space-between;padding:10px 12px;border-radius:12px;background:#F9FAFB;cursor:pointer"><span style="font-size:14px;font-weight:700">{{ j.name }}</span><span style="font-size:12px;color:{{ j.c }}">{{ j.sub }}</span></div></sc-for></div>
+    </div>
+    <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+      <div style="font-size:16px;font-weight:800;padding:0 6px 8px">받은 영입 제안</div>
+      <sc-for list="{{ offers }}" as="o" hint-placeholder-count="0"><div style="padding:10px 6px;border-top:1px solid #F2F4F6"><div style="font-size:14px;font-weight:700">{{ o.name }}</div><div style="display:grid;grid-template-columns:1fr 1.5fr;gap:6px;margin-top:8px"><button onClick="{{ o.no }}" style="height:36px;border:0;border-radius:10px;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:700;cursor:pointer">거절</button><button onClick="{{ o.yes }}" style="height:36px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-size:13px;font-weight:700;cursor:pointer">입사하기</button></div></div></sc-for>
+    </div>
+    <div style="background:#fff;border-radius:22px;padding:18px 20px">
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px">펀드 수익률 랭킹</div>
+      <sc-for list="{{ rank }}" as="r" hint-placeholder-count="3"><div style="display:flex;gap:10px;padding:7px 0"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:{{ r.bg }}">{{ r.i }}</span><span style="flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="flex:none;font-size:13px;font-weight:800;color:{{ r.c }};white-space:nowrap">{{ r.v }}</span></div></sc-for>
+    </div>
+  </aside>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", BL = "#3182F6", MU = "#8B95A1", INK = "#191F28";
+const FOUND = 1e6, MAXJ = 2, LIM_PER = 1e7, TERM = 7 * 864e5, PEN = .05, DAY = 864e5, HOUR = 36e5;
+const COLORS = ["#3182F6", "#F04452", "#00A661", "#FFB020", "#8B5CF6", "#191F28"], BASE_REV = 30000;
+const LV = [[0, "스타트업", "#8B95A1", 1], [1e7, "중소기업", "#00A661", 1.5], [1e8, "중견기업", "#3182F6", 2], [1e9, "대기업", "#F04452", 3]];
+const lvOf = n => { let i = 0; LV.forEach((l, k) => { if (n >= l[0]) i = k; }); return i; };
+const SA = { "IT·전자": { t: "사업 성공률 +10%p", rate: 10 }, "금융": { t: "대출 수수료 5% · 한도 1.5배", fee: .05, lim: 1.5 }, "유통": { t: "출근 수익 +25%", rev: 1.25 }, "식품": { t: "출근 수익 +25%", rev: 1.25 }, "자동차": { t: "시설 비용 25% 할인", fac: .75 }, "바이오": { t: "대박 배율 2배 · 폭망 +10%p", jackX: 2, boom: 10 }, "엔터·게임": { t: "대박 확률 2배", jackP: 2 }, "에너지·화학": { t: "시설 비용 25% 할인", fac: .75 }, "중공업": { t: "시설 비용 25% 할인", fac: .75 }, "통신": { t: "파업에 직원 2/3 찬성 필요", strike: 2 / 3 }, "코인·테마": { t: "주가 변동 3배", vol: 3 } };
+const sa = c => SA[(c && c.sector) || ""] || {};
+const FAC = [["server", "서버실", "출근 수익 +30%/단계"], ["cafe", "직원 카페", "출근 수익 +15%/단계 · 파업 손실 절반"], ["meet", "회의실", "사업 성공률 +7%p/단계"], ["vault", "금고", "대출 한도 +50%/단계"]];
+const FCOST = [5e6, 2e7, 8e7];
+const PROJ = [{ k: "s", name: "소규모 외주", cost: 1e6, h: 1, rate: 50, win: 1.8, jack: 3 }, { k: "m", name: "신제품 개발", cost: 1e7, h: 3, rate: 42, win: 2.2, jack: 4 }, { k: "l", name: "해외 진출", cost: 1e8, h: 6, rate: 34, win: 2.8, jack: 6 }];
+const SHARES = 1e4, FLOAT = 5000, LIST_MIN = 1e7, LIST_FEE = 1e6, TFEE = .01, STRIKE_MS = 12 * HOUR, NEG_MS = 6 * HOUR;
+const WG = { uno: "우노", minigolf: "미니골프", omok: "오목", othello: "오델로", connect4: "사목", checkers: "체커", pool: "포켓볼" };
+const kstDay = () => new Date(Date.now() + 9 * HOUR).toISOString().slice(0, 10);
+const hash01 = s => { let h = 2166136261; for (const ch of String(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; };
+const facLv = (c, k) => ((c && c.fac) || {})[k] || 0;
+const net = x => (x.fund || 0) - (x.loan || 0);
+const striking = c => !!(c && c.strike && c.strike.on > Date.now());
+const limitOf = c => Math.round(LIM_PER * Object.keys(c.members || {}).length * (sa(c).lim || 1) * (1 + .5 * facLv(c, "vault")));
+const feeOf = c => sa(c).fee || .1;
+const upkeepOf = c => 2e5 + 1e5 * Object.keys(c.members || {}).length;
+const odds = (c, P, n) => { const A = sa(c), rate = Math.max(5, Math.min(85, P.rate + Math.min(20, n * 4) + facLv(c, "meet") * 7 + (A.rate || 0) - (striking(c) ? 20 : 0))) / 100, jp = Math.min(rate, rate * .2 * (A.jackP || 1)), boom = .3 + (A.boom || 0) / 100; return { rate, jp, sp: rate - jp, fp: (1 - rate) * (1 - boom), bp: (1 - rate) * boom, mJ: P.jack * (A.jackX || 1), mS: P.win }; };
+const pc = v => Math.round(v * 100) + "%";
+// 펀드: 기준가 1,000에서 시작. 투자 = 좌수 매입, 환매 = 좌수 × 기준가. 환매 수익의 20%는 증권사 자금(운용 보수). 기준가 500 밑이면 강제 청산 + 증권사 부도
+const NAV0 = 1000, PERF = .2, LIQ = .5;
+const stockOf = i => { const W = window.WJ; return W ? (W.STOCKS.find(s => s.i === i) || W.STOCKS[i] || { name: "?" }) : { name: "?" }; };
+const pfNav = (pf, t) => { if (!pf) return 0; const W = window.WJ; let v = pf.cash || 0; Object.keys(pf.h || {}).forEach(k => { v += (pf.h[k].q || 0) * (W ? W.price(+k.slice(1), t) : 0); }); return v; };
+const pfPer = (pf, t) => pf && pf.units > 1e-9 ? pfNav(pf, t) / pf.units : NAV0;
+const pfDead = x => !!(x && x.pf && x.pf.units >= 1 && Object.keys(x.pf.inv || {}).length && window.WJ && pfPer(x.pf, WJ.now()) < NAV0 * LIQ);
+const pfPayout = x => { const pf = x && x.pf, o = {}; if (!pf || !(pf.units > 1e-9) || !window.WJ) return o; const t = WJ.now(); let cash = pf.cash || 0; Object.keys(pf.h || {}).forEach(k => { const g = (pf.h[k].q || 0) * WJ.price(+k.slice(1), t); cash += g - Math.ceil(g * WJ.TAX.sell); }); Object.keys(pf.inv || {}).forEach(k => { o[k] = Math.max(0, Math.floor(cash * (pf.inv[k].u || 0) / pf.units)); }); return o; };
+const isMgr = (x, k) => !!x && !!(x.members || {})[k];
+const pctS = v => (v >= 0 ? "+" : "") + (v * 100).toFixed(1) + "%";
+class Component extends DCLogic {
+  state = { user: null, users: {}, cos: {}, wars: {}, grave: [], logs: [], chat: [], view: "", sub: "home", amt: 0, shq: 10, q: "", newName: "", payEdit: {}, newSector: "IT·전자", newColor: "#3182F6", chatText: "", t: 0, fq: "", fqty: 10 };
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 40));
+    await WJ.authReady; const uid = WJ.uid(); if (!uid) { WJ.requireUser(); return; } this.uid = uid; const db = await WJ.ready; this.db = db;
+    const fail = e => this.say(/permission/i.test(String(e)) ? "Firebase 규칙에 회사 경로를 추가해야 해요" : "불러오지 못했어요");
+    this.subs = [[db.ref("users/" + uid), s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); this.setState({ user: u }); }], [db.ref("companies"), s => { const v = s.val() || {}; Object.keys(v).forEach(k => { if (v[k]) Object.defineProperty(v[k], "_id", { value: k, enumerable: false }); }); this.setState({ cos: v }); this.syncJobs(); }], [db.ref("cwars").orderByChild("ts").limitToLast(60), s => this.setState({ wars: s.val() || {} })], [db.ref("coGrave").limitToLast(12), s => this.setState({ grave: Object.values(s.val() || {}).reverse() })]];
+    this.subs.forEach(([r, f]) => r.on("value", f, fail));
+    const lu = () => db.ref("users").once("value").then(s => this.setState({ users: s.val() || {} })).catch(() => {}); lu(); this.uv = setInterval(lu, 60000);
+    this.iv = setInterval(() => this.setState({ t: Date.now() }), 10000); this.mv = setInterval(() => this.tick(), 20000); setTimeout(() => this.tick(), 2500);
+  }
+  componentDidUpdate() { if (this.db) { const cid = this.cur || null; this.watch("logRef", "companyLog/", cid, 40, "logs", true); } }
+  componentWillUnmount() { (this.subs || []).forEach(([r]) => r.off()); this.logRef && this.logRef.off(); this.chatRef && this.chatRef.off(); [this.iv, this.mv, this.uv].forEach(clearInterval); }
+  watch(key, path, cid, n, st, rev) { if (this[key + "C"] === cid) return; this[key] && this[key].off(); this[key + "C"] = cid; this.setState({ [st]: [] }); if (!cid) return; this[key] = this.db.ref(path + cid).limitToLast(n); this[key].on("value", s => { const v = Object.values(s.val() || {}); this.setState({ [st]: rev ? v.reverse() : v }); }, () => {}); }
+  say(m, i) { try { WJUI.toast(m, { icon: i || "🏢", html: true }); } catch (e) {} }
+  name() { return (this.state.user && this.state.user.name) || "익명"; }
+  F(n) { return window.WJ ? WJ.fmt(n) : String(Math.round(n || 0)); }
+  big(n) { const a = Math.abs(n), s = n < 0 ? "-" : ""; if (a >= 1e12) return s + (a / 1e12).toFixed(1).replace(/\.0$/, "") + "조준"; if (a >= 1e8) return s + (a / 1e8).toFixed(a >= 1e10 ? 0 : 1).replace(/\.0$/, "") + "억준"; if (a >= 1e4) return s + Math.round(a / 1e4).toLocaleString("ko-KR") + "만준"; return s + this.F(a) + "준"; }
+  myCos() { const c = this.state.cos; return Object.keys(c).filter(k => c[k] && c[k].members && c[k].members[this.uid]); }
+  jobsOf(k) { const c = this.state.cos; return Object.keys(c).filter(id => c[id] && c[id].members && c[id].members[k]).length; }
+  ref(cid) { return this.db.ref("companies/" + cid); }
+  log(cid, text, amount) { this.db.ref("companyLog/" + cid).push({ text, amount: amount || 0, ts: Date.now() }).catch(() => {}); }
+  amt() { return Math.max(0, Math.floor(this.state.amt || 0)); }
+  syncJobs() { const want = {}; this.myCos().forEach(k => { want[k] = this.state.cos[k].name; }); const cur = (this.state.user && this.state.user.jobs) || {}; if (JSON.stringify(Object.keys(cur).sort()) !== JSON.stringify(Object.keys(want).sort())) this.db.ref("users/" + this.uid + "/jobs").set(Object.keys(want).length ? want : null).catch(() => {}); }
+  secIdx(sec) { const W = window.WJ; if (!W) return 0; const k = sec + ":" + Math.floor(Date.now() / 15000); this.ic = this.ic || {}; if (k in this.ic) return this.ic[k]; const L = W.STOCKS.filter(s => s.sector === sec), t = W.now(); return (this.ic[k] = L.length ? L.reduce((a, s) => a + W.change(s.i, t), 0) / L.length : 0); }
+  priceOf(c) { if (c && c._id && window.WJC) return WJC.priceOf(c._id, c); const mood = Math.max(.2, 1 + this.secIdx(c.sector || "IT·전자") / 100 * 3 * (sa(c).vol || 1)) * (striking(c) ? .7 : 1); return Math.max(100, Math.round(Math.max(0, net(c)) / SHARES * mood / 10) * 10); }
+  revOf(c) { return Math.round(BASE_REV * LV[lvOf(net(c))][3] * Math.max(.3, 1 + this.secIdx(c.sector || "IT·전자") * .05) * (sa(c).rev || 1) * (1 + .3 * facLv(c, "server") + .15 * facLv(c, "cafe")) / 100) * 100; }
+  startStrike(x) { const loss = Math.round(Math.max(0, x.fund || 0) * .2); x.fund = (x.fund || 0) - loss; x.strike = { on: Date.now() + STRIKE_MS }; return loss; }
+  tx(cid, f) { return this.ref(cid).transaction(f).catch(() => ({ committed: false })); }
+  needs(x) { const now = Date.now(), staff = Object.keys(x.members || {}).filter(k => k !== x.ceo);
+    return x.upDay !== kstDay() || (x.proj && now >= x.proj.end) || (x.strike && x.strike.on <= now) || (staff.length && !striking(x) && now - (x.lastPay || x.ts || now) > 3 * DAY) || (x.loan > 0 && x.loanDue && now >= x.loanDue && ((x.fund || 0) > 0 || now >= (x.loanCh || x.loanDue) + (x.loanCh ? DAY : 0))) || ((x.fund || 0) < 0) !== !!x.neg || (x.neg && now - x.neg > NEG_MS) || (x.loan > 0 && x.loanDue && now > x.loanDue + 3 * DAY) || pfDead(x); }
+  async maintain(cid) { let ev = [], dead = null;
+    const r = await this.tx(cid, x => { ev = []; dead = null; if (!x || !x.members || !this.needs(x)) return; const now = Date.now();
+      if (pfDead(x)) { dead = { name: x.name, ceoN: x.ceoN, why: "펀드 반토막 · 강제 청산", m: Object.keys(x.members), ts: now, pay: pfPayout(x) }; return null; }
+      if (x.upDay !== kstDay()) { const c2 = upkeepOf(x); x.fund = (x.fund || 0) - c2; x.upDay = kstDay(); ev.push(["임대료·시설 유지비", -c2]); }
+      if (x.proj && now >= x.proj.end) { const P = x.proj, rr = hash01(P.id); let m, lab; if (rr < P.jp) { m = P.mJ; lab = "대박!"; } else if (rr < P.jp + P.sp) { m = P.mS; lab = "성공"; } else if (rr < P.jp + P.sp + P.fp) { m = 0; lab = "실패"; } else { m = -1; lab = "폭망"; } const pay = Math.round(P.cost * m); x.fund = (x.fund || 0) + pay; x.lastProj = { name: P.name, lab, pay, cost: P.cost }; x.proj = null; ev.push([P.name + " " + lab, pay]); }
+      if (x.strike && x.strike.on <= now) { x.strike = null; ev.push(["파업이 끝났어요", 0]); }
+      const staff = Object.keys(x.members).filter(k => k !== x.ceo); if (staff.length && !striking(x) && now - (x.lastPay || x.ts || now) > 3 * DAY) { const l = this.startStrike(x); x.lastPay = now - 2 * DAY; ev.push(["월급 3일 미지급 · 자동 파업", -l]); }
+      if (x.loan > 0 && x.loanDue && now >= x.loanDue) { const from = Math.max(x.loanCh || x.loanDue, x.loanDue), days = Math.floor((now - from) / DAY) + (x.loanCh ? 0 : 1); if (days > 0) { const nl = Math.round(x.loan * Math.pow(1 + PEN, days)); ev.push(["대출 연체 이자", -(nl - x.loan)]); x.loan = nl; x.loanCh = (x.loanCh || x.loanDue) + days * DAY; } const pay = Math.min(Math.max(0, x.fund || 0), x.loan); if (pay > 0) { x.fund -= pay; x.loan -= pay; ev.push(["대출 자동 상환", -pay]); } if (x.loan <= 0) { x.loan = 0; x.loanDue = null; x.loanCh = null; } }
+      if ((x.fund || 0) < 0) { if (!x.neg) { x.neg = now; ev.push(["자금 마이너스 · 6시간 안에 메우지 않으면 부도", 0]); } } else x.neg = null;
+      const od = x.loan > 0 && x.loanDue && now > x.loanDue + 3 * DAY; if ((x.neg && now - x.neg > NEG_MS) || od) { dead = { name: x.name, ceoN: x.ceoN, why: od ? "대출 연체 3일" : "자금 마이너스 6시간", m: Object.keys(x.members), ts: now, pay: pfPayout(x) }; return null; } return x; });
+    if (!r.committed) return;
+    if (dead) { for (const k of Object.keys(dead.pay || {})) if (dead.pay[k] > 0) { await WJ.addCash(k, dead.pay[k], true); WJ.log(k, "game", { text: dead.name + " 펀드 청산금", amount: dead.pay[k] }); } this.db.ref("coGrave").push({ name: dead.name, ceoN: dead.ceoN, why: dead.why, ts: dead.ts }).catch(() => {}); dead.m.forEach(k => this.db.ref("users/" + k + "/jobs/" + cid).remove().catch(() => {})); ["companyLog/", "companyChat/"].forEach(p => this.db.ref(p + cid).remove().catch(() => {})); if (dead.m.includes(this.uid)) this.say("<b>" + dead.name + "</b> 부도… " + dead.why, "💥"); return; }
+    ev.forEach(([t, a]) => this.log(cid, t, a)); }
+  async tick() { if (!this.db) return; const c = this.state.cos, mine = new Set(this.myCos()); let n = 0; for (const k of Object.keys(c)) { if (!c[k] || !this.needs(c[k]) || (!mine.has(k) && n >= 3)) continue; await this.maintain(k); n++; }
+    for (const k of mine) { const x = this.state.cos[k]; if (x && x.payDay !== kstDay() && Object.values(x.members || {}).some(m => (m.pay || 0) > 0)) await this.payroll(k, true); } }
+  found = async () => { const name = this.state.newName.trim(); if (name.length < 2 || /[.#$\[\]\/]/.test(name)) return this.say("회사 이름은 2~12자, 특수문자 없이"); if (Object.values(this.state.cos).some(c => c && c.name === name)) return this.say("이미 있는 이름이에요"); if (this.myCos().length >= MAXJ) return this.say("회사는 2곳까지만 다닐 수 있어요");
+    if (!(await WJ.addCash(this.uid, -FOUND))) return this.say("설립 자본금 100만준이 필요해요");
+    const ref = this.db.ref("companies").push(), now = Date.now(); await ref.set({ name, sector: "금융", kind: "sec", color: this.state.newColor, ceo: this.uid, ceoN: this.name(), fund: FOUND, loan: 0, ts: now, lastPay: now, upDay: kstDay(), members: { [this.uid]: { n: this.name(), role: "ceo", pay: 0, joined: now } } });
+    WJ.log(this.uid, "game", { text: name + " 설립 자본금", amount: -FOUND }); this.log(ref.key, this.name() + "님이 회사를 세웠어요", FOUND); this.setState({ newName: "", view: ref.key, sub: "home" }); this.say("<b>" + name + "</b> 설립!", "🎉"); };
+  async hire(cid, k, via) { if (this.jobsOf(k) >= MAXJ) { await this.ref(cid).child((via || "apps") + "/" + k).remove(); return this.say("이미 2곳에 다니고 있어요"); } const n = ((this.state.users[k] || {}).name) || "?";
+    const r = await this.tx(cid, x => { if (!x) return; x.members = x.members || {}; if (!x.members[k]) x.members[k] = { n, role: "staff", pay: 0, joined: Date.now() }; if (x.apps) delete x.apps[k]; if (x.invites) delete x.invites[k]; return x; }); if (r.committed) this.log(cid, n + "님 입사", 0); return r.committed; }
+  async deposit(cid) { const a = this.amt(); if (a < 1000) return this.say("1,000준 이상 입력하세요"); if (!(await WJ.addCash(this.uid, -a))) return this.say("현금이 부족해요");
+    const r = await this.tx(cid, x => { if (!x || !x.members[this.uid]) return; x.fund = (x.fund || 0) + a; return x; }); if (!r.committed) { await WJ.addCash(this.uid, a, true); return this.say("입금 실패"); } this.log(cid, this.name() + "님 입금", a); this.setState({ amt: 0 }); this.say(this.F(a) + "준 입금", "💰"); }
+  async propose(cid) { const a = this.amt(), c = this.state.cos[cid]; if (a < 1e4) return this.say("10,000준 이상 입력하세요"); if ((c.loan || 0) + a * (1 + feeOf(c)) > limitOf(c)) return this.say("대출 한도를 넘어요");
+    const r = await this.tx(cid, x => { if (!x || x.prop) return; x.prop = { amt: a, byN: this.name(), ts: Date.now(), votes: { [this.uid]: true } }; return x; }); if (!r.committed) return this.say("이미 투표 중인 대출이 있어요"); this.setState({ amt: 0 }); this.resolve(cid); }
+  async vote(cid, y) { await this.ref(cid).child("prop/votes/" + this.uid).set(!!y); this.resolve(cid); }
+  async resolve(cid) { let out = "", amt = 0; await this.tx(cid, x => { out = ""; if (!x || !x.prop) return; const n = Object.keys(x.members).length, v = x.prop.votes || {}, yes = Object.keys(v).filter(k => v[k] === true && x.members[k]).length, no = Object.keys(v).filter(k => v[k] === false && x.members[k]).length; amt = x.prop.amt;
+      if (yes * 2 > n) { const d = Math.round(amt * (1 + feeOf(x))); if ((x.loan || 0) + d > limitOf(x)) { x.prop = null; return x; } x.fund = (x.fund || 0) + amt; x.loan = (x.loan || 0) + d; x.loanDue = x.loanDue || Date.now() + TERM; x.prop = null; out = "ok"; return x; }
+      if (no * 2 >= n || Date.now() - x.prop.ts > DAY) { x.prop = null; out = "no"; return x; } });
+    if (out === "ok") { this.log(cid, "회사 대출 실행", amt); this.say("과반 찬성! 대출 " + this.F(amt) + "준", "🏦"); } else if (out === "no") this.log(cid, "대출 부결", 0); }
+  async repay(cid) { const a = this.amt() || Infinity; let pay = 0; const r = await this.tx(cid, x => { pay = 0; if (!x || !(x.loan > 0)) return; pay = Math.min(a, x.loan, Math.max(0, x.fund || 0)); if (pay <= 0) return; x.fund -= pay; x.loan -= pay; if (x.loan <= 0) { x.loan = 0; x.loanDue = null; x.loanCh = null; } return x; }); if (!r.committed || !pay) return this.say("갚을 대출이 없거나 자금 부족"); this.log(cid, "대출 상환", -pay); this.setState({ amt: 0 }); }
+  async savePay(cid, k) { const raw = this.state.payEdit[cid + k]; if (raw == null) return; const v = Math.min(k === (this.state.cos[cid] || {}).ceo ? 0 : 1e6, Math.max(0, +String(raw).replace(/\D/g, "") || 0)); if (k === (this.state.cos[cid] || {}).ceo && raw) this.say("회장은 자기 월급을 정할 수 없어요"); else if (+String(raw).replace(/\D/g, "") > 1e6) this.say("월급은 하루 최대 100만준이에요"); await this.ref(cid).child("members/" + k + "/pay").set(v); this.setState(s => { const p = Object.assign({}, s.payEdit); delete p[cid + k]; return { payEdit: p }; }); }
+  async payroll(cid, auto) { const day = kstDay(); let err = "", list = [], short = 0, ceo = null, nm = "";
+    const r = await this.tx(cid, x => { err = ""; list = []; short = 0; if (!x || !x.members) return; if (!auto && x.ceo !== this.uid) { err = "회장만 줄 수 있어요"; return; } if (x.payDay === day) { err = "오늘 월급은 이미 나갔어요"; return; }
+      const M = x.members; list = Object.keys(M).filter(k => k !== x.ceo && (M[k].pay || 0) > 0).map(k => [k, Math.min(1e6, M[k].pay)]); const tot = list.reduce((s, q) => s + q[1], 0); if (!tot) { err = "월급이 정해진 직원이 없어요"; return; }
+      const fromFund = Math.min(Math.max(0, x.fund || 0), tot); x.fund = (x.fund || 0) - fromFund; short = tot - fromFund; ceo = x.ceo; nm = x.name; x.payDay = day; x.lastPay = Date.now(); list.forEach(([k]) => { M[k].paid = Date.now(); }); return x; });
+    if (!r.committed) { if (!auto) this.say(err || "지급 실패"); return; }
+    if (short > 0) { let took = 0, debt = 0; await this.db.ref("users/" + ceo).transaction(u => { if (!u) return u; took = Math.min(Math.max(0, u.cash || 0), short); debt = short - took; u.cash = (u.cash || 0) - took; if (debt > 0) { u.loan = (u.loan || 0) + debt; if (!u.loanDue) u.loanDue = Date.now() + 3 * DAY; } return u; }).catch(() => {});
+      WJ.log(ceo, "loan", { text: nm + " 월급 부족분 회장 부담" + (debt ? " · 빚 " + this.F(debt) + "준" : ""), amount: -took }); this.log(cid, "회사 자금 부족 · 회장이 " + this.F(took) + "준 부담" + (debt ? ", 회장 빚 +" + this.F(debt) + "준" : ""), 0); }
+    for (const [k, p] of list) { await WJ.addCash(k, p, true); WJ.log(k, "daily", { text: nm + " 월급", amount: p }); }
+    this.log(cid, (auto ? "자동 " : "") + "월급 지급 · " + list.length + "명", -list.reduce((s, q) => s + q[1], 0)); if (!auto) this.say("월급 지급 완료", "💸"); }
+  async bonus(cid, k, n) { const a = this.amt(); if (a < 1000) return this.say("개요 탭 금액 칸에 보너스 금액을 넣어 주세요"); const r = await this.tx(cid, x => { if (!x || x.ceo !== this.uid || (x.fund || 0) < a) return; x.fund -= a; return x; }); if (!r.committed) return this.say("자금 부족"); await WJ.addCash(k, a, true); this.log(cid, n + "님 보너스", -a); this.setState({ amt: 0 }); }
+  async checkin(cid) { const c = this.state.cos[cid]; if (striking(c)) return this.say("파업 중이에요", "✊"); const day = kstDay(), rev = this.revOf(c); let err = "";
+    const r = await this.tx(cid, x => { err = ""; if (!x || !x.members[this.uid] || striking(x)) return; if (!x.att || x.att.day !== day) x.att = { day, who: {} }; x.att.who = x.att.who || {}; if (x.att.who[this.uid]) { err = "오늘은 이미 출근했어요"; return; } x.att.who[this.uid] = rev; x.fund = (x.fund || 0) + rev; x.members[this.uid].cnt = (x.members[this.uid].cnt || 0) + 1; return x; });
+    if (!r.committed) return this.say(err || "출근 실패"); this.log(cid, this.name() + "님 출근", rev); WJ.sfx("coin"); this.say("출근 · 회사 수익 +" + this.F(rev) + "준"); }
+  async startProj(cid, P) { const c = this.state.cos[cid], n = c.att && c.att.day === kstDay() ? Object.keys(c.att.who || {}).length : 0, o = odds(c, P, n), now = Date.now();
+    const r = await this.tx(cid, x => { if (!x || x.ceo !== this.uid || x.proj || striking(x) || (x.fund || 0) < P.cost) return; x.fund -= P.cost; x.proj = Object.assign({ id: cid + ":" + now, name: P.name, cost: P.cost, start: now, end: now + P.h * HOUR }, o); return x; });
+    if (!r.committed) return this.say("시작할 수 없어요"); this.log(cid, P.name + " 시작 · 성공률 " + pc(o.rate), -P.cost); this.say(P.name + " 시작!", "🚀"); }
+  async upgrade(cid, k) { let cost = 0; const r = await this.tx(cid, x => { if (!x || x.ceo !== this.uid) return; const lv = facLv(x, k); if (lv >= 3) return; cost = Math.round(FCOST[lv] * (sa(x).fac || 1)); if ((x.fund || 0) < cost) return; x.fund -= cost; x.fac = x.fac || {}; x.fac[k] = lv + 1; return x; }); if (!r.committed) return this.say("자금이 부족해요"); this.log(cid, FAC.find(f => f[0] === k)[1] + " 업그레이드", -cost); }
+  async strikeVote(cid) { let out = "", loss = 0; await this.tx(cid, x => { out = ""; if (!x || x.ceo === this.uid || !x.members[this.uid] || striking(x)) return; x.sv = x.sv || {}; if (x.sv[this.uid]) delete x.sv[this.uid]; else x.sv[this.uid] = true; const staff = Object.keys(x.members).filter(k => k !== x.ceo), yes = Object.keys(x.sv).filter(k => staff.includes(k)).length, thr = sa(x).strike || .5;
+      if (thr > .5 ? yes >= Math.ceil(staff.length * thr) : yes * 2 > staff.length) { loss = this.startStrike(x); x.sv = null; out = "on"; } return x; }); if (out === "on") { this.log(cid, "파업 시작 (12시간)", -loss); this.say("파업 돌입!", "✊"); } }
+  async negotiate(cid) { const c = this.state.cos[cid], staff = Object.keys(c.members).filter(k => k !== c.ceo), cost = Math.max(1e6, staff.reduce((a, k) => a + (c.members[k].pay || 0) * 3, 0)); if (!confirm("협상금 " + this.F(cost) + "준을 주고 파업을 끝낼까요?")) return;
+    const r = await this.tx(cid, x => { if (!x || x.ceo !== this.uid || !striking(x) || (x.fund || 0) < cost) return; x.fund -= cost; x.strike = null; x.lastPay = Date.now(); return x; }); if (!r.committed) return this.say("자금 부족"); const each = Math.floor(cost / Math.max(1, staff.length)); for (const k of staff) await WJ.addCash(k, each, true); this.log(cid, "협상 타결 · 파업 종료", -cost); }
+  async list(cid) { const r = await this.tx(cid, x => { if (!x || x.ceo !== this.uid || x.ipo || net(x) < LIST_MIN || (x.fund || 0) < LIST_FEE) return; x.fund -= LIST_FEE; x.ipo = { ts: Date.now(), p0: this.priceOf(x) }; return x; }); if (!r.committed) return this.say("순자산 1,000만준 이상, 수수료 100만준이 필요해요"); this.log(cid, "회사 증시 상장!", -LIST_FEE); this.say("상장 완료!", "📈"); }
+  async buy(cid) { const q = Math.floor(this.state.shq || 0); if (q < 1) return; const r = await WJC.buy(cid, this.state.cos[cid], q); this.say(r.ok ? this.state.cos[cid].name + " " + q + "주 매수" : r.err, "📈"); }
+  async sell(cid) { const q = Math.floor(this.state.shq || 0); if (q < 1) return; const r = await WJC.sell(cid, this.state.cos[cid], q); this.say(r.ok ? q + "주 매도 · +" + this.F(r.got) + "준" : r.err, "📉"); }
+  async acquire(acq, tid, offered) { const A = this.state.cos[acq], T = this.state.cos[tid]; if (!A || !T) return; const price = offered || Math.max(5e6, Math.round(Math.max(0, net(T)) * 1.5)), hostile = !offered && net(A) >= 2 * Math.max(1, net(T));
+    if (!offered && !hostile) { await this.ref(tid).child("offers/" + acq).set({ price, an: A.name, ts: Date.now() }); return this.say(T.name + "에 인수 제안(" + this.big(price) + ")을 보냈어요", "🤝"); }
+    if (!offered && !confirm(T.name + "을(를) " + this.big(price) + "에 적대적 인수할까요?")) return;
+    const r1 = await this.tx(acq, x => { if (!x || (x.fund || 0) < price) return; x.fund -= price; return x; }); if (!r1.committed) return this.say("회사 자금이 부족해요");
+    let cap = null; const r2 = await this.tx(tid, x => { cap = x; return x ? null : undefined; });
+    if (!r2.committed || !cap) { await this.tx(acq, x => { if (!x) return; x.fund += price; return x; }); return this.say("인수 실패 · 환불"); }
+    await this.tx(acq, x => { if (!x) return; x.fund = (x.fund || 0) + (cap.fund || 0); x.loan = (x.loan || 0) + (cap.loan || 0); if (cap.loan && !x.loanDue) x.loanDue = cap.loanDue || Date.now() + TERM; Object.keys(cap.members || {}).forEach(k => { if (!x.members[k]) x.members[k] = { n: cap.members[k].n, role: "staff", pay: cap.members[k].pay || 0, joined: Date.now() }; }); return x; });
+    const mem = Object.keys(cap.members || {}), each = Math.floor(price / Math.max(1, mem.length)); for (const k of mem) await WJ.addCash(k, each, true); const tp = this.priceOf(cap); for (const k of Object.keys(cap.sh || {})) await WJ.addCash(k, cap.sh[k] * tp, true);
+    ["companyLog/", "companyChat/"].forEach(p => this.db.ref(p + tid).remove().catch(() => {})); this.db.ref("coGrave").push({ name: cap.name, ceoN: cap.ceoN || "", why: A.name + "에 인수됨", ts: Date.now() }); this.log(acq, cap.name + " 인수", -price); this.say("<b>" + cap.name + "</b> 인수 완료!", "🦈"); }
+  async challenge(a, b) { const stake = this.amt(), A = this.state.cos[a], B = this.state.cos[b]; if (stake < 1e6) return this.say("개요 탭 금액 칸에 판돈(100만준 이상)을 넣어 주세요"); if (Object.values(this.state.wars).some(w => w && (w.st === "offer" || w.st === "play") && (w.a === a || w.b === a))) return this.say("진행 중인 대항전이 있어요");
+    const r = await this.tx(a, x => { if (!x || x.ceo !== this.uid || (x.fund || 0) < stake) return; x.fund -= stake; return x; }); if (!r.committed) return this.say("자금 부족"); const ids = Object.keys(WG), g = ids[Math.floor(Math.random() * ids.length)];
+    await this.db.ref("cwars").push({ a, an: A.name, b, bn: B.name, stake, g, st: "offer", ra: this.uid, ran: this.name(), ts: Date.now() }); this.log(a, B.name + "에 대항전 도전", -stake); this.setState({ amt: 0 }); this.say("도전장을 보냈어요", "⚔️"); }
+  async warAccept(id) { const w = this.state.wars[id]; if (!w || w.st !== "offer") return; const r = await this.tx(w.b, x => { if (!x || x.ceo !== this.uid || (x.fund || 0) < w.stake) return; x.fund -= w.stake; return x; }); if (!r.committed) return this.say("자금 부족");
+    const ref = this.db.ref("tables").push(), t0 = Date.now(); await ref.set({ g: w.g, stake: 0, h: w.ra, hn: w.ran, gu: this.uid, gn: this.name(), st: "play", invite: true, p0: Math.random() < .5 ? w.ra : this.uid, seed: Math.floor(Math.random() * 2e9), dl: t0 + 120000, m: [], ts: t0, cw: id, tr: "회사 대항전" });
+    const r2 = await this.db.ref("cwars/" + id).transaction(x => { if (!x || x.st !== "offer") return; x.st = "play"; x.rb = this.uid; x.room = ref.key; return x; }); if (!r2.committed) { ref.remove(); await this.tx(w.b, x => { if (!x) return; x.fund += w.stake; return x; }); return; } location.href = "games.dc.html?room=" + ref.key; }
+  async warDecline(id, why) { const w = this.state.wars[id]; let ok = false; await this.db.ref("cwars/" + id).transaction(x => { ok = false; if (!x || x.st !== "offer") return; x.st = why || "declined"; ok = true; return x; }); if (ok) await this.tx(w.a, x => { if (!x) return; x.fund = (x.fund || 0) + w.stake; return x; }); }
+  async warTick() { const W = this.state.wars, mine = new Set(this.myCos()), now = Date.now();
+    for (const id of Object.keys(W)) { const w = W[id]; if (!w || !(mine.has(w.a) || mine.has(w.b))) continue; if (w.st === "offer" && now - w.ts > HOUR) { await this.warDecline(id, "expired"); continue; } if (w.st !== "play" || !w.room) continue;
+      const R = ((await this.db.ref("tables/" + w.room).once("value").catch(() => null)) || { val: () => null }).val(); if (!R || R.st !== "done") continue; const tok = Math.random().toString(36).slice(2); let win = null;
+      const res = await this.db.ref("cwars/" + id).transaction(x => { if (!x || x.st !== "play") return; x.st = "done"; x.w = R.win === x.ra ? x.a : R.win === x.rb ? x.b : "draw"; x.pay = tok; win = x.w; return x; }); if (!res.committed || (res.snapshot.val() || {}).pay !== tok) continue;
+      if (win === "draw") { for (const k of [w.a, w.b]) await this.tx(k, x => { if (!x) return; x.fund += w.stake; return x; }); } else { await this.tx(win, x => { if (!x) return; x.fund = (x.fund || 0) + w.stake * 2; return x; }); this.log(win, "대항전 승리!", w.stake * 2); } } }
+  sendChat = () => { const t = this.state.chatText.trim(); if (!t || !this.chatRefC) return; this.db.ref("companyChat/" + this.chatRefC).push({ u: this.uid, n: this.name(), t: t.slice(0, 100), ts: Date.now() }); this.setState({ chatText: "" }); };
+  async invest(cid) { const a = this.amt(); if (a < 1e4) return this.say("1만준 이상 입력하세요"); const c = this.state.cos[cid]; if (pfDead(c)) return this.say("청산 중인 펀드예요");
+    if (!(await WJ.addCash(this.uid, -a))) return this.say("현금이 부족해요"); const t = WJ.now(), nm = this.name(); let ok = false;
+    const r = await this.tx(cid, x => { ok = false; if (!x) return; const pf = x.pf = x.pf || { cash: 0, units: 0 }; const u = a / pfPer(pf, t); pf.cash = (pf.cash || 0) + a; pf.units = (pf.units || 0) + u; pf.inv = pf.inv || {}; const m = pf.inv[this.uid] || { u: 0, cost: 0 }; m.u = (m.u || 0) + u; m.cost = (m.cost || 0) + a; m.n = nm; pf.inv[this.uid] = m; ok = true; return x; });
+    if (!r.committed || !ok) { await WJ.addCash(this.uid, a, true); return this.say("투자 실패 · 환불했어요"); }
+    WJ.log(this.uid, "game", { text: c.name + " 펀드 투자", amount: -a }); this.log(cid, nm + "님 펀드 투자", a); this.setState({ amt: 0 }); this.say(this.F(a) + "준 투자", "📈"); }
+  async redeem(cid) { const t = WJ.now(), W = WJ; let got = 0, fee = 0, err = "", nm = "";
+    const r = await this.tx(cid, x => { got = 0; fee = 0; err = ""; const pf = x && x.pf, m = pf && (pf.inv || {})[this.uid]; if (!m || !(m.u > 0)) { err = "투자한 돈이 없어요"; return; } nm = x.name;
+      const per = pfPer(pf, t), val = Math.floor(m.u * per); let need = val - (pf.cash || 0);
+      if (need > 0) { const sv = Math.max(1, pfNav(pf, t) - (pf.cash || 0)); Object.keys(pf.h || {}).forEach(k => { const h = pf.h[k], p = W.price(+k.slice(1), t), q = Math.min(h.q, Math.ceil(h.q * need / sv) + 1); if (q <= 0) return; pf.cash = (pf.cash || 0) + q * p - Math.ceil(q * p * W.TAX.sell); h.q -= q; if (h.q <= 0) delete pf.h[k]; }); }
+      const pay = Math.min(val, Math.max(0, Math.floor(pf.cash || 0))); if (pay <= 0) { err = "펀드에 현금이 없어요"; return; }
+      fee = Math.floor(Math.max(0, pay - (m.cost || 0)) * PERF); got = pay - fee; pf.cash = Math.max(0, (pf.cash || 0) - pay); x.fund = (x.fund || 0) + fee; pf.units = Math.max(0, (pf.units || 0) - m.u); delete pf.inv[this.uid];
+      if (!Object.keys(pf.inv || {}).length || pf.units < 1e-6) { pf.units = 0; pf.inv = null; if (pf.cash > 0) { x.fund += pf.cash; pf.cash = 0; } } return x; });
+    if (!r.committed) return this.say(err || "환매 실패"); await WJ.addCash(this.uid, got, true); WJ.log(this.uid, "game", { text: nm + " 펀드 환매" + (fee ? " · 보수 " + this.F(fee) + "준" : ""), amount: got });
+    this.log(cid, this.name() + "님 환매" + (fee ? " · 운용 보수 +" + this.F(fee) + "준" : ""), -got); this.say("환매 · +" + this.F(got) + "준" + (fee ? " (보수 " + this.F(fee) + "준)" : ""), "💸"); }
+  async ftrade(cid, i, side, all) { const W = WJ; if (!W.marketOpen()) return this.say(W.marketStatus(), "⏰"); const t = W.now(), p = W.price(i, t), c = this.state.cos[cid], key = "s" + i, hq = (((c.pf || {}).h || {})[key] || {}).q || 0;
+    const q = all ? hq : Math.floor(this.state.fqty || 0); if (q < 1) return this.say(all ? "보유 수량이 없어요" : "수량을 입력하세요"); let err = "";
+    const r = await this.tx(cid, x => { err = ""; if (!x || !isMgr(x, this.uid)) { err = "이 증권사 직원만 운용할 수 있어요"; return; } const pf = x.pf; if (!pf) { err = "펀드에 돈이 없어요"; return; } pf.h = pf.h || {}; const h = pf.h[key] || { q: 0, avg: 0 };
+      if (side === "buy") { const cost = q * p + Math.ceil(q * p * W.TAX.buy); if ((pf.cash || 0) < cost) { err = "펀드 현금이 부족해요"; return; } pf.cash -= cost; h.avg = (h.avg * h.q + cost) / (h.q + q); h.q += q; pf.h[key] = h; }
+      else { if (h.q < q) { err = "펀드 보유 수량이 부족해요"; return; } pf.cash = (pf.cash || 0) + q * p - Math.ceil(q * p * W.TAX.sell); h.q -= q; if (h.q <= 0) delete pf.h[key]; else pf.h[key] = h; }
+      return x; });
+    if (!r.committed) return this.say(err || "주문 실패"); WJ.sfx && WJ.sfx("coin"); this.log(cid, this.name() + "님 펀드 " + stockOf(i).name + " " + q + "주 " + (side === "buy" ? "매수" : "매도"), side === "buy" ? -q * p : q * p); this.say(stockOf(i).name + " " + q + "주 " + (side === "buy" ? "매수" : "매도"), side === "buy" ? "📈" : "📉"); }
+  async quit(cid) { const c = this.state.cos[cid]; if (!c) return;
+    if (c.ceo === this.uid) { if (Object.keys(c.members).length > 1) return this.say("회장은 위임한 뒤에 나갈 수 있어요"); if (c.loan > 0 || Object.keys(c.sh || {}).length || Object.keys((c.pf || {}).inv || {}).length) return this.say("대출·주주·펀드 투자자가 있으면 해산할 수 없어요"); if (!confirm("해산할까요? 남은 자금은 내 계좌로 들어와요")) return; let f = 0;
+      const r = await this.tx(cid, x => { f = 0; if (!x || x.ceo !== this.uid) return; f = x.fund || 0; return null; }); if (!r.committed) return; if (f > 0) await WJ.addCash(this.uid, f, true); ["companyLog/", "companyChat/"].forEach(p => this.db.ref(p + cid).remove().catch(() => {})); this.setState({ view: "browse" }); return; }
+    if (!confirm("그만둘까요?")) return; const r = await this.tx(cid, x => { if (!x || !x.members[this.uid]) return; delete x.members[this.uid]; if (x.sv) delete x.sv[this.uid]; return x; }); if (r.committed) { this.db.ref("users/" + this.uid + "/jobs/" + cid).remove().catch(() => {}); this.setState({ view: "browse" }); } }
+  renderVals() {
+    const st = this.state, W = window.WJ, me = this.uid, u = st.user || {}, F = n => this.F(n), cos = st.cos, now = Date.now(), mine = this.myCos().sort((a, b) => (cos[a].ts || 0) - (cos[b].ts || 0));
+    let view = st.view; if (view !== "browse" && view !== "market" && !mine.includes(view)) view = mine[0] || "browse";
+    const c = cos[view] && view !== "browse" && view !== "market" ? cos[view] : null, cid = view; this.cur = c ? cid : null;
+    const isCeo = !!c && c.ceo === me, M = (c && c.members) || {}, nMem = Object.keys(M).length, ids = Object.keys(cos).filter(k => cos[k]).sort((a, b) => net(cos[b]) - net(cos[a])), myCeo = mine.filter(k => cos[k].ceo === me)[0];
+    const out = { cashStr: F(u.cash), myName: this.name(), logout: () => W && W.logout(),
+      tabs: mine.map(k => [k, cos[k].name]).concat([["browse", "회사 찾기 · 만들기"], ["market", "회사 증시"]]).map(([k, l]) => ({ label: l, pick: () => this.setState({ view: k }), bg: view === k ? "#E8F3FF" : "transparent", fg: view === k ? BL : MU })),
+      isCo: !!c, isBrowse: view === "browse", isMarket: view === "market", isCeo, jobN: mine.length,
+      myJobs: mine.map(k => ({ name: cos[k].name, sub: striking(cos[k]) ? "파업 중" : cos[k].neg ? "부도 위기" : cos[k].ceo === me ? "회장" : "직원", c: striking(cos[k]) || cos[k].neg ? UP : MU, pick: () => this.setState({ view: k }) })),
+      offers: ids.filter(k => (cos[k].invites || {})[me] && !(cos[k].members || {})[me]).map(k => ({ name: cos[k].name, yes: async () => { if (mine.length >= MAXJ) return this.say("2곳까지만 다닐 수 있어요"); if (await this.hire(k, me, "invites")) this.setState({ view: k }); }, no: () => this.ref(k).child("invites/" + me).remove() })),
+      rank: ids.filter(k => cos[k].pf && cos[k].pf.units > 1e-9).map(k => [k, pfPer(cos[k].pf, W ? W.now() : now) / NAV0 - 1]).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, r], i) => ({ i: i + 1, name: cos[k].name, v: pctS(r), c: r >= 0 ? UP : BL, bg: ["#FFC342", "#B0B8C1", "#D9925B"][i] || MU })),
+      amtStr: st.amt ? F(st.amt) : "", setAmt: e => this.setState({ amt: +e.target.value.replace(/\D/g, "").slice(0, 12) || 0 }), quick: [["+10만", 1e5], ["+100만", 1e6], ["+1,000만", 1e7], ["+1억", 1e8], ["지우기", 0]].map(([l, v]) => ({ label: l, pick: () => this.setState({ amt: v ? (st.amt || 0) + v : 0 }) })),
+      newName: st.newName, setNewName: e => this.setState({ newName: e.target.value }), found: this.found, newAbil: (SA[st.newSector] || {}).t || "",
+      sectors: (W ? W.SECTORS.filter(s => s !== "전체") : []).map(s => ({ label: s, bg: st.newSector === s ? BL : "rgba(255,255,255,.1)", fg: st.newSector === s ? "#fff" : "#D1D6DB", pick: () => this.setState({ newSector: s }) })),
+      colors: COLORS.map(x => ({ c: x, ring: st.newColor === x ? "0 0 0 3px #191F28, 0 0 0 5px #fff" : "inset 0 0 0 2px rgba(255,255,255,.35)", pick: () => this.setState({ newColor: x }) })),
+      list: ids.map(k => { const x = cos[k], isM = !!(x.members || {})[me], ap = !!(x.apps || {})[me], full = mine.length >= MAXJ, can = myCeo && myCeo !== k && !isM, hos = can && net(cos[myCeo]) >= 2 * Math.max(1, net(x));
+        return { ini: x.name.slice(0, 1), color: x.color || BL, name: x.name, sub: "회장 " + x.ceoN + " · " + LV[lvOf(net(x))][1], info: "펀드 " + (x.pf && x.pf.units > 1e-9 ? pctS(pfPer(x.pf, W ? W.now() : now) / NAV0 - 1) + " · " + this.big(pfNav(x.pf, W ? W.now() : now)) : "투자자 없음") + " · 직원 " + Object.keys(x.members || {}).length + "명" + (x.ipo ? " · 상장" : "") + (striking(x) ? " · 파업 중" : "") + (x.neg ? " · 부도 위기" : ""), ring: isM ? "0 0 0 2px #3182F6" : "none",
+          btn: isM ? "내 회사" : ap ? "지원 취소" : full ? "2곳 근무 중" : "지원하기", bg: isM || full ? "#F2F4F6" : ap ? "#FFF0F2" : BL, fg: isM ? INK : full ? MU : ap ? UP : "#fff",
+          go: () => isM ? this.setState({ view: k, sub: "home" }) : ap ? this.ref(k).child("apps/" + me).remove() : !full && this.ref(k).child("apps/" + me).set({ n: this.name(), ts: Date.now() }), acq: "", acqGo: () => this.acquire(myCeo, k) }; }),
+      grave: st.grave.map(g => ({ name: g.name, sub: "회장 " + g.ceoN + " · " + g.why })),
+      shqStr: String(st.shq || ""), setShq: e => this.setState({ shq: +e.target.value.replace(/\D/g, "").slice(0, 6) || 0 }),
+      stocks: ids.filter(k => cos[k].ipo).map(k => { const x = cos[k], p = this.priceOf(x), p0 = x.ipo.p0 || p, ch = (p - p0) / p0 * 100; return { ini: x.name.slice(0, 1), color: x.color || BL, name: x.name, sub: "내 보유 " + ((x.sh || {})[me] || 0) + "주 · 유통 " + Object.values(x.sh || {}).reduce((a, b) => a + b, 0) + "/" + FLOAT, price: F(p) + "준", chg: (ch >= 0 ? "+" : "") + ch.toFixed(1) + "% (상장가 대비)", chgC: ch >= 0 ? UP : BL, buy: () => this.buy(k), sell: () => this.sell(k) }; }),
+      fq: st.fq, setFq: e => this.setState({ fq: e.target.value }), fqtyStr: String(st.fqty || ""), setFqty: e => this.setState({ fqty: +e.target.value.replace(/\D/g, "").slice(0, 7) || 0 }), sFund: false, fund: { stats: [], holds: [], trades: [], invs: [] },
+      co: { badges: [] }, alerts: [], subs: [], sHome: false, sBiz: false, sFac: false, sStaff: false, sWar: false, sChat: false, coStats: [], att: { list: [] }, ipoCard: { show: false }, hasProp: false, prop: {}, logs: [], proj: {}, projs: [], facs: [], strike: {}, members: [], apps: [], recruits: [], wars: [], rivals: [], chat: [],
+      chatText: st.chatText, setChat: e => this.setState({ chatText: e.target.value }), chatKey: e => { if (e.key === "Enter" && !e.nativeEvent.isComposing) this.sendChat(); }, sendChat: this.sendChat, q: st.q, setQ: e => this.setState({ q: e.target.value }) };
+    out.noStocks = !out.stocks.length;
+    if (!c) return out;
+    const my = M[me] || {}, lvI = lvOf(net(c)), strk = striking(c), day = kstDay(), attW = c.att && c.att.day === day ? c.att.who || {} : {}, attN = Object.keys(attW).length, payTotal = Object.keys(M).reduce((a, k) => a + (M[k].pay || 0), 0), paid = c.payDay === day, due = c.loanDue ? c.loanDue - now : 0;
+    const alerts = [], myWars = Object.keys(st.wars).map(k => [k, st.wars[k]]).filter(([, w]) => w && (w.a === cid || w.b === cid)).sort((a, b) => b[1].ts - a[1].ts);
+    if (c.neg) alerts.push({ t: "부도 위기! 자금이 마이너스예요", sub: Math.ceil((c.neg + NEG_MS - now) / HOUR) + "시간 안에 메우지 않으면 회사가 사라져요", bg: "#FFF0F2", fg: UP });
+    if (strk) alerts.push({ t: "파업 중 · " + Math.ceil((c.strike.on - now) / HOUR) + "시간 남음", sub: "출근 수익 없음 · 사업 불가 · 주가 −30%", bg: "#FFF0F2", fg: UP, b1: isCeo ? "협상금 주고 끝내기" : "", go1: () => this.negotiate(cid) });
+    if (isCeo) Object.keys(c.offers || {}).forEach(a => { if (!cos[a]) return; const o = c.offers[a]; alerts.push({ t: o.an + "의 인수 제안 · " + this.big(o.price), sub: "수락하면 회사가 합쳐지고 직원들은 보상금을 받아요", bg: "#E8F3FF", fg: BL, b1: "합병 수락", go1: () => confirm("합병할까요?") && this.acquire(a, cid, o.price), b2: "거절", go2: () => this.ref(cid).child("offers/" + a).remove() }); });
+    myWars.filter(([, w]) => w.st === "offer" && w.b === cid && isCeo).forEach(([k, w]) => alerts.push({ t: w.an + "의 대항전 도전 · " + this.big(w.stake), sub: WG[w.g] + " · 이기면 " + this.big(w.stake * 2), bg: "#FFF8E6", fg: "#E07B00", b1: "수락하고 대국", go1: () => this.warAccept(k), b2: "거절", go2: () => this.warDecline(k) }));
+    const sub = ["home", "fund", "staff"].includes(st.sub) ? st.sub : "home", S2 = sa(c);
+    const tN = W.now(), pf = c.pf || {}, live = pf.units > 1e-9, navV = pfNav(pf, tN), per = pfPer(pf, tN), ret = per / NAV0 - 1, mgr = isMgr(c, me), myI = (pf.inv || {})[me], myVal = myI ? myI.u * per : 0, myPnl = myI ? myVal - (myI.cost || 0) : 0, mOpen = W.marketOpen();
+    if (live && per < NAV0 * .7) alerts.push({ t: "펀드 " + pctS(ret) + " · 강제 청산 직전", sub: "기준가 " + Math.round(per) + " · 500 밑이면 펀드 청산 + 증권사 부도", bg: "#FFF0F2", fg: UP, b1: "펀드 보기", go1: () => this.setState({ sub: "fund" }) });
+    const fl = st.fq.trim(), fund = { eyebrow: c.name + " 펀드 · " + (live ? "운용 중" : "투자자 모집 중"), nav: Math.round(per).toLocaleString("ko-KR"), ret: pctS(ret), retC: ret >= 0 ? "#FF8A9A" : "#8EC0FF",
+      stats: [{ label: "운용 자산", value: this.big(Math.round(navV)) }, { label: "현금", value: this.big(Math.round(pf.cash || 0)) }, { label: "투자자", value: Object.keys(pf.inv || {}).length + "명" }],
+      barW: Math.max(0, Math.min(100, (per - 500) / 1000 * 100)) + "%", barC: per < 700 ? UP : per < NAV0 ? "#FFC342" : "#00A661", barNote: "1,500 이상이면 가득",
+      warn: live && per < 700 ? "기준가 " + Math.round(per) + " · 500 밑으로 떨어지는 순간 청산돼요" : "",
+      myVal: this.big(Math.round(myVal)), myPnl: myI ? (myPnl >= 0 ? "+" : "") + this.big(Math.round(myPnl)) : "투자 전", myPnlC: myPnl >= 0 ? UP : BL, myCost: myI ? "원금 " + this.big(Math.round(myI.cost || 0)) : "아직 투자 안 했어요",
+      invest: () => this.invest(cid), redeem: () => this.redeem(cid), isMgr: mgr, cash: F(Math.round(pf.cash || 0)) + "준", mkt: mOpen ? "장 열림" : W.marketStatus(), mktC: mOpen ? "#00A661" : UP,
+      holds: Object.keys(pf.h || {}).map(k => { const i = +k.slice(1), h = pf.h[k], p = W.price(i, tN), r2 = h.avg ? p / h.avg - 1 : 0; return { name: stockOf(i).name, sub: h.q + "주 · 평단 " + F(Math.round(h.avg)) + " · 현재 " + F(p), val: this.big(h.q * p), pnl: pctS(r2), pnlC: r2 >= 0 ? UP : BL, can: mgr, sellAll: () => confirm(stockOf(i).name + " " + h.q + "주를 전부 팔까요?") && this.ftrade(cid, i, "sell", true), v: h.q * p }; }).sort((a, b) => b.v - a.v),
+      trades: mgr ? W.STOCKS.filter(x => !fl || x.name.includes(fl) || (x.sector || "").includes(fl)).slice(0, fl ? 30 : 12).map(x => { const p = W.price(x.i, tN), ch = W.change(x.i, tN); return { name: x.name, sub: (x.sector || "") + " · 보유 " + ((((pf.h || {})["s" + x.i]) || {}).q || 0) + "주", price: F(p), chg: (ch >= 0 ? "+" : "") + ch.toFixed(2) + "%", chgC: ch >= 0 ? UP : BL, buy: () => this.ftrade(cid, x.i, "buy"), sell: () => this.ftrade(cid, x.i, "sell") }; }) : [],
+      invs: Object.keys(pf.inv || {}).map(k => { const v = pf.inv[k]; return { n: (v.n || "?") + (k === me ? " (나)" : ""), c: k === me ? BL : INK, share: live ? Math.round(v.u / pf.units * 1000) / 10 + "%" : "", val: this.big(Math.round(v.u * per)), x: v.u }; }).sort((a, b) => b.x - a.x) };
+    fund.noHolds = !fund.holds.length; fund.holdN = fund.holds.length + "종목"; fund.invN = fund.invs.length + "명";
+    return Object.assign(out, {
+      co: { ini: c.name.slice(0, 1), color: c.color || BL, name: c.name, sector: c.sector || "업종 미정", ceoN: c.ceoN, sub: "직원 " + nMem + "명 · " + (isCeo ? "내가 회장" : "내 월급 " + F(my.pay || 0) + "준"), fund: F(c.fund || 0), fundBig: this.big(c.fund || 0), fundFull: F(c.fund || 0) + "준", fundColor: (c.fund || 0) < 0 ? "#FF8A9A" : "#FFC342", loanLine: c.loan ? "대출 " + F(c.loan) + "준 · " + (due > 0 ? Math.ceil(due / DAY) + "일 남음" : "연체 중") : "대출 없음", loanColor: c.loan && due <= 0 ? UP : "#8B95A1",
+        badges: [{ t: LV[lvI][1], bg: LV[lvI][2] }].concat(c.ipo ? [{ t: "상장 " + F(this.priceOf(c)) + "준", bg: "#8B5CF6" }] : [], strk ? [{ t: "파업 중", bg: UP }] : [], c.neg ? [{ t: "부도 위기", bg: UP }] : []) },
+      alerts, nMem,
+      fund, subs: [["home", "개요"], ["fund", "펀드"], ["staff", "직원"]].map(([k, l]) => ({ label: l, pick: () => this.setState({ sub: k }), bg: sub === k ? INK : "transparent", fg: sub === k ? "#fff" : MU })),
+      sHome: sub === "home", sFund: sub === "fund", sBiz: sub === "biz", sFac: sub === "fac", sStaff: sub === "staff", sWar: sub === "war", sChat: sub === "chat",
+      coStats: [{ label: "순자산", value: this.big(net(c)), sub: LV[lvI][1] + " · 출근 수익 ×" + LV[lvI][3], color: net(c) >= 0 ? INK : UP }, { label: "펀드 수익률", value: live ? pctS(ret) : "모집 중", sub: "운용 " + this.big(Math.round(navV)), color: ret >= 0 ? UP : BL }, { label: "하루 고정비", value: this.big(upkeepOf(c)), sub: "매일 자동 차감", color: UP }],
+      att: { count: attN + " / " + nMem + "명", desc: strk ? "파업 중이라 출근해도 수익이 없어요" : "출근하면 증권사에 +" + F(this.revOf(c)) + "준", list: Object.keys(M).map(k => ({ n: M[k].n, bg: attW[k] ? "#E8F3FF" : "#F2F4F6", fg: attW[k] ? BL : MU })), btn: attW[me] ? "오늘 출근 완료" : strk ? "파업 중" : "출근하기", bg: attW[me] || strk ? "#F2F4F6" : BL, fg: attW[me] || strk ? MU : "#fff", go: () => !attW[me] && this.checkin(cid) },
+      deposit: () => this.deposit(cid), propose: () => this.propose(cid), repay: () => this.repay(cid),
+      payTotal: F(payTotal), payNote: paid ? "오늘 월급은 이미 나갔어요" : "매일 자동 지급 · 회사 자금이 모자라면 회장 돈에서, 회장 돈도 없으면 회장 빚으로 나가요", payBtn: paid ? "지급 완료" : "지금 바로 주기", payBtnBg: paid ? "#F2F4F6" : INK, payBtnFg: paid ? MU : "#fff", payroll: () => this.payroll(cid),
+      ipoCard: c.ipo ? { show: true, title: "상장사 · 주가 " + F(this.priceOf(c)) + "준", desc: "주주가 팔면 회사 자금에서 돈이 나가요", btn: "회사 증시 보기", go: () => this.setState({ view: "market" }), bg: "#F2F4F6", fg: INK } : isCeo ? { show: true, title: "회사 증시에 상장하기", desc: "순자산 1,000만준 이상 · 수수료 100만준. 누가 주식을 사면 그 돈이 회사 자금으로 들어와요.", btn: "상장하기", go: () => this.list(cid), bg: "#8B5CF6", fg: "#fff" } : { show: false },
+      hasProp: !!c.prop, prop: c.prop ? (() => { const v = c.prop.votes || {}, y = Object.keys(v).filter(k => v[k] === true && M[k]).length, n = Object.keys(v).filter(k => v[k] === false && M[k]).length; return { amt: F(c.prop.amt), desc: c.prop.byN + "님 제안 · 갚을 돈 " + F(c.prop.amt * (1 + feeOf(c))) + "준 · 7일", count: "찬성 " + y + " · 반대 " + n + " · " + (Math.floor(nMem / 2) + 1) + "명 필요", canVote: v[me] == null, yes: () => this.vote(cid, true), no: () => this.vote(cid, false) }; })() : {},
+      logs: st.logs.map(l => ({ text: l.text, when: new Date(l.ts || 0).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }), amt: l.amount ? (l.amount > 0 ? "+" : "") + F(l.amount) + "준" : "", color: l.amount > 0 ? UP : BL })),
+      leaveLabel: isCeo ? (nMem > 1 ? "회장은 위임 후 퇴사" : "회사 해산하기") : "이 회사 그만두기", leaveCo: () => this.quit(cid),
+      proj: c.proj ? { eyebrow: "진행 중 · 성공률 " + pc(c.proj.rate), title: c.proj.name, desc: "투자금 " + this.big(c.proj.cost) + " · " + Math.max(0, Math.ceil((c.proj.end - now) / 60000)) + "분 뒤 결과", w: Math.min(100, (now - c.proj.start) / (c.proj.end - c.proj.start) * 100) + "%" } : c.lastProj ? { eyebrow: "지난 사업", title: c.lastProj.name + " · " + c.lastProj.lab, desc: (c.lastProj.pay >= 0 ? "+" : "") + this.big(c.lastProj.pay), w: "0%" } : { eyebrow: "사업", title: "진행 중인 사업이 없어요", desc: "회장이 회사 자금을 걸고 시작해요", w: "0%" },
+      projs: PROJ.map(P => { const o = odds(c, P, attN), can = isCeo && !c.proj && !strk && (c.fund || 0) >= P.cost; return { name: P.name, h: P.h + "시간", cost: this.big(P.cost), pJ: pc(o.jp), pS: pc(o.sp), pF: pc(o.fp), pB: pc(o.bp), mJ: o.mJ, mS: o.mS, btn: !isCeo ? "회장만 시작" : c.proj ? "진행 중" : strk ? "파업 중" : (c.fund || 0) < P.cost ? "자금 부족" : "시작하기", bg: can ? BL : "#F2F4F6", fg: can ? "#fff" : MU, go: () => can && this.startProj(cid, P) }; }),
+      abil: S2.t || "특수 능력 없음",
+      facs: FAC.map(([k, nm, eff]) => { const lv = facLv(c, k), cost = lv < 3 ? Math.round(FCOST[lv] * (S2.fac || 1)) : 0, can = isCeo && lv < 3 && (c.fund || 0) >= cost; return { name: nm, eff, lv: lv + " / 3단계", btn: lv >= 3 ? "최고 단계" : this.big(cost) + (isCeo ? "" : " · 회장만"), bg: can ? BL : "#F2F4F6", fg: can ? "#fff" : MU, go: () => can && this.upgrade(cid, k) }; }), upkeep: F(upkeepOf(c)),
+      strike: (() => { const staff = Object.keys(M).filter(k => k !== c.ceo), sv = c.sv || {}, y = Object.keys(sv).filter(k => staff.includes(k)).length; if (strk) return { state: "파업 중", color: UP, desc: "회장이 협상금(월급 3배, 최소 100만)을 주면 끝나요", btn: isCeo ? "협상금 주고 끝내기" : "", go: () => this.negotiate(cid), bg: UP, fg: "#fff" };
+        return { state: "찬성 " + y + " / " + staff.length, color: y ? UP : MU, desc: "직원 과반이 찬성하면 12시간 파업, 증권사 자금 20%가 날아가요. 월급을 3일 안 주면 자동 파업.", btn: isCeo || !staff.length ? "" : sv[me] ? "파업 찬성 취소" : "파업 찬성", go: () => this.strikeVote(cid), bg: sv[me] ? "#F2F4F6" : UP, fg: sv[me] ? "#4E5968" : "#fff" }; })(),
+      members: Object.keys(M).map(k => { const m = M[k], ed = st.payEdit[cid + k]; return { n: m.n + (k === me ? " (나)" : ""), color: k === me ? BL : INK, role: m.role === "ceo" ? "회장" : (c.sv || {})[k] ? "파업 찬성" : "직원", execLabel: m.role === "exec" ? "임원 해제" : "임원 지정", exec: () => this.tx(cid, x => { if (!x || x.ceo !== me || !x.members[k]) return; x.members[k].role = x.members[k].role === "exec" ? "staff" : "exec"; return x; }), sub: "출근 " + (m.cnt || 0) + "회", edit: isCeo, view: !isCeo, payStr: ed != null ? ed : F(m.pay || 0), setPay: e => { const v = e.target.value; this.setState(s => ({ payEdit: Object.assign({}, s.payEdit, { [cid + k]: v }) })); }, savePay: () => this.savePay(cid, k), act: isCeo && k !== me,
+        bonus: () => this.bonus(cid, k, m.n), transfer: () => confirm(m.n + "님에게 회장을 넘길까요?") && this.tx(cid, x => { if (!x || x.ceo !== me) return; x.ceo = k; x.ceoN = m.n; x.members[k].role = "ceo"; x.members[me].role = "staff"; return x; }), kick: () => confirm(m.n + "님을 해고할까요?") && this.tx(cid, x => { if (!x || x.ceo !== me) return; delete x.members[k]; return x; }).then(() => this.db.ref("users/" + k + "/jobs/" + cid).remove()) }; }),
+      apps: Object.keys(c.apps || {}).map(k => ({ n: c.apps[k].n, yes: () => this.hire(cid, k), no: () => this.ref(cid).child("apps/" + k).remove() })),
+      recruits: Object.keys(st.users).filter(k => k !== me && !M[k] && (st.users[k] || {}).name && (!st.q || st.users[k].name.includes(st.q))).slice(0, 30).map(k => { const sent = !!(c.invites || {})[k], full = this.jobsOf(k) >= MAXJ; return { n: st.users[k].name, sub: "다니는 회사 " + this.jobsOf(k) + "곳", btn: sent ? "제안 보냄" : full ? "2곳 근무 중" : "영입 제안", bg: sent || full ? "#F2F4F6" : BL, fg: sent || full ? MU : "#fff", go: () => !sent && !full && this.ref(cid).child("invites/" + k).set({ n: st.users[k].name, ts: Date.now() }) }; }),
+      warStake: F(this.amt()),
+      wars: myWars.slice(0, 12).map(([k, w]) => { const isA = w.a === cid, tag = w.st === "offer" ? (isA ? "응답 대기" : "받은 도전") : w.st === "play" ? "LIVE" : w.st === "done" ? (w.w === "draw" ? "무승부" : w.w === cid ? "승리" : "패배") : "종료"; return { title: "vs " + (isA ? w.bn : w.an) + " · " + (WG[w.g] || w.g), sub: "판돈 " + this.big(w.stake), tag, tagFg: tag === "승리" || tag === "LIVE" ? UP : "#4E5968", b1: w.st === "play" ? "입장" : w.st === "offer" && !isA && isCeo ? "수락" : "", go1: () => w.st === "play" ? (location.href = "games.dc.html?room=" + w.room) : this.warAccept(k), b2: w.st === "offer" && !isA && isCeo ? "거절" : "", go2: () => this.warDecline(k) }; }),
+      rivals: ids.filter(k => k !== cid && !(cos[k].members || {})[me]).slice(0, 20).map(k => ({ name: cos[k].name, sub: "회장 " + cos[k].ceoN + " · 자금 " + this.big(cos[k].fund || 0), go: () => this.challenge(cid, k) })),
+      chat: st.chat.map(m => ({ n: m.u === me ? "나" : m.n, t: m.t, al: m.u === me ? "flex-end" : "flex-start", bg: m.u === me ? BL : "#F2F4F6", fg: m.u === me ? "#fff" : INK }))
+    });
+  }
+}
+</script>
+</body>
+</html>

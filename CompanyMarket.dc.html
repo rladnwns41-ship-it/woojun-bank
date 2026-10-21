@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="game-core.js"></script>
+<script src="company-core.js"></script>
+</helmet>
+<div style="background:#fff;border-radius:22px;padding:20px 20px 12px;display:flex;flex-direction:column;gap:10px;font-family:'Pretendard Variable',Pretendard,sans-serif;color:#191F28">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <div><div style="font-size:18px;font-weight:800">친구 증권사 주식</div><div style="font-size:12px;color:#8B95A1;margin-top:2px">순자산 × 분위기 × 펀드 성과² · 펀드가 벌면 주가가 크게 뛰어요 · 수수료 1%</div></div>
+    <div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px;color:#8B95A1">수량</span><input value="{{ qStr }}" onInput="{{ setQ }}" inputmode="numeric" style="width:84px;height:36px;border:0;border-radius:10px;background:#F2F4F6;font-size:15px;font-weight:800;padding:0 10px;text-align:right;outline:none"><span style="font-size:12px;color:#8B95A1">주</span></div>
+  </div>
+  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="2">
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-top:1px solid #F2F4F6;flex-wrap:wrap">
+      <span style="width:38px;height:38px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;background:{{ r.color }}">{{ r.ini }}</span>
+      <div style="flex:1 1 140px;min-width:0"><div style="font-size:15px;font-weight:800">{{ r.name }}</div><div style="font-size:12px;color:#8B95A1">{{ r.sub }}</div></div>
+      <div style="text-align:right;min-width:90px"><div style="font-size:16px;font-weight:900">{{ r.price }}</div><div style="font-size:12px;font-weight:800;color:{{ r.c }}">{{ r.chg }}</div></div>
+      <div style="display:flex;gap:6px"><button onClick="{{ r.buy }}" style="height:36px;padding:0 14px;border:0;border-radius:10px;background:#F04452;color:#fff;font-size:13px;font-weight:800;cursor:pointer">매수</button><button onClick="{{ r.sell }}" style="height:36px;padding:0 14px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-size:13px;font-weight:800;cursor:pointer">매도</button></div>
+    </div>
+  </sc-for>
+  <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 4px;font-size:13px;color:#8B95A1">아직 상장한 회사가 없어요. 증권사 탭에서 순자산 1,000만준이 넘으면 상장할 수 있어요.</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;720px&quot;,&quot;height&quot;:&quot;auto&quot;}}">
+class Component extends DCLogic {
+  state = { cos: {}, q: 10, t: 0 };
+  async componentDidMount() { while (!window.WJ || !window.WJC) await new Promise(r => setTimeout(r, 50)); await WJ.authReady; if (!WJ.uid()) return; const db = await WJ.ready; this.ref = db.ref("companies"); this.ref.on("value", s => this.setState({ cos: s.val() || {} }), () => {}); this.iv = setInterval(() => this.setState({ t: Date.now() }), 3000); }
+  componentWillUnmount() { this.ref && this.ref.off(); clearInterval(this.iv); }
+  toast(m) { try { WJUI.toast(m, { icon: "🏢", html: true }); } catch (e) {} }
+  renderVals() { const C = window.WJC, W = window.WJ, me = W && W.uid(), cos = this.state.cos, F = n => W ? W.fmt(n) : String(n);
+    const ids = C ? Object.keys(cos).filter(k => cos[k] && cos[k].ipo) : [];
+    return { qStr: String(this.state.q || ""), setQ: e => this.setState({ q: +e.target.value.replace(/\D/g, "").slice(0, 6) || 0 }), empty: !ids.length,
+      rows: ids.map(k => { const c = cos[k], p = C.priceOf(k, c), p1 = C.priceOf(k, c, Date.now() - 3600000), ch = (p - p1) / p1 * 100;
+        return { name: c.name, ini: (c.name || "?").slice(0, 1), color: c.color || "#3182F6", sub: (c.sector || "") + " · 회장 " + c.ceoN + " · 내 보유 " + ((c.sh || {})[me] || 0) + "주", price: F(p) + "준", chg: (ch >= 0 ? "+" : "") + ch.toFixed(2) + "% · 1시간", c: ch >= 0 ? "#F04452" : "#3182F6",
+          buy: async () => { const r = await C.buy(k, c, this.state.q); this.toast(r.ok ? c.name + " " + this.state.q + "주 매수" : r.err); }, sell: async () => { const r = await C.sell(k, c, this.state.q); this.toast(r.ok ? c.name + " " + this.state.q + "주 매도 · +" + F(r.got) + "준" : r.err); } }; }) }; }
+}
+</script>
+</body>
+</html>

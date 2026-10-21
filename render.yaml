@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: wjbank
+    runtime: go
+    plan: free
+    buildCommand: go mod tidy && go build -o app .
+    startCommand: ./app
+    healthCheckPath: /healthz
+    envVars:
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+      - key: CODE_PEPPER
+        generateValue: true
+      - key: FIREBASE_DATABASE_URL
+        value: https://game---6-cde77-default-rtdb.firebaseio.com

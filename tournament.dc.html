@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>우준은행 · 토너먼트</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<script src="tourney.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjblink{50%{opacity:.3}}
+@media (max-width:900px){main{grid-template-columns:minmax(0,1fr)!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">보유 현금</div><div style="font-weight:800;font-size:16px">{{ cashStr }}준</div></div>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+
+<main style="flex:1;width:100%;max-width:1320px;box-sizing:border-box;margin:0 auto;padding:20px 20px 72px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:14px;align-items:start">
+  <section style="min-width:0;display:flex;flex-direction:column;gap:14px">
+
+    <div style="border-radius:26px;padding:26px 28px;background:#191F28;color:#fff;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between">
+      <div style="flex:1 1 320px;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#8EC0FF;letter-spacing:1px"><sc-if value="{{ live }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:#F04452;animation:wjblink 1.4s infinite"></span></sc-if>{{ heroEyebrow }}</div>
+        <div style="font-size:clamp(24px,3vw,34px);font-weight:900;letter-spacing:-1px;margin-top:6px;line-height:1.25;text-wrap:pretty">{{ heroTitle }}</div>
+        <div style="font-size:14px;color:#B0B8C1;margin-top:8px;line-height:1.55">{{ heroSub }}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:18px">
+          <sc-for list="{{ heroBtns }}" as="b" hint-placeholder-count="1"><button onClick="{{ b.onClick }}" style="height:48px;padding:0 20px;border:0;border-radius:14px;font-size:15px;font-weight:700;cursor:{{ b.cursor }};background:{{ b.bg }};color:{{ b.fg }}" style-active="transform:scale(.98)">{{ b.label }}</button></sc-for>
+        </div>
+      </div>
+      <div style="flex:0 1 260px;text-align:right">
+        <div style="font-size:13px;color:#B0B8C1;font-weight:700">{{ prizeLabel }}</div>
+        <div style="font-size:clamp(30px,4vw,44px);font-weight:900;letter-spacing:-1.5px;color:#FFC342;margin-top:4px">{{ prizeStr }}</div>
+        <div style="font-size:12px;color:#8B95A1;margin-top:4px">{{ prizeSub }}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3"><div style="background:#fff;border-radius:18px;padding:16px 18px;min-width:0"><div style="font-size:13px;color:#8B95A1">{{ s.label }}</div><div style="font-size:22px;font-weight:800;margin-top:5px;letter-spacing:-0.5px;color:{{ s.color }}">{{ s.value }}</div><div style="font-size:12px;color:#B0B8C1;margin-top:3px">{{ s.sub }}</div></div></sc-for>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px 20px 22px;min-width:0;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:0 4px 14px"><div style="font-size:18px;font-weight:800">대진표</div><span style="font-size:12px;color:#8B95A1">{{ bracketNote }}</span></div>
+      <sc-if value="{{ noBracket }}" hint-placeholder-val="{{ true }}"><div style="border-radius:16px;background:#F9FAFB;padding:36px 20px;text-align:center;color:#8B95A1;font-size:14px;line-height:1.6">{{ emptyText }}</div></sc-if>
+      <div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:6px">
+        <sc-for list="{{ rounds }}" as="r" hint-placeholder-count="0">
+          <div style="flex:1 1 0;min-width:200px;display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:13px;font-weight:800;color:{{ r.color }};padding:0 4px">{{ r.name }}</div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:12px">
+              <sc-for list="{{ r.matches }}" as="m" hint-placeholder-count="2">
+                <div style="border-radius:16px;background:#F9FAFB;padding:6px;box-shadow:{{ m.ring }}">
+                  <sc-for list="{{ m.rows }}" as="p" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:11px;background:{{ p.bg }}">
+                      <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;font-weight:{{ p.weight }};color:{{ p.color }}">{{ p.name }}</span>
+                      <sc-if value="{{ p.tag }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:11px;font-weight:800;padding:3px 7px;border-radius:6px;background:{{ p.tagBg }};color:{{ p.tagFg }}">{{ p.tag }}</span></sc-if>
+                    </div>
+                  </sc-for>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px 3px">
+                    <span style="font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;background:{{ m.stBg }};color:{{ m.stFg }}">{{ m.status }}</span>
+                    <sc-if value="{{ m.link }}" hint-placeholder-val="{{ false }}"><a href="{{ m.link }}" style="font-size:12px;font-weight:700;color:#3182F6">{{ m.linkLabel }}</a></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <aside class="wj-t-aside" style="min-width:0;display:flex;flex-direction:column;gap:14px">
+    <div style="background:#fff;border-radius:22px;padding:22px">
+      <div style="font-size:14px;color:#4E5968;font-weight:600">{{ myName }}님 토너먼트</div>
+      <div style="font-size:22px;font-weight:800;letter-spacing:-0.6px;margin-top:6px;color:{{ myColor }}">{{ myStatus }}</div>
+      <div style="font-size:13px;color:#8B95A1;margin-top:6px;line-height:1.55">{{ myHint }}</div>
+      <sc-if value="{{ myBtn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ myAct }}" style="width:100%;height:46px;margin-top:14px;border:0;border-radius:13px;background:#3182F6;color:#fff;font-size:15px;font-weight:700;cursor:pointer" style-hover="background:#1B64DA">{{ myBtn }}</button></sc-if>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:18px 14px 10px">
+      <div style="display:flex;justify-content:space-between;padding:0 6px 8px"><div style="font-size:16px;font-weight:800">참가자</div><span style="font-size:12px;color:#8B95A1">{{ playersN }}</span></div>
+      <div style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column">
+        <sc-for list="{{ players }}" as="p" hint-placeholder-count="0">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid #F2F4F6"><span style="flex:1;min-width:0;font-size:14px;font-weight:700;color:{{ p.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.n }}</span><span style="font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;background:{{ p.bg }};color:{{ p.fg }}">{{ p.s }}</span></div>
+        </sc-for>
+        <sc-if value="{{ noPlayers }}" hint-placeholder-val="{{ true }}"><div style="padding:8px 6px 10px;font-size:13px;color:#8B95A1">아직 초대된 사람이 없어요</div></sc-if>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:18px 20px">
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px">역대 우승자</div>
+      <sc-for list="{{ hist }}" as="h" hint-placeholder-count="0">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F2F4F6"><span style="width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;background:#FFF5D6">🏆</span><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">{{ h.n }}</div><div style="font-size:12px;color:#8B95A1">{{ h.sub }}</div></div><span style="font-size:13px;font-weight:800;color:#F04452">{{ h.prize }}</span></div>
+      </sc-for>
+      <sc-if value="{{ noHist }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px;color:#8B95A1">아직 우승자가 없어요</div></sc-if>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:18px 20px">
+      <div style="font-size:16px;font-weight:800;margin-bottom:10px">진행 방식</div>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;color:#4E5968;line-height:1.55">
+        <div style="display:flex;gap:10px"><b style="flex:none;color:#3182F6">1</b><span>매주 목요일 저녁 7시, 접속 중인 사람에게 초대 알림이 가요. 5분 안에 수락하면 바로 5만준을 받아요.</span></div>
+        <div style="display:flex;gap:10px"><b style="flex:none;color:#3182F6">2</b><span>모집이 끝나면 인기 보드게임 하나로 대진표가 만들어져요. 인원이 모자란 자리는 부전승이에요.</span></div>
+        <div style="display:flex;gap:10px"><b style="flex:none;color:#3182F6">3</b><span>대국마다 두 사람 모두 준비 완료를 눌러야 시작해요. 60초 안에 응답이 없거나 기권하면 상대가 올라가요.</span></div>
+        <div style="display:flex;gap:10px"><b style="flex:none;color:#3182F6">4</b><span>무승부면 한 번 재경기, 또 비기면 추첨이에요. 마지막까지 이긴 사람이 1억~10억준 사이에서 무작위로 정해진 상금을 가져가요.</span></div>
+      </div>
+    </div>
+  </aside>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", BL = "#3182F6", MU = "#8B95A1", INK = "#191F28";
+class Component extends DCLogic {
+  state = { user: null, T: null, hist: [], online: 0, t: 0, ready: false };
+  async componentDidMount() {
+    while (!window.WJ || !window.WJT) await new Promise(r => setTimeout(r, 40));
+    await WJ.authReady; const uid = WJ.uid(); if (!uid) { WJ.requireUser(); return; } this.uid = uid;
+    const db = await WJ.ready;
+    this.subs = [
+      [db.ref("users/" + uid), s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); this.setState({ user: u }); }],
+      [db.ref("online"), s => this.setState({ online: WJ.onlineCount(s.val()) })],
+      [db.ref("tourney/cur"), s => this.setState({ T: s.val(), ready: true, err: "" })],
+      [db.ref("tourney/hist").limitToLast(10), s => this.setState({ hist: Object.values(s.val() || {}).reverse() })]
+    ];
+    const denied = e => this.setState({ ready: true, err: String((e && e.code) || e).includes("PERMISSION") || String(e).toLowerCase().includes("permission") ? "rules" : "net" });
+    this.subs.forEach(([r, f]) => r.on("value", f, denied));
+    this.iv = setInterval(() => this.setState({ t: Date.now() }), 1000);
+  }
+  componentWillUnmount() { (this.subs || []).forEach(([r]) => r.off()); clearInterval(this.iv); }
+  renderVals() {
+    const st = this.state, W = window.WJ, J = window.WJT, T = st.T, me = this.uid, u = st.user || {};
+    const F = n => W ? W.fmt(n) : String(n || 0), now = J ? J.now() : Date.now(), GN = id => (J && J.GAMES[id]) || id || "";
+    const nameOf = k => (T && T.p && T.p[k] && T.p[k].n) || "?", ENTRY = J ? J.ENTRY : 50000;
+    const phase = !st.ready ? "load" : st.err ? "err" : !T ? "none" : T.st, prizeTxt = n => n >= 100000000 ? (n / 100000000).toFixed(n % 100000000 ? 1 : 0).replace(/\.0$/, "") + "억준" : F(n) + "준";
+    const P = (T && T.p) || {}, mine = P[me];
+    const nx = J ? J.nextOpen(now) : 0, dleft = nx - now, dd = Math.floor(dleft / 86400000), hh = Math.floor(dleft % 86400000 / 3600000), mm = Math.floor(dleft % 3600000 / 60000);
+    const untilTxt = dd > 0 ? dd + "일 " + hh + "시간 뒤" : hh > 0 ? hh + "시간 " + mm + "분 뒤" : mm + "분 뒤";
+    const openNow = J && J.isOpenTime(now) && (!T || T.week !== J.weekKey(now));
+    const inN = Object.keys(P).filter(k => P[k].s === "in").length, size = (T && T.size) || 0, ri = (T && T.ri) || 0;
+    const R = (T && T.r && T.r[ri]) || [], rName = n => n <= 2 ? "결승" : n + "강", curName = R.length ? rName(R.length * 2) : "";
+    let myM = null; R.forEach(m => { if (m && (m.a === me || m.b === me)) myM = m; });
+    const off = label => ({ label, onClick: () => {}, bg: "rgba(255,255,255,.12)", fg: "#D1D6DB", cursor: "default" });
+    let heroEyebrow = "토너먼트", heroTitle = "", heroSub = "", heroBtns = [], prizeLabel = "우승 상금", prizeStr = "", prizeSub = "";
+    if (phase === "load") { heroTitle = "불러오는 중…"; prizeStr = "—"; }
+    else if (phase === "err") { heroTitle = st.err === "rules" ? "토너먼트 정보를 읽을 권한이 없어요" : "토너먼트 정보를 불러오지 못했어요"; heroSub = st.err === "rules" ? "Firebase 콘솔 → Realtime Database → 규칙에 새 database.rules.json(tourney 경로 포함)을 붙여 넣고 게시하세요." : "연결을 확인하고 새로고침해 주세요."; prizeStr = "—"; }
+    else if (phase === "none" || phase === "done" || phase === "cancel") {
+      heroEyebrow = phase === "done" ? "지난 토너먼트" : "매주 목요일 19:00";
+      heroTitle = phase === "done" ? T.champN + "님이 " + GN(T.g) + " 토너먼트에서 우승했어요" : phase === "cancel" ? (T.why || "토너먼트가 취소됐어요") : openNow ? "곧 토너먼트가 열려요" : "다음 토너먼트는 " + untilTxt;
+      heroSub = openNow ? "접속자가 2명 이상이 되면 바로 초대 알림이 가요. 지금 접속 " + st.online + "명." : "목요일 저녁 7시에 접속해 있으면 초대 알림이 와요. 상금은 1억~10억준 중 무작위로 정해져요.";
+      prizeLabel = phase === "done" ? "받은 상금" : "우승 상금"; prizeStr = phase === "done" ? prizeTxt(T.prize || 0) : "1억~10억준"; prizeSub = phase === "done" ? F(T.prize || 0) + "준 · " + T.n + "명 참가" : "열릴 때 무작위로 정해져요";
+    } else if (phase === "invite") {
+      const sec = Math.max(0, Math.ceil((T.until - now) / 1000)), mi = Math.floor(sec / 60);
+      heroEyebrow = "참가 모집 중 · " + (mi ? mi + "분 " : "") + (sec % 60) + "초"; heroTitle = GN(T.g) + " 토너먼트"; heroSub = "수락하면 바로 " + F(ENTRY) + "준을 받아요. 모집이 끝나면 대진표가 만들어져요.";
+      const s = mine && mine.s;
+      if (!s) heroSub = "접속해 있으면 곧 초대가 와요. 지금 " + inN + "명 참가.";
+      heroBtns = s === "inv" ? [{ label: "거절", onClick: () => J.decline(), bg: "rgba(255,255,255,.12)", fg: "#fff", cursor: "pointer" }, { label: "수락하고 5만준 받기", onClick: () => J.join(), bg: BL, fg: "#fff", cursor: "pointer" }] : [off(s === "in" ? "참가 완료 · 모집이 끝나면 대진표가 나와요" : s === "out" ? "이번 토너먼트는 거절했어요" : s === "late" ? "모집 시간이 지났어요" : "초대를 기다리는 중")];
+      prizeStr = prizeTxt(T.prize || 0); prizeSub = F(T.prize || 0) + "준";
+    } else if (phase === "play") {
+      heroEyebrow = "진행 중 · " + curName; heroTitle = GN(T.g) + " 토너먼트"; heroSub = T.n + "명 참가 · 대국마다 두 사람 모두 준비 완료를 눌러야 시작해요.";
+      prizeStr = prizeTxt(T.prize || 0); prizeSub = F(T.prize || 0) + "준 · " + T.n + "명 참가";
+      const opp = myM ? nameOf(myM.a === me ? myM.b : myM.a) : "", rsec = myM && myM.dl ? Math.max(0, Math.ceil((myM.dl - now) / 1000)) : 0, acc = (myM && myM.acc) || {}, oppK = myM ? (myM.a === me ? myM.b : myM.a) : null;
+      const wasIn = mine && mine.s === "in", lostAny = (T.r || []).some(Rr => (Rr || []).some(m => m && m.w && m.w !== me && (m.a === me || m.b === me)));
+      if (myM && !myM.w && myM.room) { heroSub = curName + " · " + opp + "님과 대국 중이에요. 이기면 다음 라운드로 올라가요."; heroBtns = [{ label: "내 대국 입장", onClick: () => { location.href = "games.dc.html?room=" + myM.room; }, bg: UP, fg: "#fff", cursor: "pointer" }]; }
+      else if (myM && !myM.w && !myM.b) { heroSub = "이번 라운드는 부전승이에요. 다음 라운드를 기다려요."; heroBtns = [off("부전승 · 자동 진출")]; }
+      else if (myM && !myM.w && acc[me] == null) { heroSub = curName + " · 상대 " + opp + "님" + (acc[oppK] === true ? " (준비 완료)" : "") + ". " + (rsec ? rsec + "초 안에 준비 완료를 눌러 주세요." : "시간이 지났어요. 결과를 처리하는 중이에요."); heroBtns = [{ label: "기권", onClick: () => confirm("기권하면 상대가 올라가요. 기권할까요?") && J.respond(false), bg: "rgba(255,255,255,.12)", fg: "#fff", cursor: "pointer" }, { label: "준비 완료" + (rsec ? " · " + rsec + "초" : ""), onClick: () => J.respond(true), bg: BL, fg: "#fff", cursor: "pointer" }]; }
+      else if (myM && !myM.w && acc[me] === true) { heroSub = opp + "님이 준비하길 기다리는 중이에요" + (rsec ? " · " + rsec + "초" : " · 처리 중") + ". 시간 안에 안 누르면 내가 올라가요."; heroBtns = [off("준비 완료 · 상대 기다리는 중")]; }
+      else if (myM && myM.w === me) { heroSub = curName + " 통과! 다른 대국이 끝나면 다음 라운드가 시작돼요."; heroBtns = [off("다음 라운드 대기 중")]; }
+      else if (wasIn && lostAny) { heroSub = "아쉽게 탈락했어요. 대진표에서 남은 대국을 지켜볼 수 있어요."; heroBtns = [off("탈락 · 관전 중")]; }
+      else if (!wasIn) heroBtns = [off("이번 토너먼트는 관전만 할 수 있어요")];
+    }
+    const stats = [
+      { label: "참가자", value: (phase === "play" || phase === "done" ? T.n : inN) + "명", sub: phase === "invite" ? "초대 " + Object.keys(P).length + "명" : "접속 " + st.online + "명", color: INK },
+      { label: "참가 보너스", value: F(ENTRY) + "준", sub: "수락하면 바로 지급", color: BL },
+      { label: "현재 라운드", value: phase === "play" ? curName : phase === "invite" ? "모집 중" : phase === "done" ? "종료" : "—", sub: phase === "play" ? "응답 제한 60초" : GN(T && T.g) || "게임은 자동 선택", color: phase === "play" ? UP : INK }
+    ];
+    const rounds = []; let nR = 0; for (let s2 = size; s2 >= 2; s2 /= 2) nR++;
+    for (let i = 0; i < nR; i++) {
+      const cnt = size / Math.pow(2, i + 1), list = (T.r && T.r[i]) || null, matches = [];
+      for (let j = 0; j < cnt; j++) {
+        const m = list ? list[j] : null, acc = (m && m.acc) || {}, live = m && m.room && !m.w;
+        const row = k => {
+          if (!m) return { name: "미정", color: "#B0B8C1", weight: 600, bg: "transparent", tag: "", tagBg: "", tagFg: "" };
+          if (!k) return { name: m.w === "x" ? "—" : "부전승", color: "#B0B8C1", weight: 600, bg: "transparent", tag: "", tagBg: "", tagFg: "" };
+          const isMe = k === me, won = m.w === k, lost = m.w && !won;
+          const tag = won ? "승" : !m.w && !m.room && acc[k] === true ? "준비" : !m.w && acc[k] === false ? "기권" : "";
+          return { name: nameOf(k) + (isMe ? " (나)" : ""), color: lost ? "#B0B8C1" : isMe ? BL : INK, weight: won || isMe ? 800 : 600, bg: won ? "#fff" : "transparent", tag, tagBg: won ? "#FFF0F2" : tag === "준비" ? "#E8F3FF" : "#F2F4F6", tagFg: won ? UP : tag === "준비" ? BL : MU };
+        };
+        const sec = m && !m.w && !m.room ? Math.max(0, Math.ceil((m.dl - now) / 1000)) : 0;
+        const status = !m ? "대기" : m.w ? (m.why || "종료") : live ? "LIVE" : !m.b ? "부전승" : "준비 중 · " + sec + "초";
+        matches.push({ rows: [row(m && m.a), row(m && m.b)], status, stBg: live ? "#FFF0F2" : m && m.w ? "#F2F4F6" : m ? "#E8F3FF" : "#F2F4F6", stFg: live ? UP : m && m.w ? "#4E5968" : m ? BL : MU,
+          link: live ? "games.dc.html?room=" + m.room : "", linkLabel: m && (m.a === me || m.b === me) ? "입장" : "관전", ring: m && (m.a === me || m.b === me) ? "0 0 0 2px #3182F6" : "none" });
+      }
+      rounds.push({ name: rName(size / Math.pow(2, i)), color: i === ri && phase === "play" ? BL : MU, matches });
+    }
+    const SL = { inv: ["응답 대기", "#F2F4F6", MU], in: ["참가", "#E8F3FF", BL], out: ["거절", "#FFF0F2", UP], late: ["미응답", "#F2F4F6", MU] };
+    const players = Object.keys(P).sort((a, b) => ["in", "inv", "late", "out"].indexOf(P[a].s) - ["in", "inv", "late", "out"].indexOf(P[b].s)).map(k => {
+      let s = SL[P[k].s] || SL.inv;
+      if (phase === "play" || phase === "done") { if (T.champ === k) s = ["우승", "#FFF5D6", "#B07A00"]; else if (P[k].s === "in") { const alive = R.some(m => m && (m.a === k || m.b === k) && (!m.w || m.w === k)); s = alive && phase === "play" ? ["진출", "#E8F3FF", BL] : ["탈락", "#F2F4F6", MU]; } }
+      return { n: P[k].n + (k === me ? " (나)" : ""), color: k === me ? BL : INK, s: s[0], bg: s[1], fg: s[2] };
+    });
+    let myStatus = "참가 전", myColor = INK, myHint = "초대 알림이 오면 수락해서 참가하세요.", myBtn = "", myAct = () => {};
+    const s = mine && mine.s;
+    if (phase === "invite") { myStatus = s === "in" ? "참가 완료" : s === "out" ? "거절함" : "초대 응답 대기"; myColor = s === "in" ? BL : INK; myHint = s === "in" ? "모집이 끝나면 대진표가 나와요." : s === "out" ? "다음 토너먼트에 참가해 보세요." : "수락하면 바로 " + F(ENTRY) + "준을 받아요."; if (!s || s === "inv") { myBtn = "수락하고 5만준 받기"; myAct = () => J.join(); } }
+    else if (phase === "play" && s === "in") {
+      if (myM && !myM.w) { const opp = nameOf(myM.a === me ? myM.b : myM.a); if (!myM.b) { myStatus = "부전승"; myHint = "다음 라운드로 바로 올라가요."; } else if (myM.room) { myStatus = curName + " 대국 중"; myColor = UP; myHint = opp + "님과 대국 중이에요."; myBtn = "대국 입장"; myAct = () => { location.href = "games.dc.html?room=" + myM.room; }; } else { myStatus = curName + " 준비"; myColor = BL; myHint = opp + "님과 대국해요. 두 사람 모두 준비 완료를 누르면 시작돼요."; if ((myM.acc || {})[me] == null) { myBtn = "준비 완료"; myAct = () => J.respond(true); } else myHint = opp + "님이 준비하기를 기다리는 중이에요."; } }
+      else if (myM && myM.w === me) { myStatus = "다음 라운드 대기"; myColor = BL; myHint = "다른 대국이 끝나면 다음 상대가 정해져요."; }
+      else { myStatus = "탈락"; myColor = MU; myHint = "다음 토너먼트에서 다시 도전하세요."; }
+    }
+    else if (phase === "done") { myStatus = T.champ === me ? "우승!" : s === "in" ? "탈락" : "참가 안 함"; myColor = T.champ === me ? UP : INK; myHint = T.champ === me ? "상금 " + F(T.prize) + "준을 받았어요." : "다음 토너먼트를 기다려 주세요."; }
+    return {
+      cashStr: F(u.cash), myName: u.name || "익명", logout: () => W && W.logout(), live: phase === "play" || phase === "invite",
+      heroEyebrow, heroTitle, heroSub, heroBtns, prizeLabel, prizeStr, prizeSub, stats,
+      bracketNote: phase === "play" ? "파란 테두리가 내 대국" : size ? "" : "",
+      noBracket: !size, emptyText: phase === "invite" ? "모집이 끝나면 참가자를 섞어서 대진표를 만들어요" : "토너먼트가 열리면 여기에 대진표가 나와요", rounds,
+      players, playersN: phase === "invite" ? inN + "명 참가 · " + Object.keys(P).length + "명 초대" : Object.keys(P).length ? Object.keys(P).length + "명 초대" : "", noPlayers: players.length === 0,
+      myStatus, myColor, myHint, myBtn, myAct,
+      hist: st.hist.map(h => ({ n: h.champN || "?", sub: GN(h.g) + " · " + (h.n || 0) + "명 · " + new Date(h.fin || 0).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" }), prize: "+" + prizeTxt(h.prize || 0) })), noHist: st.hist.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

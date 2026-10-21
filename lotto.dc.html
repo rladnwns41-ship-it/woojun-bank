@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>우준은행 · 복권</title>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<link rel="stylesheet" href="wj-ui.css">
+<script src="wj-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+button{font-family:inherit;letter-spacing:inherit}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #E5E8EB">
+  <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:28px;padding:0 20px">
+    <a href="trade.dc.html" style="display:flex;align-items:center;gap:8px;color:#191F28;font-weight:800;font-size:19px;letter-spacing:-0.5px;flex:none"><span style="width:28px;height:28px;border-radius:9px;background:#3182F6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">W</span>우준은행</a>
+    <nav style="display:flex;gap:2px;flex:1;overflow-x:auto">
+      <a href="trade.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">거래소</a>
+      <a href="bank.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">내 계좌</a>
+      <a href="games.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">보드게임</a>
+      <a href="tournament.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">토너먼트</a>
+      <a href="estate.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">부동산</a>
+      <a href="company.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">증권사</a>
+      <a href="coin.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">코인</a>
+      <a href="ranking.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">랭킹</a>
+      <a href="hack.dc.html" style="padding:8px 14px;border-radius:10px;color:#6B7684;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:#F2F4F6;color:#191F28">해킹</a>
+      <a href="lotto.dc.html" style="padding:8px 14px;border-radius:10px;color:#191F28;font-weight:700;font-size:15px;white-space:nowrap;background:#F2F4F6">복권</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <div style="text-align:right;line-height:1.25"><div style="font-size:12px;color:#8B95A1">{{ userName }}님 현금</div><div style="font-weight:800;font-size:16px">{{ cashStr }}준</div></div>
+      <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#F2F4F6;color:#4E5968;cursor:pointer;font-size:13px;font-weight:600" style-hover="color:#F04452">로그아웃</button>
+    </div>
+  </div>
+</header>
+<main style="width:100%;max-width:1120px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column;gap:14px">
+  <div style="padding:0 4px">
+    <div style="font-size:28px;font-weight:800;letter-spacing:-0.8px">복권</div>
+    <div style="color:#8B95A1;font-size:15px;margin-top:6px">1장 1만준 · 세 칸이 모두 같으면 당첨이에요. 하루 20장까지.</div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start">
+    <div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:14px">
+      <section style="background:#fff;border-radius:22px;padding:22px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:14px;color:#8B95A1;font-weight:600">현재 잭팟</div>
+          <div style="font-size:36px;font-weight:800;letter-spacing:-1px;margin-top:4px">{{ potStr }}준</div>
+          <div style="font-size:13px;color:#8B95A1;margin-top:4px">한 장 팔릴 때마다 3,000준씩 쌓여요</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;color:#8B95A1">마지막 잭팟</div>
+          <div style="font-size:15px;font-weight:700;margin-top:3px">{{ lastJp }}</div>
+        </div>
+      </section>
+
+      <section style="background:#fff;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <div style="font-size:19px;font-weight:800">{{ cardTitle }}</div>
+          <div style="font-size:13px;color:#8B95A1">오늘 {{ leftToday }}장 남음</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <sc-for list="{{ cells }}" as="c" hint-placeholder-count="3">
+            <button onClick="{{ c.open }}" disabled="{{ c.locked }}" aria-label="{{ c.aria }}" style="aspect-ratio:1/1;border-radius:18px;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:background .2s,transform .15s;background:{{ c.bg }};color:{{ c.fg }}" style-active="transform:scale(.97)">
+              <span style="font-size:clamp(20px,4.6vw,30px);font-weight:800;letter-spacing:-0.8px">{{ c.label }}</span>
+              <span style="font-size:12px;font-weight:600;opacity:.75">{{ c.sub }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="min-height:22px;text-align:center;font-size:15px;font-weight:700;color:{{ resultColor }}">{{ resultText }}</div>
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ revealAll }}" disabled="{{ noReveal }}" style="flex:1;height:54px;border:0;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;background:#F2F4F6;color:{{ revealFg }}">한 번에 긁기</button>
+          <button onClick="{{ buy }}" disabled="{{ buyDisabled }}" style="flex:2;height:54px;border:0;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;background:{{ buyBg }};color:{{ buyFg }}">{{ buyLabel }}</button>
+        </div>
+      </section>
+
+      <section style="background:#fff;border-radius:22px;padding:20px 24px;display:flex;flex-direction:column;gap:4px">
+        <div style="font-size:17px;font-weight:800;margin-bottom:8px">당첨금</div>
+        <sc-for list="{{ prizes }}" as="p" hint-placeholder-count="5">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #F2F4F6;font-size:15px">
+            <span style="color:#4E5968;font-weight:600">{{ p.name }}</span>
+            <span style="font-weight:700">{{ p.amount }}</span>
+          </div>
+        </sc-for>
+      </section>
+    </div>
+
+    <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:14px">
+      <section style="background:#fff;border-radius:22px;padding:20px 14px 12px;display:flex;flex-direction:column">
+        <div style="font-size:17px;font-weight:800;padding:0 10px 8px">최근 당첨</div>
+        <div style="max-height:360px;overflow-y:auto">
+          <sc-for list="{{ wins }}" as="w" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px">
+              <div style="width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:#F2F4F6;color:#4E5968">{{ w.initial }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.name }}</div>
+                <div style="font-size:12px;color:#8B95A1">{{ w.tier }} · {{ w.when }}</div>
+              </div>
+              <div style="font-weight:800;font-size:15px;color:{{ w.color }}">+{{ w.amount }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noWins }}" hint-placeholder-val="{{ false }}"><div style="padding:10px;color:#8B95A1;font-size:14px">아직 당첨자가 없어요</div></sc-if>
+        </div>
+      </section>
+
+      <section style="background:#fff;border-radius:22px;padding:20px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
+        <div><div style="font-size:13px;color:#8B95A1">오늘 산 복권</div><div style="font-size:18px;font-weight:800;margin-top:4px">{{ boughtToday }}장</div></div>
+        <div><div style="font-size:13px;color:#8B95A1">누적 당첨금</div><div style="font-size:18px;font-weight:800;margin-top:4px">{{ wonTotal }}준</div></div>
+      </section>
+    </div>
+  </div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const UP = "#F04452", AC = "#3182F6", MU = "#8B95A1";
+const PRICE = 10000, TO_POT = 3000, LIMIT = 20, POT0 = 1000000, PITY = 12;
+const KST_DAY = () => new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
+// 등수: 큰 등수는 부자일수록 확률↓(가난하면↑), 작은 등수는 모두 같게
+const TIERS = [
+  { id: "jp", name: "잭팟", label: "잭팟", p: 1 / 2500, big: true },
+  { id: "t1", name: "1등", label: "50만", amt: 500000, p: 1 / 300, big: true },
+  { id: "t2", name: "2등", label: "5만", amt: 50000, p: 1 / 30, big: true },
+  { id: "t3", name: "3등", label: "2만", amt: 20000, p: 1 / 12 },
+  { id: "t4", name: "4등", label: "1만", amt: 10000, p: 1 / 6 }
+];
+const LABELS = TIERS.map(t => t.label);
+function draw(mul, miss) {
+  const r = Math.random(), w = mul * mul; let acc = 0;
+  for (const t of TIERS) { acc += t.big ? t.p * w : t.p; if (r < acc) return t.id; }
+  return miss + 1 >= PITY ? "t3" : null;
+}
+function faces(id) {
+  const pick = () => LABELS[Math.floor(Math.random() * LABELS.length)];
+  if (id) { const l = TIERS.find(t => t.id === id).label; return [l, l, l]; }
+  // 꽝: 둘은 같고 하나만 다르게 자주 보여 준다 (아깝다)
+  const a = Math.random() < 0.55 ? (Math.random() < 0.4 ? "잭팟" : "50만") : pick();
+  let b = pick(); while (b === a) b = pick();
+  const out = Math.random() < 0.7 ? [a, a, b] : [a, b, pick()]; if (out[0] === out[1] && out[1] === out[2]) out[2] = LABELS.find(x => x !== a);
+  for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
+  return out;
+}
+const ago = t => { const s = Math.floor((Date.now() - t) / 1000); return s < 60 ? "방금" : s < 3600 ? Math.floor(s / 60) + "분 전" : s < 86400 ? Math.floor(s / 3600) + "시간 전" : Math.floor(s / 86400) + "일 전"; };
+class Component extends DCLogic {
+  state = { user: null, users: {}, pot: POT0, wins: [], ticket: null, busy: false };
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady;
+    const uid = WJ.requireUser(); if (!uid) return; this.uid = uid;
+    const db = await WJ.ready; this.db = db;
+    this.subs = [
+      [db.ref("users/" + uid), s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); this.setState({ user: u }); }],
+      [db.ref("users"), s => this.setState({ users: s.val() || {} })],
+      [db.ref("lotto/pot"), s => this.setState({ pot: s.val() == null ? POT0 : s.val() })],
+      [db.ref("lotto/wins").limitToLast(30), s => { const a = []; s.forEach(c => { a.push(c.val()); }); this.setState({ wins: a.reverse() }); }]
+    ];
+    this.subs.forEach(([r, f]) => r.on("value", f));
+    WJ.presence(uid);
+  }
+  componentWillUnmount() { (this.subs || []).forEach(([r]) => r.off()); }
+  note(m, icon) { window.WJUI && WJUI.toast(m, { icon: icon || "⚠️", html: true }); }
+  my() { const l = (this.state.user && this.state.user.lotto) || {}, today = l.day === KST_DAY(); return { n: today ? l.n || 0 : 0, miss: l.miss || 0, won: l.won || 0 }; }
+  buy = async () => {
+    const st = this.state; if (st.busy || (st.ticket && st.ticket.open.some(o => !o))) return;
+    const me = this.my(); if (me.n >= LIMIT) return this.note("오늘은 " + LIMIT + "장을 다 샀어요");
+    if ((st.user || {}).cash < PRICE) return this.note("현금이 부족해요");
+    this.setState({ busy: true });
+    const mul = WJ.eqMul(st.users, this.uid), id = draw(mul, me.miss);
+    let err = null;
+    const r = await this.db.ref("users/" + this.uid).transaction(u => {
+      if (!u) return u; const day = KST_DAY(), l = u.lotto && u.lotto.day === day ? u.lotto : Object.assign({}, u.lotto, { day, n: 0 });
+      if ((l.n || 0) >= LIMIT) { err = "오늘은 " + LIMIT + "장을 다 샀어요"; return; }
+      if ((u.cash || 0) < PRICE) { err = "현금이 부족해요"; return; }
+      err = null; u.cash -= PRICE; l.n = (l.n || 0) + 1; l.miss = id ? 0 : (l.miss || 0) + 1; u.lotto = l; return u;
+    }).catch(() => ({ committed: false }));
+    if (!r.committed || err) { this.setState({ busy: false }); WJ.sfx("lose"); return this.note(err || "연결을 확인해 주세요"); }
+    let amt = 0;
+    if (id === "jp") { await this.db.ref("lotto/pot").transaction(p => { amt = p == null ? POT0 : p; return POT0; }); }
+    else { await this.db.ref("lotto/pot").transaction(p => (p == null ? POT0 : p) + TO_POT).catch(() => {}); if (id) amt = TIERS.find(t => t.id === id).amt; }
+    if (amt > 0) {
+      await WJ.addCash(this.uid, amt, true);
+      this.db.ref("users/" + this.uid + "/lotto/won").transaction(v => (v || 0) + amt).catch(() => {});
+      if (id !== "t4") this.db.ref("lotto/wins").push({ k: this.uid, n: (st.user || {}).name || "", tier: id, amt, ts: Date.now() }).catch(() => {});
+      if (id === "jp") this.db.ref("lotto/last").set({ n: (st.user || {}).name || "", amt, ts: Date.now() }).catch(() => {});
+    }
+    WJ.log(this.uid, "lotto", { amount: amt - PRICE, text: "복권 " + (id ? TIERS.find(t => t.id === id).name + " 당첨" : "꽝") });
+    WJ.sfx("click");
+    this.setState({ busy: false, ticket: { id, amt, f: faces(id), open: [false, false, false] } });
+  };
+  open(i) {
+    const t = this.state.ticket; if (!t || t.open[i]) return;
+    const open = t.open.slice(); open[i] = true; WJ.sfx("flip");
+    this.setState({ ticket: Object.assign({}, t, { open }) }, () => { if (open.every(Boolean)) this.done(); });
+  }
+  done() {
+    const t = this.state.ticket; if (!t || t.shown) return; this.setState({ ticket: Object.assign({}, t, { shown: true }) });
+    if (t.amt > 0) { WJ.sfx("win"); this.note("<b>" + TIERS.find(x => x.id === t.id).name + " 당첨 +" + WJ.fmt(t.amt) + "준</b>", "🎫"); }
+  }
+  renderVals() {
+    const W = window.WJ, st = this.state, u = st.user || {}, F = n => W ? W.fmt(n) : "0", me = this.my(), t = st.ticket;
+    const all = t && t.open.every(Boolean), pending = t && !all, left = LIMIT - me.n;
+    const cells = [0, 1, 2].map(i => { const o = t && t.open[i], l = t ? t.f[i] : "";
+      const hit = all && t.id && o; return { label: o ? l : "?", sub: o ? (l === "잭팟" ? "JACKPOT" : "준") : "긁기", locked: !t || o,
+        aria: o ? l : (i + 1) + "번 칸 긁기", bg: !o ? "#E5E8EB" : hit ? "#191F28" : "#F9FAFB", fg: !o ? "#8B95A1" : hit ? "#FFFFFF" : "#191F28", open: () => this.open(i) }; });
+    let resultText = "", resultColor = "#191F28";
+    if (pending) resultText = "칸을 눌러 긁어 보세요";
+    else if (all) { if (t.amt > 0) { resultText = TIERS.find(x => x.id === t.id).name + " 당첨 · +" + F(t.amt) + "준"; resultColor = UP; } else { const c = {}; t.f.forEach(x => c[x] = (c[x] || 0) + 1); const two = Object.keys(c).find(k => c[k] === 2); resultText = two ? "아깝다, " + two + " 하나만 더 나왔으면" : "꽝 · 다음 장을 노려 보세요"; resultColor = MU; } }
+    const canBuy = !st.busy && !pending && left > 0 && (u.cash || 0) >= PRICE;
+    const users = st.users, lastRef = st.wins.find(w => w.tier === "jp");
+    return {
+      userName: u.name || "", cashStr: F(u.cash), logout: () => W && W.logout(),
+      potStr: F(st.pot), lastJp: lastRef ? lastRef.n + " · " + F(lastRef.amt) + "준" : "아직 없음",
+      cardTitle: t ? "복권 1장" : "복권을 사면 여기 나와요", leftToday: left, cells, resultText, resultColor,
+      revealAll: () => { const tt = this.state.ticket; if (!tt) return; WJ.sfx("flip"); this.setState({ ticket: Object.assign({}, tt, { open: [true, true, true] }) }, () => this.done()); },
+      noReveal: !pending, revealFg: pending ? "#191F28" : "#B0B8C1",
+      buy: this.buy, buyDisabled: !canBuy, buyBg: canBuy ? AC : "#F2F4F6", buyFg: canBuy ? "#FFFFFF" : "#B0B8C1",
+      buyLabel: st.busy ? "사는 중" : left <= 0 ? "오늘 다 샀어요" : (t && !pending ? "한 장 더 · " : "1장 사기 · ") + "10,000준",
+      prizes: [{ name: "잭팟 3개", amount: "잭팟 전액" }].concat(TIERS.slice(1).map(x => ({ name: x.label + " 3개", amount: F(x.amt) + "준" }))),
+      wins: st.wins.map(w => ({ name: (users[w.k] || {}).name || w.n || "?", initial: ((users[w.k] || {}).name || w.n || "?")[0], tier: (TIERS.find(x => x.id === w.tier) || {}).name || "", when: ago(w.ts), amount: F(w.amt), color: w.tier === "jp" ? UP : "#191F28" })),
+      noWins: st.wins.length === 0,
+      boughtToday: me.n, wonTotal: F(me.won)
+    };
+  }
+}
+</script>
+</body>
+</html>

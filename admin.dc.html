@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우준은행 · 관리자</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%233182F6%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2738%27 font-weight=%27800%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3EW%3C/text%3E%3C/svg%3E">
+<meta name="robots" content="noindex,nofollow">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="game-core.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#F2F4F6;color:#191F28;font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-0.2px}
+a{color:#3182F6;text-decoration:none}a:hover{color:#1B64DA}
+input,button{font-family:inherit;letter-spacing:inherit}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+*::-webkit-scrollbar{width:6px;height:6px}*::-webkit-scrollbar-track{background:transparent;margin:14px 0}*::-webkit-scrollbar-thumb{background:#D1D6DB;border-radius:6px}*::-webkit-scrollbar-thumb:hover{background:#B0B8C1}
+*{scrollbar-width:thin;scrollbar-color:#D1D6DB transparent}
+@keyframes wjmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wjpop{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}18%{transform:translate(-50%,-50%) scale(1.04);opacity:1}30%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(.96);opacity:0}}
+@keyframes wjblink{50%{opacity:.3}}
+@keyframes wjslide{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wjshake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+</style>
+</helmet>
+<div style="min-height:100vh">
+  <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#fff">
+      <form onSubmit="{{ login }}" style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px">
+        <span style="align-self:flex-start;font-size:13px;font-weight:700;padding:5px 10px;border-radius:8px;background:#FFF3E0;color:#E07B00">ADMIN</span>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-0.6px;margin-bottom:10px">우준은행 관리자</div>
+        <input type="email" value="{{ email }}" onInput="{{ setEmail }}" placeholder="관리자 이메일" style="height:58px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:17px;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+        <input type="password" autocomplete="current-password" value="{{ pw }}" onInput="{{ setPw }}" placeholder="Firebase Auth 비밀번호" style="height:58px;border-radius:14px;border:0;background:#F2F4F6;color:#191F28;font-size:17px;padding:0 18px;outline:none" style-focus="box-shadow:inset 0 0 0 2px #3182F6;background:#fff">
+        <sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><div style="color:#F04452;font-size:14px;line-height:1.5">{{ err }}</div></sc-if>
+        <button type="submit" style="height:58px;border:0;border-radius:16px;background:#191F28;color:#fff;font-size:17px;font-weight:700;cursor:pointer">로그인</button>
+        <div style="font-size:13px;color:#8B95A1;line-height:1.6">Firebase Auth 계정과 admin/authorizedUids 권한이 필요합니다.</div>
+      </form>
+    </div>
+  </sc-if>
+  <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
+    <header style="position:sticky;top:0;z-index:20;background:#191F28;color:#fff">
+      <div style="max-width:1320px;margin:0 auto;height:60px;display:flex;align-items:center;gap:16px;padding:0 20px">
+        <div style="font-size:18px;font-weight:800;flex:1">우준은행 <span style="color:#FFB020">관리자</span></div>
+        <div style="font-size:14px;color:#B0B8C1">플레이어 {{ userCount }}명 · 총 현금 {{ totalCash }}준</div>
+        <button onClick="{{ logout }}" style="height:34px;padding:0 12px;border-radius:9px;border:0;background:#333D4B;color:#fff;cursor:pointer;font-size:13px;font-weight:600">나가기</button>
+      </div>
+    </header>
+    <main style="max-width:1320px;margin:0 auto;padding:20px 20px 64px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start">
+      <section style="flex:1 1 360px;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:18px;font-weight:800">출금 요청</div><span style="font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;background:#FFF3E0;color:#E07B00">대기 {{ pendingCount }}건</span></div>
+        <div style="max-height:640px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 0">
+          <sc-for list="{{ wds }}" as="w" hint-placeholder-count="3">
+            <div style="padding:16px;border-radius:16px;background:{{ w.bgc }};display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-weight:700;font-size:16px">{{ w.name }}</div><div style="font-weight:800;font-size:20px">{{ w.amount }}준</div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+                <div style="font-size:13px;color:#8B95A1">{{ w.time }} · <span style="font-weight:700;color:{{ w.stColor }}">{{ w.status }}</span></div>
+                <sc-if value="{{ w.pending }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:6px">
+                    <button onClick="{{ w.reject }}" style="height:36px;padding:0 12px;border-radius:10px;border:0;background:#fff;color:#F04452;font-size:14px;font-weight:700;cursor:pointer">거절·환불</button>
+                    <button onClick="{{ w.pay }}" style="height:36px;padding:0 14px;border-radius:10px;border:0;background:#3182F6;color:#fff;font-size:14px;font-weight:700;cursor:pointer">지급 완료</button>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ wdEmpty }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#8B95A1">요청이 없어요</div></sc-if>
+        </div>
+      </section>
+      <section style="flex:2 1 560px;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="font-size:18px;font-weight:800">플레이어 관리</div>
+          <input value="{{ q }}" onInput="{{ setQ }}" placeholder="닉네임 검색" style="height:40px;width:220px;max-width:100%;border-radius:10px;border:0;background:#F2F4F6;color:#191F28;font-size:14px;padding:0 12px;outline:none">
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:#F9FAFB">
+          <span style="font-size:14px;color:#4E5968;font-weight:600">조정 금액</span>
+          <input value="{{ amtStr }}" onInput="{{ setAmt }}" inputmode="numeric" placeholder="0" style="height:40px;width:170px;border-radius:10px;border:1px solid #E5E8EB;background:#fff;color:#191F28;font-size:16px;font-weight:700;padding:0 12px;outline:none">
+          <sc-for list="{{ quick }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.pick }}" style="height:34px;padding:0 12px;border-radius:999px;border:0;background:#fff;color:#4E5968;font-size:13px;font-weight:600;cursor:pointer;box-shadow:inset 0 0 0 1px #E5E8EB">{{ c.label }}</button>
+          </sc-for>
+          <sc-if value="{{ msg }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;font-weight:700;color:#3182F6">{{ msg }}</span></sc-if>
+        </div>
+        <div style="max-height:640px;overflow-y:auto;display:flex;flex-direction:column;padding:4px 0">
+          <sc-for list="{{ users }}" as="u" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 4px;border-bottom:1px solid #F2F4F6;opacity:{{ u.op }}">
+              <div style="flex:1 1 200px;min-width:0"><div style="font-weight:700;font-size:16px">{{ u.name }} <span style="font-size:12px;color:#8B95A1">{{ u.guestTag }}</span> <span style="font-size:12px;color:#F04452">{{ u.banTag }}</span> <span style="font-size:12px;font-weight:700;color:#E07B00">{{ u.altTag }}</span></div><div style="font-size:13px;color:#8B95A1">현금 {{ u.cash }} · 대출 {{ u.loan }} · 순자산 {{ u.net }}</div><div style="font-size:11px;color:#B0B8C1;margin-top:3px;font-family:ui-monospace,monospace;word-break:break-all">UID {{ u.authUid }} · 브라우저 {{ u.devCount }}개</div></div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button onClick="{{ u.add }}" style="height:36px;padding:0 14px;border-radius:10px;border:0;background:#3182F6;color:#fff;font-size:14px;font-weight:700;cursor:pointer">+ 넣기</button>
+                <button onClick="{{ u.sub }}" style="height:36px;padding:0 14px;border-radius:10px;border:0;background:#FFF0F2;color:#F04452;font-size:14px;font-weight:700;cursor:pointer">− 빼기</button>
+                <button onClick="{{ u.clearLoan }}" style="height:36px;padding:0 12px;border-radius:10px;border:0;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:600;cursor:pointer">대출 탕감</button>
+                <button onClick="{{ u.ban }}" style="height:36px;padding:0 12px;border-radius:10px;border:0;background:#F2F4F6;color:#4E5968;font-size:13px;font-weight:600;cursor:pointer">{{ u.banLabel }}</button>
+                <button onClick="{{ u.altToggle }}" style="height:36px;padding:0 12px;border-radius:10px;border:0;background:#FFF3E0;color:#E07B00;font-size:13px;font-weight:600;cursor:pointer">{{ u.altLabel }}</button>
+                <button onClick="{{ u.banDev }}" style="height:36px;padding:0 12px;border-radius:10px;border:0;background:#191F28;color:#fff;font-size:13px;font-weight:600;cursor:pointer">{{ u.devLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      <section style="flex:1 1 460px;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><div style="font-size:18px;font-weight:800">우준 화폐 발급</div><div style="font-size:13px;color:#8B95A1">사용 {{ curUsed }} / 발급 {{ curTotal }} · 미사용 {{ curOpenAmt }}준</div></div>
+        <div style="font-size:13px;color:#6B7684;line-height:1.6">발급할 때마다 서버가 무작위 코드를 만들어요. 코드는 이 화면에 한 번만 보이니 바로 화폐에 적어 두세요. 플레이어가 내 계좌 · ATM에서 입력하면 입금돼요.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input value="{{ curAmtStr }}" onInput="{{ setCurAmt }}" inputmode="numeric" placeholder="금액" style="height:44px;width:160px;border-radius:10px;border:1px solid #E5E8EB;background:#F9FAFB;font-size:16px;font-weight:700;padding:0 12px;outline:none">
+          <span style="font-size:14px;color:#4E5968;font-weight:600">준 ×</span>
+          <input value="{{ curCnt }}" onInput="{{ setCurCnt }}" inputmode="numeric" style="height:44px;width:64px;border-radius:10px;border:1px solid #E5E8EB;background:#F9FAFB;font-size:16px;font-weight:700;padding:0 12px;outline:none;text-align:center">
+          <span style="font-size:14px;color:#4E5968;font-weight:600">장</span>
+          <button onClick="{{ issue }}" style="height:44px;padding:0 18px;border-radius:10px;border:0;background:#191F28;color:#fff;font-size:14px;font-weight:800;cursor:pointer">{{ issueLabel }}</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ curQuick }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.pick }}" style="height:30px;padding:0 12px;border-radius:15px;border:0;background:#F2F4F6;color:#4E5968;font-size:12px;font-weight:700;cursor:pointer">{{ c.label }}</button></sc-for></div>
+        <sc-if value="{{ hasFresh }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#191F28;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:700;color:#FFB020">방금 발급한 코드 · 지금만 보여요</span><button onClick="{{ copyAll }}" style="height:28px;padding:0 10px;border-radius:8px;border:0;background:#333D4B;color:#fff;font-size:12px;font-weight:700;cursor:pointer">모두 복사</button></div>
+            <sc-for list="{{ fresh }}" as="f" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:#2B3340"><span style="font:800 17px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;color:#fff">{{ f.code }}</span><span style="font-size:14px;font-weight:800;color:#4FD18B;flex:none">{{ f.amount }}준</span></div></sc-for>
+          </div>
+        </sc-if>
+        <div style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column">
+          <sc-for list="{{ curList }}" as="c" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #F2F4F6;font-size:13px;opacity:{{ c.op }}"><span style="font-family:ui-monospace,monospace;color:#4E5968">WJ-····-····-{{ c.hint }}</span><span style="font-weight:800">{{ c.amount }}준</span><span style="flex:1;text-align:right;color:{{ c.stColor }};font-weight:700">{{ c.status }}</span><button onClick="{{ c.void }}" style="height:26px;padding:0 8px;border-radius:7px;border:0;background:#F2F4F6;color:#8B95A1;font-size:11px;font-weight:700;cursor:pointer;visibility:{{ c.voidVis }}">폐기</button></div></sc-for>
+        </div>
+      </section>
+      <section style="flex:1 1 380px;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:18px;font-weight:800">UID · 브라우저 정지</div>
+        <div style="font-size:13px;color:#6B7684;line-height:1.6">정지된 UID는 로그인해도 바로 튕기고, 정지된 브라우저는 게스트로 새로 시작해도 들어올 수 없어요. 브라우저 ID는 정지 화면 아래에도 표시돼요.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <input value="{{ banQ }}" onInput="{{ setBanQ }}" placeholder="UID 또는 브라우저 ID" style="flex:1 1 200px;min-width:0;height:42px;border-radius:10px;border:1px solid #E5E8EB;background:#F9FAFB;font:600 13px ui-monospace,monospace;padding:0 12px;outline:none">
+          <button onClick="{{ banUidBtn }}" style="height:42px;padding:0 12px;border-radius:10px;border:0;background:#FFF0F2;color:#F04452;font-size:13px;font-weight:700;cursor:pointer">UID 정지</button>
+          <button onClick="{{ banDevBtn }}" style="height:42px;padding:0 12px;border-radius:10px;border:0;background:#191F28;color:#fff;font-size:13px;font-weight:700;cursor:pointer">브라우저 정지</button>
+        </div>
+        <div style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column">
+          <sc-for list="{{ banList }}" as="b" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #F2F4F6;font-size:13px"><span style="font-weight:800;color:{{ b.color }};flex:none">{{ b.kind }}</span><span style="flex:1;min-width:0;font-family:ui-monospace,monospace;color:#4E5968;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.id }}</span><span style="color:#8B95A1;flex:none">{{ b.who }}</span><button onClick="{{ b.lift }}" style="height:26px;padding:0 8px;border-radius:7px;border:0;background:#F2F4F6;color:#4E5968;font-size:11px;font-weight:700;cursor:pointer;flex:none">해제</button></div></sc-for>
+          <sc-if value="{{ noBans }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#8B95A1;padding:8px 4px">정지된 UID·브라우저가 없어요</div></sc-if>
+        </div>
+      </section>
+      <section style="flex:1 1 380px;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:18px;font-weight:800">탭 · 세금 설정</div>
+        <div style="display:flex;flex-direction:column;gap:2px;padding:6px 16px;border-radius:14px;background:#F9FAFB">
+          <sc-for list="{{ tabToggles }}" as="tg" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:12px;padding:9px 0">
+              <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:15px">{{ tg.label }}</div><div style="font-size:12px;color:#8B95A1;margin-top:2px">{{ tg.note }}</div></div>
+              <button onClick="{{ tg.toggle }}" aria-label="{{ tg.aria }}" style="flex:none;width:52px;height:30px;border:0;border-radius:15px;padding:3px;cursor:pointer;display:flex;justify-content:{{ tg.justify }};background:{{ tg.track }}"><span style="width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:14px;background:#F9FAFB">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:15px">주식 장 운영</div><div style="font-size:12px;color:#8B95A1;margin-top:2px">{{ mktStatus }}</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:4px;border-radius:12px;background:#EEF0F3">
+            <sc-for list="{{ mktModes }}" as="m" hint-placeholder-count="3">
+              <button onClick="{{ m.pick }}" style="height:36px;border:0;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }};box-shadow:{{ m.sh }}">{{ m.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:14px;background:#F9FAFB">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1;min-width:0"><div style="font-weight:800;font-size:15px">토너먼트 바로 열기</div><div style="font-size:12px;color:#8B95A1;margin-top:2px">{{ tStatus }}</div></div>
+            <span style="flex:none;font-size:12px;font-weight:700;color:#3182F6;background:#EEF5FF;padding:4px 9px;border-radius:999px">접속 {{ tOnline }}명</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button onClick="{{ tOpen }}" style="flex:1;height:40px;border:0;border-radius:11px;background:#3182F6;color:#fff;font-size:14px;font-weight:800;cursor:pointer">지금 열기</button>
+            <button onClick="{{ tCancel }}" style="flex:none;height:40px;padding:0 14px;border:0;border-radius:11px;background:#FFF0F2;color:#F04452;font-size:14px;font-weight:800;cursor:pointer">진행 중 취소</button>
+          </div>
+          <div style="font-size:12px;color:#8B95A1;line-height:1.5">누르면 지금 접속 중인 사람 모두에게 초대 알림이 가요. 목요일 정기 토너먼트는 그대로 열려요.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:14px;background:#F9FAFB">
+          <div style="font-weight:800;font-size:15px">주식 매도 세금</div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#4E5968">거래세 (매도 금액의 %)<input value="{{ taxSell }}" onInput="{{ setTaxSell }}" inputmode="decimal" style="height:42px;border-radius:10px;border:1px solid #E5E8EB;background:#fff;font-size:16px;font-weight:700;padding:0 12px;outline:none"></label>
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#4E5968">양도세 (수익의 %)<input value="{{ taxGain }}" onInput="{{ setTaxGain }}" inputmode="decimal" style="height:42px;border-radius:10px;border:1px solid #E5E8EB;background:#fff;font-size:16px;font-weight:700;padding:0 12px;outline:none"></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12px;color:#8B95A1">현재 {{ taxNow }} · 누적 세수 {{ taxTotal }}준</span><button onClick="{{ saveTax }}" style="flex:none;height:38px;padding:0 16px;border:0;border-radius:10px;background:#3182F6;color:#fff;font-size:14px;font-weight:800;cursor:pointer">세율 저장</button></div>
+        </div>
+      </section>
+      <section style="flex:1 1 460px;background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:18px;font-weight:800">코인 관리</div><div style="font-size:13px;color:#8B95A1">{{ coinCount }}개</div></div>
+        <div style="font-size:13px;color:#6B7684;line-height:1.6">삭제하면 발행자를 뺀 보유자에게 산 값(원가)을 돌려줘요.</div>
+        <div style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column">
+          <sc-for list="{{ coinList }}" as="c" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid #F2F4F6;font-size:13px"><span style="font-weight:800;flex:none">{{ c.sym }}</span><span style="flex:1;min-width:0;color:#4E5968;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.name }} · {{ c.owner }}</span><span style="color:#8B95A1;flex:none">보유 {{ c.holders }}명 · 환불 {{ c.refund }}준</span><button onClick="{{ c.del }}" style="height:28px;padding:0 10px;border-radius:8px;border:0;background:#FFF0F2;color:#F04452;font-size:12px;font-weight:700;cursor:pointer;flex:none">삭제</button></div></sc-for>
+          <sc-if value="{{ noCoins }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#8B95A1;padding:8px 4px">코인이 없어요</div></sc-if>
+        </div>
+      </section>
+      <section style="flex:1 1 100%;background:#fff;border-radius:22px;padding:22px">
+        <div style="font-size:18px;font-weight:800;margin-bottom:8px">최근 송금</div>
+        <div style="max-height:300px;overflow-y:auto;padding:4px 0">
+          <sc-for list="{{ transfers }}" as="t" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;padding:11px 4px;border-bottom:1px solid #F2F4F6;font-size:15px"><span style="font-weight:600">{{ t.text }}</span><span style="font-weight:700">{{ t.amount }}준 <span style="color:#8B95A1;font-weight:500;font-size:13px">{{ t.time }}</span></span></div>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const AC = "#3182F6", UP = "#F04452";
+const W_ONLINE = v => window.WJ && WJ.onlineCount ? WJ.onlineCount(v) : Object.keys(v || {}).length;
+class Component extends DCLogic {
+  state = { ok: false, email: "", pw: "", err: "", users: {}, wds: [], transfers: [], q: "", amt: 100000, msg: "", t: 0, bans: {}, cur: {}, curAmt: 100000, curCnt: 1, fresh: [], issuing: false, banQ: "" };
+  async componentDidMount() {
+    while (!window.WJ) await new Promise(r => setTimeout(r, 30));
+    await WJ.authReady;
+    this.db = await WJ.ready;
+    const user = WJ.auth().currentUser;
+    if (user && (await this.db.ref("admin/authorizedUids/" + user.uid).once("value")).val() === true) this.enter();
+  }
+  componentWillUnmount() { (this.rs || []).forEach(r => r.off()); clearInterval(this.iv); }
+  login = async (e) => {
+    e.preventDefault();
+    try {
+      const cred = await WJ.auth().signInWithEmailAndPassword(this.state.email.trim(), this.state.pw);
+      const allowed = (await this.db.ref("admin/authorizedUids/" + cred.user.uid).once("value")).val() === true;
+      if (!allowed) { await WJ.auth().signOut(); return this.setState({ err: "관리자 권한이 없는 계정입니다" }); }
+      this.enter();
+    } catch (er) { this.setState({ err: "로그인 실패: " + (er.message || er) }); }
+  };
+  enter() {
+    this.setState({ ok: true, t: WJ.now() });
+    const db = this.db;
+    this.rs = [db.ref("users"), db.ref("withdrawals").limitToLast(200), db.ref("transfers").limitToLast(50), db.ref("bans"), db.ref("currency").limitToLast(300)];
+    this.rs[3].on("value", s => this.setState({ bans: s.val() || {} }));
+    this.rs.push(db.ref("tourney/cur"), db.ref("online"));
+    this.rs[this.rs.length - 2].on("value", s => this.setState({ tcur: s.val() }), () => {});
+    this.rs[this.rs.length - 1].on("value", s => this.setState({ tonline: s.val() || {} }), () => {});
+    this.rs[4].on("value", s => this.setState({ cur: s.val() || {} }), () => {});
+    this.rs[0].on("value", s => this.setState({ users: s.val() || {} }));
+    this.rs[1].on("value", s => { const a = []; s.forEach(c => { a.push(Object.assign({ id: c.key }, c.val())); }); this.setState({ wds: a.sort((x, y) => (x.status === "pending" ? 0 : 1) - (y.status === "pending" ? 0 : 1) || y.ts - x.ts) }); });
+    this.rs[2].on("value", s => { const a = []; s.forEach(c => { a.push(c.val()); }); this.setState({ transfers: a.reverse() }); });
+    this.iv = setInterval(() => this.setState({ t: WJ.now() }), 3000);
+    const more = [[db.ref("config"), v => this.setState({ cfg: v || {} })], [db.ref("coins"), v => this.setState({ coins: v || {} })], [db.ref("treasury/tax"), v => this.setState({ taxTotal: v || 0 })]];
+    more.forEach(([r, f]) => { r.on("value", sn => f(sn.val()), () => {}); this.rs.push(r); });
+  }
+  altInfo(k, u) {
+    if (!this.altIdx || this.altIdxFor !== this.state.users) { const idx = {}, fdx = {}; Object.keys(this.state.users).forEach(id => { const x = this.state.users[id]; Object.keys(x.devices || {}).forEach(d => (idx[d] = idx[d] || new Set()).add(id)); Object.keys(x.fps || {}).forEach(d => (fdx[d] = fdx[d] || new Set()).add(id)); }); this.altIdx = idx; this.fpIdx = fdx; this.altIdxFor = this.state.users; }
+    const mates = new Set(), sims = new Set(); Object.keys(u.devices || {}).forEach(d => (this.altIdx[d] || []).forEach(id => id !== k && mates.add(id))); Object.keys(u.fps || {}).forEach(d => (this.fpIdx[d] || []).forEach(id => id !== k && !mates.has(id) && sims.add(id)));
+    const nm = s => [...s].map(id => (this.state.users[id] || {}).name || id).slice(0, 3).join(", ") + (s.size > 3 ? " 외 " + (s.size - 3) + "명" : "");
+    return { altTag: u.altOk ? "부계 허용됨" : u.altOf ? "부계 차단 (" + (u.altOf.n || "?") + ")" : mates.size ? "같은 브라우저: " + nm(mates) : sims.size && sims.size <= 2 ? "비슷한 기기: " + nm(sims) : "", altLabel: u.altOk ? "허용 취소" : "부계 허용",
+      altToggle: async () => { const on = !u.altOk; await this.db.ref("users/" + k + "/altOk").set(on || null); if (on) await this.db.ref("users/" + k + "/altOf").remove(); this.flash(u.name + (on ? " 부계 허용" : " 허용 취소")); } };
+  }
+  denied(e) { return /permission/i.test(String(e && (e.code || e.message))) ? "저장 권한이 없어요 · Firebase 규칙에 config를 추가하세요" : "저장하지 못했어요"; }
+  async saveTax(sellS, gainS) {
+    const sell = parseFloat(sellS), gain = parseFloat(gainS);
+    if (!(sell >= 0 && sell <= 10) || !(gain >= 0 && gain <= 90)) return this.flash("거래세 0~10%, 양도세 0~90% 사이로 적어 주세요");
+    try { await this.db.ref("config/tax").update({ sell: Math.round(sell * 1000) / 100000, gain: Math.round(gain * 100) / 10000 }); }
+    catch (e) { return this.flash(this.denied(e)); }
+    this.setState({ taxSellIn: undefined, taxGainIn: undefined }); this.flash("세율 저장: 거래세 " + sell + "% · 양도세 " + gain + "%");
+  }
+  async delCoinAdmin(id) {
+    const c = (this.state.coins || {})[id]; if (!c) return;
+    const refunds = Object.keys(c.h || {}).filter(k => k !== c.by && (c.h[k] || 0) > 0).map(k => [k, Math.round((c.cb || {})[k] || 0)]), total = refunds.reduce((a, [, v]) => a + v, 0);
+    if (!confirm(c.sym + " 코인을 삭제할까요?\n보유자 " + refunds.length + "명에게 " + WJ.fmt(total) + "준을 돌려줘요.")) return;
+    await this.db.ref("coins/" + id).remove();
+    for (const [k, v] of refunds) if (v > 0) { await this.db.ref("users/" + k + "/cash").transaction(x => (x || 0) + v); WJ.log(k, "coin", { amount: v, text: c.sym + " 코인 삭제(관리자) · 환불" }); }
+    this.db.ref("coinTx/" + id).remove().catch(() => {}); this.db.ref("coinChat/" + id).remove().catch(() => {});
+    this.flash(c.sym + " 코인 삭제");
+  }
+  async setBan(kind, id, on, who) {
+    id = (id || "").trim(); if (!id || /[.#$\[\]\/]/.test(id)) return this.flash("ID를 확인하세요");
+    await this.db.ref("bans/" + kind + "/" + id).set(on ? { t: Date.now(), who: who || "" } : null);
+    this.flash((kind === "uids" ? "UID " : "브라우저 ") + (on ? "정지" : "해제"));
+  }
+  async issue() {
+    const st = this.state; if (st.issuing) return; const amount = Math.floor(st.curAmt), count = Math.max(1, Math.min(50, Math.floor(+st.curCnt || 1)));
+    if (!(amount >= 1000)) return this.flash("1,000준 이상만 발급할 수 있어요");
+    this.setState({ issuing: true });
+    try { const r = await WJ.api("admin/currency/issue", { amount, count }); this.setState({ fresh: r.codes.map(code => ({ code, amount })) }); this.flash(count + "장 발급"); }
+    catch (e) { this.flash(e.message); } finally { this.setState({ issuing: false }); }
+  }
+  flash(msg) { this.setState({ msg }); clearTimeout(this.mt); this.mt = setTimeout(() => this.setState({ msg: "" }), 2500); }
+  async adjust(k, sign) {
+    const a = Math.floor(this.state.amt) * sign; if (!a) return;
+    await this.db.ref("users/" + k + "/cash").transaction(c => (c || 0) + a);
+    WJ.log(k, "admin", { amount: a, text: a > 0 ? "관리자 지급" : "관리자 회수" });
+    this.flash(`${this.state.users[k].name} ${WJ.signed(a)}`);
+  }
+  tOpen = async () => {
+    const c = this.state.tcur; if (c && (c.st === "invite" || c.st === "play")) return this.flash("이미 토너먼트가 진행 중이에요");
+    if (!W_ONLINE(this.state.tonline)) return this.flash("접속 중인 사람이 없어요");
+    await this.db.ref("tourney/force").set(Date.now()); this.flash("토너먼트를 열었어요 · 접속자에게 초대가 가요");
+  };
+  tCancel = async () => {
+    const c = this.state.tcur; if (!c || !(c.st === "invite" || c.st === "play")) return this.flash("진행 중인 토너먼트가 없어요");
+    await this.db.ref("tourney/cur").update({ st: "cancel", why: "관리자가 토너먼트를 취소했어요", fin: Date.now() }); await this.db.ref("tourney/force").remove(); this.flash("토너먼트를 취소했어요");
+  };
+  renderVals() {
+    const st = this.state, W = window.WJ, F = n => W ? W.fmt(n) : String(n);
+    const tc = st.tcur, mk = (st.cfg && st.cfg.market) || "";
+    const mktVals = { mktStatus: mk === "open" ? "특별 개장 중 · 요일 상관없이 거래돼요" : mk === "closed" ? "강제 마감 중 · 아무도 거래 못 해요" : "자동 · 수·토·일 휴장" + (W && W.marketOpen && !W.marketOpen() ? " (지금 마감)" : " (지금 거래 가능)"),
+      mktModes: [["", "자동"], ["open", "장 열기"], ["closed", "장 마감"]].map(([v, label]) => ({ label, bg: mk === v ? (v === "closed" ? "#F04452" : v === "open" ? "#00A661" : "#fff") : "transparent", fg: mk === v ? (v ? "#fff" : "#191F28") : "#6B7684", sh: mk === v ? "0 1px 3px rgba(0,0,0,.12)" : "none",
+        pick: async () => { try { await this.db.ref("config/market").set(v || null); this.flash(label + (v ? "으로 바꿨어요" : " 모드로 돌렸어요")); } catch (e) { this.flash(this.denied ? this.denied(e) : e.message); } } })) };
+    const tVals = { tOnline: W_ONLINE(st.tonline), tOpen: this.tOpen, tCancel: this.tCancel, tStatus: !tc ? "아직 연 적 없어요" : tc.st === "invite" ? "모집 중 · " + Object.keys(tc.p || {}).length + "명 초대됨" + (tc.dev ? " (수동)" : "") : tc.st === "play" ? "대국 진행 중" + (tc.dev ? " (수동)" : "") : tc.st === "done" ? "지난 대회 종료 · 우승 " + (tc.champN || "-") : "지난 대회 취소됨" };
+    const keys = Object.keys(st.users);
+    const users = keys.filter(k => (st.users[k].name || "").includes(st.q.trim())).map(k => { const u = st.users[k]; return {
+      name: u.name || "", cash: F(u.cash), loan: F(u.loan), net: W && st.t ? F(W.netWorth(u, st.t)) : "-", banTag: u.banned ? "정지됨" : "", banLabel: u.banned ? "정지 해제" : "정지", op: u.banned ? 0.5 : 1,
+      add: () => this.adjust(k, 1), sub: () => this.adjust(k, -1),
+      clearLoan: () => { this.db.ref("users/" + k + "/loan").set(0); this.flash(`${u.name} 대출 탕감`); },
+      ...this.altInfo(k, u),
+      guestTag: u.guest ? "게스트" : "", authUid: u.authUid || k, devCount: Object.keys(u.devices || {}).length,
+      devLabel: Object.keys(u.devices || {}).some(d => (st.bans.devices || {})[d]) ? "브라우저 해제" : "브라우저 정지",
+      banDev: async () => { const ds = Object.keys(u.devices || {}); if (!ds.length) return this.flash("기록된 브라우저가 없어요"); const on = !ds.some(d => (st.bans.devices || {})[d]); for (const d of ds) await this.db.ref("bans/devices/" + d).set(on ? { t: Date.now(), who: u.name } : null); this.flash(u.name + " 브라우저 " + ds.length + "개 " + (on ? "정지" : "해제")); },
+      ban: async () => { const on = !u.banned; await this.db.ref("users/" + k + "/banned").set(on); await this.db.ref("bans/uids/" + (u.authUid || k)).set(on ? { t: Date.now(), who: u.name } : null); } }; }).sort((a, b) => a.name.localeCompare(b.name));
+    const CK = Object.keys(st.cur), CV = CK.map(id => Object.assign({ id }, st.cur[id])).sort((x, y) => y.createdAt - x.createdAt);
+    const banList = ["uids", "devices"].flatMap(kind => Object.keys(st.bans[kind] || {}).map(id => ({ kind: kind === "uids" ? "UID" : "브라우저", color: kind === "uids" ? UP : "#191F28", id, who: (st.bans[kind][id] || {}).who || "", lift: () => this.setBan(kind, id, false) })));
+    const SW = { pending: ["대기중", "#E07B00"], paid: ["지급완료", AC], rejected: ["거절·환불", UP] };
+    const wds = st.wds.map(w => { const s = SW[w.status] || SW.pending; return { name: w.name, amount: F(w.amount), time: new Date(w.ts).toLocaleString("ko-KR"), status: s[0], stColor: s[1], pending: w.status === "pending", bgc: w.status === "pending" ? "#FFF8EB" : "#F9FAFB",
+      pay: () => this.db.ref("withdrawals/" + w.id).update({ status: "paid", doneAt: Date.now() }),
+      reject: async () => { await this.db.ref("withdrawals/" + w.id).update({ status: "rejected", doneAt: Date.now() }); await this.db.ref("users/" + w.uid + "/cash").transaction(c => (c || 0) + w.amount); W.log(w.uid, "admin", { amount: w.amount, text: "출금 거절 환불" }); } }; });
+    const cfg = st.cfg || {}, tabs = cfg.tabs || {}, hackOn = cfg.hackEnabled !== false, tx = cfg.tax || {}, sellP = +((Number.isFinite(tx.sell) ? tx.sell : 0.003) * 100).toFixed(3), gainP = +((Number.isFinite(tx.gain) ? tx.gain : 0.15) * 100).toFixed(2);
+    const coins = st.coins || {}, coinList = Object.keys(coins).map(id => { const c = coins[id], hs = Object.keys(c.h || {}).filter(k => k !== c.by && (c.h[k] || 0) > 0); return { ts: c.ts || 0, sym: c.sym || "?", name: c.name || "", owner: c.byn || "", holders: hs.length, refund: F(hs.reduce((a, k) => a + Math.round((c.cb || {})[k] || 0), 0)), del: () => this.delCoinAdmin(id) }; }).sort((a, b) => b.ts - a.ts);
+    const settings = {
+      tabToggles: [["trade", "거래소", "주식 거래"], ["bank", "내 계좌", "송금 · 출금 · 대출 · 화폐 교환"], ["games", "보드게임", "모든 대국"], ["tournament", "토너먼트", "목요일 토너먼트 · 초대 알림"], ["estate", "부동산", "지도 매매 · 월세 · 보유세"], ["company", "증권사", "증권사 · 펀드 운용 · 증권사 주식"], ["coin", "코인", "코인 발행 · 거래"], ["ranking", "랭킹", "부자 순위"], ["hack", "해킹", "켜져 있으면 월·수요일에 열려요"], ["lotto", "복권", "긁는 복권 · 잭팟"]].map(([k, label, desc]) => { const on = k === "hack" ? hackOn && tabs.hack !== false : tabs[k] !== false;
+        return { label, note: on ? "켜짐 · " + desc : "꺼짐 · 접속하면 닫힘 안내가 떠요", aria: label + " 켜기·끄기", justify: on ? "flex-end" : "flex-start", track: on ? "#00A661" : "#D1D6DB",
+          toggle: async () => { try { await this.db.ref("config/tabs/" + k).set(on ? false : null); if (k === "hack" && !on) await this.db.ref("config/hackEnabled").remove(); this.flash(label + (on ? " 끔" : " 켬")); } catch (e) { this.flash(this.denied(e)); } } }; }),
+      taxSell: st.taxSellIn ?? String(sellP), taxGain: st.taxGainIn ?? String(gainP), setTaxSell: e => this.setState({ taxSellIn: e.target.value.replace(/[^0-9.]/g, "") }), setTaxGain: e => this.setState({ taxGainIn: e.target.value.replace(/[^0-9.]/g, "") }),
+      saveTax: () => this.saveTax(st.taxSellIn ?? String(sellP), st.taxGainIn ?? String(gainP)),
+      taxNow: "거래세 " + sellP + "% · 양도세 " + gainP + "%", taxTotal: F(st.taxTotal || 0),
+      coinList, coinCount: coinList.length, noCoins: coinList.length === 0
+    };
+    return {
+      ...settings, ...tVals, ...mktVals,
+      locked: !st.ok, unlocked: st.ok, email: st.email, setEmail: e => this.setState({ email: e.target.value }), pw: st.pw, setPw: e => this.setState({ pw: e.target.value }), err: st.err, login: this.login,
+      logout: () => WJ.logout(),
+      userCount: keys.length, totalCash: F(keys.reduce((s, k) => s + (st.users[k].cash || 0), 0)),
+      wds, wdEmpty: wds.length === 0, pendingCount: st.wds.filter(w => w.status === "pending").length,
+      q: st.q, setQ: e => this.setState({ q: e.target.value }), amtStr: st.amt ? F(st.amt) : "", setAmt: e => this.setState({ amt: +e.target.value.replace(/\D/g, "") || 0 }),
+      quick: [["1만", 1e4], ["10만", 1e5], ["100만", 1e6], ["1000만", 1e7]].map(([label, v]) => ({ label, pick: () => this.setState({ amt: v }) })),
+      msg: st.msg, users, banList, noBans: !banList.length, banQ: st.banQ, setBanQ: e => this.setState({ banQ: e.target.value }),
+      banUidBtn: () => this.setBan("uids", st.banQ, true, "직접 입력"), banDevBtn: () => this.setBan("devices", st.banQ, true, "직접 입력"),
+      curAmtStr: st.curAmt ? F(st.curAmt) : "", setCurAmt: e => this.setState({ curAmt: +e.target.value.replace(/\D/g, "") || 0 }), curCnt: String(st.curCnt), setCurCnt: e => this.setState({ curCnt: e.target.value.replace(/\D/g, "").slice(0, 2) }),
+      curQuick: [["1만", 1e4], ["5만", 5e4], ["10만", 1e5], ["100만", 1e6]].map(([label, v]) => ({ label, pick: () => this.setState({ curAmt: v }) })),
+      issue: () => this.issue(), issueLabel: st.issuing ? "발급 중" : "발급하기", hasFresh: st.fresh.length > 0, fresh: st.fresh,
+      copyAll: () => { try { navigator.clipboard.writeText(st.fresh.map(f => f.code + "  " + F(f.amount) + "준").join("\n")); this.flash("복사했어요"); } catch (e) {} },
+      curTotal: CV.length, curUsed: CV.filter(c => c.usedBy).length, curOpenAmt: F(CV.filter(c => !c.usedBy && !c.void).reduce((t, c) => t + (c.amount || 0), 0)),
+      curList: CV.slice(0, 120).map(c => ({ hint: c.hint || "????", amount: F(c.amount), status: c.void ? "폐기됨" : c.usedBy ? (c.usedName || "?") + " 사용 · " + new Date(c.usedAt).toLocaleDateString("ko-KR") : "미사용", stColor: c.void ? "#B0B8C1" : c.usedBy ? AC : "#00A86B", op: c.void ? .5 : 1, voidVis: !c.usedBy && !c.void ? "visible" : "hidden", void: async () => { try { await WJ.api("admin/currency/void", { id: c.id }); this.flash("폐기했어요"); } catch (e) { this.flash(e.message); } } })),
+      transfers: st.transfers.map(t => ({ text: `${t.fromName} → ${t.toName}`, amount: F(t.amount), time: new Date(t.ts).toLocaleTimeString("ko-KR") }))
+    };
+  }
+}
+</script>
+</body>
+</html>
