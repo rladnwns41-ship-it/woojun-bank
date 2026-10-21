@@ -381,4 +381,6 @@
     db.ref("online").once("value").then(o => { const v = o.val() || {}, t = srvNow(); Object.keys(v).forEach(k => { if (k !== u && (!v[k] || !v[k].t || t - v[k].t > 300000)) db.ref("online/" + k).remove().catch(() => {}); }); }).catch(() => {});
   }
   window.WJ = { eqMul, eqTax, eqHack, boost, tabOn, MIN_HOLD, FP, deviceOwner, isLinked, CONFIG, hackDisabled, TAX, taxOf, hackOpen, kstWeekday, LIMIT, limitState, limits, prevClose, DID, api, guestLogin, isGuest, collectLoan, LOAN_TERM, LOAN_PENALTY, npcFeed, presence, liveOnline, onlineCount, JP0: 10000000, hk: (i) => "s" + i, ready, authReady, auth: () => _auth, activateAccount, setAccountKey, db: () => _db, STOCKS, SECTORS, price, now, open, change, marketOpen, marketStatus, news, fmt, signed, pct, holdingsValue, netWorth, uid, requireUser, logout, keyOf, addCash, log, sfx, confetti, START_CASH: 1000000, LOAN_LIMIT: 5000000, LOAN_FEE: 0.1, YOUTH, youthState, stockAt: i => STOCKS[i] || { i, name: "?", code: "-", sector: "" } };
+  // 모든 탭 + 관리자에서 같은 실시간 이벤트를 표시한다.
+  load("live-event.js?v=20261022").catch(e => console.warn("이벤트 UI를 불러오지 못했어요", e));
 })();
