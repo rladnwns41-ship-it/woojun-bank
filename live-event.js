@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   if (window.WJLiveEvent) return;
-  window.WJLiveEvent = { version: "20261022-messenger" };
+  window.WJLiveEvent = { version: "20261022-question-window" };
   const W = window.WJ;
   if (!W) return;
   const isAdminPage = /(?:^|\/)admin\.dc\.html$/.test(location.pathname);
@@ -11,9 +11,13 @@
     *{box-sizing:border-box} [hidden]{display:none!important} button,input,textarea,select{font:inherit} button{cursor:pointer;border:0;border-radius:11px;background:#eef2f7;color:#344054;padding:10px 14px;font-weight:700}button:hover{filter:brightness(.96)}button:disabled{cursor:wait;opacity:.5}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8ebfff;outline-offset:2px}
     .primary{background:#3182f6;color:white}.danger{background:#fff0f2;color:#d92d4c}.muted{color:#6b7684;font-size:12px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.spread{justify-content:space-between}.stack{display:flex;flex-direction:column;gap:12px}.pill{font-size:11px;font-weight:800;border-radius:30px;background:#e8f3ff;color:#1765ce;padding:4px 9px}.hot{background:#fff1e6;color:#b54708}
     h2,h3,p{margin:0}h2{font-size:20px}h3{font-size:16px}input:not([type=checkbox]):not([type=radio]),textarea,select{width:100%;padding:11px;border:1px solid #dbe1e8;border-radius:10px;background:white;color:#191f28;min-width:0}textarea{resize:vertical}label{display:block}input[type=checkbox]{width:18px;height:18px;flex:none;accent-color:#3182f6}.box{padding:14px;background:#f7f9fc;border-radius:13px}.wrap{white-space:pre-wrap;overflow-wrap:anywhere}.error{color:#d92d4c;font-size:13px;min-height:20px}
-    .panel{position:fixed;inset:auto 20px calc(78px + env(safe-area-inset-bottom,0px)) auto;z-index:99980;width:350px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 120px);margin:0;padding:0;background:white;color:#191f28;border:1px solid #e4e9f1;border-radius:18px;box-shadow:0 12px 42px #19294324,0 2px 8px #1929430d;overflow:hidden;animation:messenger-in .18s ease-out}.head{padding:13px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #edf0f4;background:#fff}.avatar{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#edf4ff;color:#3182f6;flex:none}.heading{flex:1;min-width:0}.heading b{font-size:14px}.connection{font-size:11px}.window-actions{display:flex;align-items:center;gap:3px}.window-action{width:28px;height:28px;display:grid;place-items:center;padding:0;border:0;border-radius:8px;background:transparent;color:#8591a4}.window-action:hover{background:#f1f4f8;color:#344054}.window-action svg{width:16px;height:16px;display:block;pointer-events:none}.content{padding:14px;max-height:min(470px,calc(100dvh - 195px));overflow:auto;overscroll-behavior:contain}.content.stack{gap:10px}.panel .question{font-size:17px}.question-message{padding:12px 13px;border-radius:3px 13px 13px;background:#f0f5ff}.question-message .muted{font-size:11px;color:#5681b9;margin-bottom:4px}.panel .option{padding:9px}.panel .consent{font-size:11px}.error:empty{display:none}.panel.minimized .content{display:none}.panel.minimized .head{border-bottom:0}.panel h3{font-size:13px}.panel .pill{font-size:10px}.panel .answer{font-size:12px;padding:10px}@keyframes messenger-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.panel{animation:none}}.question{font-size:21px;font-weight:800;line-height:1.45}.answers{display:flex;flex-direction:column;gap:8px}.answer{border-radius:12px;padding:12px;background:#f4f6f9}.answer.hot{background:#fff1e6;color:#823f05}.answer b{font-size:13px}.answer .wrap{margin-top:4px}.option{display:flex;gap:9px;align-items:flex-start;padding:11px;border:1px solid #e4e7ec;border-radius:10px;cursor:pointer}.option input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:#3182f6}.option span{overflow-wrap:anywhere}.consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#4e5968}.notice{background:#e8f3ff;border-radius:12px;padding:12px;color:#1b64da}
+    .panel{position:fixed;inset:0;z-index:99980;width:400px;height:fit-content;max-width:calc(100vw - 24px);max-height:calc(100dvh - 32px);margin:auto;padding:0;background:white;color:#191f28;border:1px solid #e4e9f1;border-radius:16px;box-shadow:0 16px 56px #19294326,0 2px 8px #1929430d;overflow:hidden;animation:window-in .16s ease-out}
+    .head{padding:13px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #edf0f4}.heading{flex:1;min-width:0;display:flex;align-items:center;gap:8px}.heading b{font-size:15px}.event-label{font-size:9px;letter-spacing:.6px;font-weight:800;color:#3182f6;background:#edf4ff;padding:3px 6px;border-radius:5px}.window-actions{display:flex;align-items:center;gap:3px}.window-action{width:28px;height:28px;display:grid;place-items:center;padding:0;border:0;border-radius:8px;background:transparent;color:#8591a4}.window-action:hover{background:#f1f4f8;color:#344054}.window-action svg{width:16px;height:16px;display:block;pointer-events:none}
+    .content{padding:18px;max-height:calc(100dvh - 98px);overflow:auto;overscroll-behavior:contain}.content.stack{gap:16px}.connection{font-size:12px;color:#b54708}.panel .round{gap:16px}.question-block{display:flex;flex-direction:column;gap:10px}.panel .question{font-size:20px;line-height:1.5;letter-spacing:-.5px}.panel .pill{font-size:11px;background:#f2f4f7;color:#4e5968;padding:3px 8px}.panel .timer{font-variant-numeric:tabular-nums}.panel .form form{gap:10px}.panel .option{padding:11px 12px;align-items:center;transition:border-color .12s,background .12s}.panel .option:has(input:checked){border-color:#3182f6;background:#f3f8ff}.panel .option input{margin:0}.panel .consent{font-size:12px;margin:4px 0;line-height:1.55}.panel .consent input{margin:1px 0 0}.form-actions{display:flex;gap:8px}.form-actions .primary{flex:1}.form-actions button{padding:11px 16px}.form-actions .skip{background:#f2f4f7;color:#6b7684}.error:empty{display:none}.panel.minimized .content{display:none}.panel.minimized .head{border-bottom:0}.responses{border-top:1px solid #edf0f4;padding-top:14px}.responses summary{display:flex;align-items:center;gap:7px;cursor:pointer;list-style:none;color:#6b7684;font-size:12px}.responses summary::-webkit-details-marker{display:none}.responses summary svg{width:14px;height:14px;transition:transform .15s}.responses[open] summary svg{transform:rotate(180deg)}.responses .count{margin-left:auto}.responses .answers{margin-top:12px}.panel .answer{font-size:12px;padding:10px}.panel .notice{border-radius:10px;padding:11px 12px;font-size:13px}.notice-title{display:block;font-size:10px;letter-spacing:.5px;font-weight:800;margin-bottom:4px}.notice-text{white-space:pre-wrap;overflow-wrap:anywhere}
+    @keyframes window-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.panel{animation:none}}
+    .question{font-size:21px;font-weight:800;line-height:1.45}.answers{display:flex;flex-direction:column;gap:8px}.answer{border-radius:12px;padding:12px;background:#f4f6f9}.answer.hot{background:#fff1e6;color:#823f05}.answer b{font-size:13px}.answer .wrap{margin-top:4px}.option{display:flex;gap:9px;align-items:flex-start;padding:11px;border:1px solid #e4e7ec;border-radius:10px;cursor:pointer}.option input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:#3182f6}.option span{overflow-wrap:anywhere}.consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#4e5968}.notice{background:#e8f3ff;border-radius:12px;padding:12px;color:#1b64da}
     .admin{max-width:1280px;margin:20px auto;padding:22px;background:white;border:1px solid #e1e7ee;border-radius:22px}.admin summary{cursor:pointer;list-style:none}.admin summary::-webkit-details-marker{display:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.formlabel{font-size:13px;font-weight:700;margin-bottom:5px}.choice{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.choice label{display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap}.adminfeed{max-height:250px;overflow:auto}.adminstatus{color:#1765ce;min-height:21px}.small{padding:5px 9px;font-size:12px}
-    @media(max-width:700px){.panel{right:12px;width:350px;max-width:calc(100vw - 24px)}.content{max-height:min(420px,calc(100dvh - 195px))}.grid{grid-template-columns:1fr}.admin{margin:12px;padding:16px}.question{font-size:19px}}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}.admin{margin:12px;padding:16px}.question{font-size:19px}}
   `;
   let db, ev = {}, key = null, host, root, adminHost, admin, unsubscribe = [], clock, generation = 0;
   let seen = new Set(), roundID = null, noticeID = null, formSignature = "", busy = false, connected = false, returnFocus;
@@ -67,8 +71,8 @@
     host = document.createElement("div"); host.id = "wj-live-event";
     root = host.attachShadow({mode:"open"});
     root.innerHTML = `<style>${style}</style>
-      <dialog class="panel" aria-label="실시간 질문 이벤트" aria-modal="false"><div class="head"><div class="avatar" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 0 1-8 8H5l-4 3v-11a8 8 0 0 1 8-8h3a8 8 0 0 1 8 8Z" transform="translate(1 -1) scale(.95)"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg></div><div class="heading"><b>질문 이벤트</b><div class="muted connection"></div></div><div class="window-actions"><button type="button" class="window-action minimize" aria-label="이벤트 접기" aria-expanded="true" title="접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></svg></button><button type="button" class="window-action collapse" aria-label="이벤트 닫기" title="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div></div>
-      <div class="content stack"><div class="notice wrap" hidden></div><div class="round stack" hidden><div class="row spread"><span class="pill target"></span><span class="muted timer"></span></div><div class="question-message"><div class="muted">관리자 질문</div><h2 class="question wrap"></h2></div><div class="form"></div><div class="error" role="status"></div><div class="row spread"><h3>실시간 공개 답변</h3><span class="muted count"></span></div><div class="answers"></div></div><p class="muted empty">다음 질문을 기다리고 있어요.</p></div></dialog>`;
+      <dialog class="panel" aria-label="질문 이벤트" aria-modal="false"><div class="head"><div class="heading"><b>질문 이벤트</b><span class="event-label">EVENT</span></div><div class="window-actions"><button type="button" class="window-action minimize" aria-label="이벤트 접기" aria-expanded="true" title="접기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></svg></button><button type="button" class="window-action collapse" aria-label="이벤트 닫기" title="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div></div>
+      <div class="content stack"><p class="connection" role="status" hidden></p><div class="notice" hidden><span class="notice-title">공지</span><div class="notice-text"></div></div><div class="round stack" hidden><div class="question-block"><div class="row spread"><span class="pill target"></span><span class="muted timer"></span></div><h2 class="question wrap"></h2></div><div class="form"></div><div class="error" role="status"></div><details class="responses"><summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span>공개 답변 보기</span><span class="count"></span></summary><div class="answers"></div></details></div><p class="muted empty">다음 질문을 기다리고 있어요.</p></div></dialog>`;
     document.body.appendChild(host);
     $(".collapse").onclick = () => openPanel(false);
     $(".minimize").onclick = () => {
@@ -110,7 +114,7 @@
     if (signature === formSignature) return;
     formSignature = signature;
     const box = $(".form"); box.replaceChildren(); $(".error").textContent = "";
-    if (mine()) { box.appendChild(el("p", mine().skipped ? "이번 질문을 패스했어요." : "답변이 공개됐어요. 아래에서 확인하세요.", "muted")); return; }
+    if (mine()) { box.appendChild(el("p", mine().skipped ? "이번 질문을 패스했어요." : "답변을 공개했어요.", "muted")); return; }
     if (!isOpen()) { box.appendChild(el("p", "질문이 마감됐어요. 공개된 답변은 계속 볼 수 있어요.", "muted")); return; }
     if (!eligible()) { box.appendChild(el("p", ev.targetName + " 님의 차례예요. 답변을 함께 기다려 주세요.", "muted")); return; }
     const form = el("form", null, "stack");
@@ -124,8 +128,8 @@
       const text = document.createElement("textarea"); text.name = "text"; text.rows = 3; text.maxLength = 200; text.required = true; text.placeholder = "답변을 입력하세요 (최대 200자)"; text.setAttribute("aria-label", "공개할 답변"); form.appendChild(text);
     }
     const consent = el("label", null, "consent"), check = document.createElement("input"); check.type = "checkbox"; check.name = "consent"; check.required = true;
-    consent.append(check, el("span", "제출하면 내 닉네임과 답변이 접속자 모두에게 공개됩니다. 확인했어요.")); form.appendChild(consent);
-    const row = el("div", null, "row"), submit = el("button", "답변 공개하기", "primary"), skip = el("button", "패스하기");
+    consent.append(check, el("span", "내 닉네임과 답변이 모두에게 공개되는 데 동의해요.")); form.appendChild(consent);
+    const row = el("div", null, "form-actions"), submit = el("button", "답변 제출", "primary"), skip = el("button", "패스", "skip");
     submit.type = "submit"; skip.type = "button";
     row.append(submit, skip); form.appendChild(row); box.appendChild(form);
     const submitAnswer = async skipped => {
@@ -141,7 +145,8 @@
   }
   function tick() {
     if (!root) return;
-    $(".connection").textContent = connected ? "실시간 연결됨" : "연결 재시도 중 · 제출 시 연결이 필요해요";
+    $(".connection").hidden = connected;
+    $(".connection").textContent = connected ? "" : "연결을 다시 시도하고 있어요. 잠시 후 제출해 주세요.";
     $(".timer").textContent = !ev.id ? "" : !isOpen() ? "마감" : ev.deadline ? Math.max(0,Math.ceil((ev.deadline-currentTime())/1000)) + "초 남음" : "시간 제한 없음";
     renderForm();
     if (admin) updateAdminStatus();
@@ -149,13 +154,14 @@
   function onEvent(value) {
     const oldID = roundID;
     ev = value || {};
-    $(".notice").hidden = !ev.notice; $(".notice").textContent = ev.notice || "";
+    $(".notice").hidden = !ev.notice; $(".notice-text").textContent = ev.notice || "";
     $(".round").hidden = !ev.id; $(".empty").hidden = !!ev.id;
     $(".question").textContent = ev.question || "";
     $(".target").textContent = ev.target === "all" ? "전체 참가자" : "🎯 " + (ev.targetName || "지목된 참가자");
     $(".count").textContent = Object.keys(ev.answers || {}).length + "명 응답";
     if (ev.id !== oldID) {
       seen = new Set(Object.keys(ev.answers || {})); roundID = ev.id || "";
+      $(".responses").open = false;
       clearAlerts("question"); clearAlerts("answer");
       openPanel(false);
       if (ev.id && isOpen()) announceOnce("question", ev.id, "질문 이벤트 · " + ev.targetName + "\n" + ev.question, {group:"question", action:eligible() && !mine() ? "답변하기" : "내용 보기"});
