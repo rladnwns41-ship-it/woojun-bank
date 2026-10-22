@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   if (window.WJLiveEvent) return;
-  window.WJLiveEvent = { version: "20261022" };
+  window.WJLiveEvent = { version: "20261022-alerts" };
   const W = window.WJ;
   if (!W) return;
   const isAdminPage = /(?:^|\/)admin\.dc\.html$/.test(location.pathname);
@@ -11,13 +11,13 @@
     *{box-sizing:border-box} [hidden]{display:none!important} button,input,textarea,select{font:inherit} button{cursor:pointer;border:0;border-radius:11px;background:#eef2f7;color:#344054;padding:10px 14px;font-weight:700}button:hover{filter:brightness(.96)}button:disabled{cursor:wait;opacity:.5}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8ebfff;outline-offset:2px}
     .primary{background:#3182f6;color:white}.danger{background:#fff0f2;color:#d92d4c}.muted{color:#6b7684;font-size:12px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.spread{justify-content:space-between}.stack{display:flex;flex-direction:column;gap:12px}.pill{font-size:11px;font-weight:800;border-radius:30px;background:#e8f3ff;color:#1765ce;padding:4px 9px}.hot{background:#fff1e6;color:#b54708}
     h2,h3,p{margin:0}h2{font-size:20px}h3{font-size:16px}input:not([type=checkbox]):not([type=radio]),textarea,select{width:100%;padding:11px;border:1px solid #dbe1e8;border-radius:10px;background:white;color:#191f28;min-width:0}textarea{resize:vertical}label{display:block}input[type=checkbox]{width:18px;height:18px;flex:none;accent-color:#3182f6}.box{padding:14px;background:#f7f9fc;border-radius:13px}.wrap{white-space:pre-wrap;overflow-wrap:anywhere}.error{color:#d92d4c;font-size:13px;min-height:20px}
-    .dock{position:fixed;bottom:22px;right:22px;z-index:100050;max-width:calc(100vw - 24px)}.launcher{background:#191f28;color:white;box-shadow:0 5px 25px #0002;max-width:min(420px,calc(100vw - 24px));display:flex;gap:10px;align-items:center;text-align:left}.launcher span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .panel{width:430px;max-width:calc(100vw - 24px);background:white;border:1px solid #e4e7ec;box-shadow:0 12px 60px #19294330;border-radius:22px;overflow:hidden;margin-bottom:10px}.head{padding:16px 18px;border-bottom:1px solid #edf0f4}.head button{padding:4px 10px;font-size:20px}.content{padding:18px;max-height:min(67vh,650px);overflow:auto;overscroll-behavior:contain}.question{font-size:21px;font-weight:800;line-height:1.45}.answers{display:flex;flex-direction:column;gap:8px}.answer{border-radius:12px;padding:12px;background:#f4f6f9}.answer.hot{background:#fff1e6;color:#823f05}.answer b{font-size:13px}.answer .wrap{margin-top:4px}.option{display:flex;gap:9px;align-items:flex-start;padding:11px;border:1px solid #e4e7ec;border-radius:10px;cursor:pointer}.option input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:#3182f6}.option span{overflow-wrap:anywhere}.consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#4e5968}.notice{background:#e8f3ff;border-radius:12px;padding:12px;color:#1b64da}.flash{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:100060;width:max-content;max-width:min(560px,calc(100vw - 24px));padding:15px 20px;border-radius:15px;background:#191f28;color:white;box-shadow:0 8px 28px #0002;pointer-events:none}.flash.hot{background:#8b3c08;color:white}
+    .panel{width:460px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);padding:0;background:white;color:#191f28;border:1px solid #e4e7ec;box-shadow:0 12px 60px #19294330;border-radius:22px;overflow:hidden;margin:auto}.panel::backdrop{background:rgba(15,26,42,.35)}.head{padding:16px 18px;border-bottom:1px solid #edf0f4}.head button{padding:4px 10px;font-size:20px}.content{padding:18px;max-height:min(67vh,650px);overflow:auto;overscroll-behavior:contain}.question{font-size:21px;font-weight:800;line-height:1.45}.answers{display:flex;flex-direction:column;gap:8px}.answer{border-radius:12px;padding:12px;background:#f4f6f9}.answer.hot{background:#fff1e6;color:#823f05}.answer b{font-size:13px}.answer .wrap{margin-top:4px}.option{display:flex;gap:9px;align-items:flex-start;padding:11px;border:1px solid #e4e7ec;border-radius:10px;cursor:pointer}.option input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:#3182f6}.option span{overflow-wrap:anywhere}.consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#4e5968}.notice{background:#e8f3ff;border-radius:12px;padding:12px;color:#1b64da}.alerts{position:fixed;top:76px;right:18px;z-index:100060;width:380px;max-width:calc(100vw - 24px);display:flex;flex-direction:column;gap:8px;pointer-events:none;max-height:calc(100dvh - 100px);overflow-y:auto}.flash{padding:14px 16px;border-radius:16px;background:rgba(25,31,40,.96);color:white;box-shadow:0 8px 28px #0002;pointer-events:auto;animation:event-in .2s ease-out}.flash.hot{background:#8b3c08;color:white}.alerttext{font-size:14px;font-weight:700;max-height:180px;overflow:auto}.alertfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}.alertaction{padding:4px 0;background:transparent;color:#a7cfff;font-size:12px}.alertclose{padding:3px 8px;background:#ffffff20;color:white;font-size:16px}.bell{height:34px;padding:4px 9px;border-radius:9px;white-space:nowrap}.bell span{font-size:10px;background:#f04452;color:white;padding:1px 5px;border-radius:12px;margin-left:4px}@keyframes event-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.flash{animation:none}}
     .admin{max-width:1280px;margin:20px auto;padding:22px;background:white;border:1px solid #e1e7ee;border-radius:22px}.admin summary{cursor:pointer;list-style:none}.admin summary::-webkit-details-marker{display:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.formlabel{font-size:13px;font-weight:700;margin-bottom:5px}.choice{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.choice label{display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap}.adminfeed{max-height:250px;overflow:auto}.adminstatus{color:#1765ce;min-height:21px}.small{padding:5px 9px;font-size:12px}
-    @media(max-width:700px){.dock{right:12px;bottom:calc(80px + env(safe-area-inset-bottom,0px))}.panel{width:calc(100vw - 24px)}.content{max-height:55vh}.grid{grid-template-columns:1fr}.admin{margin:12px;padding:16px}.flash{top:66px}.question{font-size:19px}}
+    @media(max-width:700px){.alerts{right:12px;top:66px}.panel{width:calc(100vw - 24px)}.content{max-height:55vh}.grid{grid-template-columns:1fr}.admin{margin:12px;padding:16px}.question{font-size:19px}}
   `;
   let db, ev = {}, key = null, host, root, adminHost, admin, unsubscribe = [], clock, generation = 0;
-  let seen = new Set(), roundID = null, noticeID = null, formSignature = "", busy = false, connected = false, hideTimer;
+  let seen = new Set(), roundID = null, noticeID = null, formSignature = "", busy = false, connected = false, bellHost, bellRoot, bellObserver, unread = 0, returnFocus;
+  const alerts = new Map();
   const $ = (sel, where = root) => where.querySelector(sel);
   const el = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; };
   const safeStore = { get(k) { try { return localStorage.getItem(k) || ""; } catch (_) { return ""; } }, set(k,v) { try { localStorage.setItem(k,v); } catch (_) {} } };
@@ -27,23 +27,83 @@
   const isOpen = () => !!ev.id && ev.open && (!ev.deadline || currentTime() < ev.deadline);
   const mine = () => ev.answers && ev.answers[key];
   const eligible = () => ev.target === "all" || ev.target === key;
-  function flash(message, hot) {
+  function updateBell() {
+    if (!bellRoot) return;
+    const button = $(".bell", bellRoot);
+    button.hidden = !ev.id && !ev.notice;
+    button.setAttribute("aria-label", "이벤트 알림" + (unread ? " · 읽지 않은 알림 " + unread + "개" : ""));
+    $(".badge", bellRoot).textContent = unread > 9 ? "9+" : String(unread);
+    $(".badge", bellRoot).hidden = !unread;
+  }
+  function attachBell() {
+    if (!bellHost || bellHost.isConnected) return;
+    const header = document.querySelector("header nav")?.parentElement || document.querySelector("header > div") || document.querySelector("header");
+    if (header) header.appendChild(bellHost);
+  }
+  function removeAlert(n) {
+    const cancel = alerts.get(n);
+    if (cancel) cancel();
+    alerts.delete(n); n.remove();
+  }
+  function clearAlerts(group) {
+    for (const n of alerts.keys()) if (n.dataset.group === group) removeAlert(n);
+  }
+  // 공지·질문·답변은 같은 일시 알림 형식. 상세창은 버튼을 눌렀을 때만 연다.
+  function flash(message, hot, opt = {}) {
     if (!root) return;
-    const n = $(".flash"); n.textContent = message; n.classList.toggle("hot", !!hot); n.hidden = false;
-    clearTimeout(hideTimer); hideTimer = setTimeout(() => { n.hidden = true; }, 8500);
+    if (opt.group) clearAlerts(opt.group);
+    const n = el("div", null, "flash" + (hot ? " hot" : ""));
+    n.setAttribute("role", "status"); n.dataset.group = opt.group || "answer";
+    n.appendChild(el("div", message, "alerttext wrap"));
+    const footer = el("div", null, "alertfoot"), action = el("button", opt.action || "내용 보기", "alertaction"), close = el("button", "×", "alertclose");
+    action.type = close.type = "button"; close.setAttribute("aria-label", "알림 닫기");
+    action.onclick = () => { openPanel(true); removeAlert(n); };
+    close.onclick = () => removeAlert(n); footer.append(action, close); n.appendChild(footer);
+    $(".alerts").appendChild(n);
+    let timer;
+    const stop = () => clearTimeout(timer);
+    const start = () => { stop(); timer = setTimeout(() => removeAlert(n), 8500); };
+    n.onmouseenter = stop; n.onmouseleave = start; n.onfocusin = stop;
+    n.onfocusout = e => { if (!n.contains(e.relatedTarget)) start(); };
+    alerts.set(n, stop); start();
+    while (alerts.size > 4) removeAlert(alerts.keys().next().value);
+    unread = $(".panel").open ? 0 : unread + 1; updateBell();
+  }
+  function announceOnce(kind, id, message, opt) {
+    const storageKey = "wj_event_alerts_v2_" + key, marker = kind + ":" + id;
+    let shown = [];
+    try { shown = JSON.parse(sessionStorage.getItem(storageKey) || "[]"); if (!Array.isArray(shown)) shown = []; } catch (_) {}
+    if (shown.includes(marker)) return;
+    try { sessionStorage.setItem(storageKey, JSON.stringify(shown.concat(marker).slice(-60))); } catch (_) {}
+    flash(message, false, opt);
   }
   function createPublic() {
     host = document.createElement("div"); host.id = "wj-live-event";
     root = host.attachShadow({mode:"open"});
-    root.innerHTML = `<style>${style}</style><div class="flash wrap" role="status" hidden></div><div class="dock" hidden>
-      <section class="panel" aria-label="실시간 질문 이벤트" hidden><div class="head row spread"><div><b>질문 이벤트</b> <span class="pill">LIVE</span><div class="muted connection"></div></div><button type="button" class="collapse" aria-label="이벤트 접기">×</button></div>
-      <div class="content stack"><div class="notice wrap" hidden></div><div class="round stack" hidden><div class="row spread"><span class="pill target"></span><span class="muted timer"></span></div><h2 class="question wrap"></h2><div class="form"></div><div class="error" role="status"></div><div class="row spread"><h3>실시간 공개 답변</h3><span class="muted count"></span></div><div class="answers"></div></div><p class="muted empty">다음 질문을 기다리고 있어요.</p></div></section>
-      <button type="button" class="launcher" aria-expanded="false"><span>📣</span><span class="launchlabel">질문 이벤트</span></button></div>`;
+    root.innerHTML = `<style>${style}</style><div class="alerts" aria-label="이벤트 알림"></div>
+      <dialog class="panel" aria-label="실시간 질문 이벤트"><div class="head row spread"><div><b>질문 이벤트</b> <span class="pill">LIVE</span><div class="muted connection"></div></div><button type="button" class="collapse" aria-label="이벤트 닫기">×</button></div>
+      <div class="content stack"><div class="notice wrap" hidden></div><div class="round stack" hidden><div class="row spread"><span class="pill target"></span><span class="muted timer"></span></div><h2 class="question wrap"></h2><div class="form"></div><div class="error" role="status"></div><div class="row spread"><h3>실시간 공개 답변</h3><span class="muted count"></span></div><div class="answers"></div></div><p class="muted empty">다음 질문을 기다리고 있어요.</p></div></dialog>`;
     document.body.appendChild(host);
-    $(".launcher").onclick = () => openPanel($(".panel").hidden);
     $(".collapse").onclick = () => openPanel(false);
+    $(".panel").addEventListener("close", () => { if (returnFocus?.isConnected) returnFocus.focus(); else if (bellRoot) $(".bell", bellRoot).focus(); });
+    $(".panel").onclick = e => {
+      if (e.target !== $(".panel")) return;
+      const r = e.target.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) openPanel(false);
+    };
+    bellHost = document.createElement("span"); bellHost.id = "wj-event-bell"; bellHost.style.flexShrink = "0";
+    bellRoot = bellHost.attachShadow({mode:"open"});
+    bellRoot.innerHTML = `<style>${style}</style><button type="button" class="bell" aria-label="이벤트 알림" hidden>🔔<span class="badge" hidden></span></button>`;
+    $(".bell", bellRoot).onclick = () => openPanel(true);
+    bellObserver = new MutationObserver(attachBell); bellObserver.observe(document.body, {childList:true, subtree:true});
+    attachBell(); updateBell();
   }
-  function openPanel(open) { $(".panel").hidden = !open; $(".launcher").setAttribute("aria-expanded", String(open)); }
+  function openPanel(open) {
+    if (!root) return;
+    const dialog = $(".panel");
+    if (open && !dialog.open) { returnFocus = root.activeElement || bellRoot?.activeElement || document.activeElement; dialog.showModal(); unread = 0; updateBell(); }
+    else if (!open && dialog.open) dialog.close();
+  }
   function makeFeed(container, moderation) {
     container.replaceChildren();
     const entries = Object.entries(ev.answers || {}).sort((a,b) => b[1].at - a[1].at || a[0].localeCompare(b[0]));
@@ -98,18 +158,18 @@
     if (admin) updateAdminStatus();
   }
   function onEvent(value) {
-    const first = roundID === null, oldID = roundID;
+    const oldID = roundID;
     ev = value || {};
-    $(".dock").hidden = !ev.id && !ev.notice;
     $(".notice").hidden = !ev.notice; $(".notice").textContent = ev.notice || "";
     $(".round").hidden = !ev.id; $(".empty").hidden = !!ev.id;
     $(".question").textContent = ev.question || "";
     $(".target").textContent = ev.target === "all" ? "전체 참가자" : "🎯 " + (ev.targetName || "지목된 참가자");
     $(".count").textContent = Object.keys(ev.answers || {}).length + "명 응답";
-    $(".launchlabel").textContent = ev.question ? "질문 이벤트 · " + ev.question : "공지 · " + ev.notice;
     if (ev.id !== oldID) {
       seen = new Set(Object.keys(ev.answers || {})); roundID = ev.id || "";
-      if (ev.id && isOpen()) { if (!isAdminPage) openPanel(true); if (!first) flash("📣 " + ev.targetName + " · " + ev.question); }
+      clearAlerts("question"); clearAlerts("answer");
+      openPanel(false);
+      if (ev.id && isOpen()) announceOnce("question", ev.id, "📣 질문 이벤트 · " + ev.targetName + "\n" + ev.question, {group:"question", action:eligible() && !mine() ? "답변하기" : "내용 보기"});
     } else {
       Object.entries(ev.answers || {}).forEach(([uid,a]) => {
         if (!seen.has(uid)) flash((a.highlight ? "🔥 주목 답변 · " : "💬 ") + a.name + " — " + ev.question + " → " + a.text, a.highlight);
@@ -117,7 +177,11 @@
       // 삭제된 답변을 다시 허용해도 새 답변으로 알림이 간다.
       seen = new Set(Object.keys(ev.answers || {}));
     }
-    if (ev.notice && noticeID !== ev.noticeId) { if (!isAdminPage) openPanel(true); if (!first) flash("📣 공지 · " + ev.notice); }
+    if (ev.notice && noticeID !== ev.noticeId) announceOnce("notice", ev.noticeId || ev.notice, "📣 공지\n" + ev.notice, {group:"notice"});
+    if (!ev.notice) clearAlerts("notice");
+    if (!ev.id || !isOpen()) clearAlerts("question");
+    if (!ev.id && !ev.notice) { openPanel(false); unread = 0; }
+    updateBell();
     noticeID = ev.noticeId || "";
     makeFeed($(".answers"), false); tick();
     if (admin) { makeFeed($(".adminfeed", admin), true); updateAdminStatus(); }
@@ -128,10 +192,10 @@
     adminHost = document.createElement("div"); adminHost.id = "wj-live-event-admin";
     admin = adminHost.attachShadow({mode:"open"});
     admin.innerHTML = `<style>${style}</style><details class="admin" open><summary class="row spread"><h2>📣 실시간 질문 이벤트 관리</h2><span class="pill">질문 · 랜덤 지목 · 전체 공개</span></summary>
-      <div class="grid"><div class="stack"><div class="box stack"><h3>전체 공지</h3><textarea class="noticeinput" rows="2" maxlength="500" aria-label="전체 공지" placeholder="모든 탭에 띄울 공지 (최대 500자)"></textarea><div class="row"><button type="button" class="primary savenotice">공지 올리기</button><button type="button" class="clearnotice">공지 내리기</button></div></div>
+      <div class="grid"><div class="stack"><div class="box stack"><h3>전체 공지</h3><textarea class="noticeinput" rows="2" maxlength="500" aria-label="전체 공지" placeholder="알림으로 보낼 공지 (최대 500자)"></textarea><div class="row"><button type="button" class="primary savenotice">공지 올리기</button><button type="button" class="clearnotice">공지 내리기</button></div></div>
       <div class="box stack"><h3>랜덤 질문함</h3><p class="muted">한 줄에 질문 하나. 선택지는 | 로 구분하고, 강조할 선택지는 앞에 ! 를 붙이세요. 예: 질문 | 선택1 | !선택2<br>질문만 쓰면 주관식이에요. 랜덤 뽑기는 질문함을 한 바퀴 돌 때까지 중복되지 않아요.</p><textarea class="pool" rows="6" aria-label="랜덤 질문함"></textarea><button type="button" class="draw">🎲 질문 랜덤 뽑기</button><span class="muted poolstatus"></span></div></div>
       <div class="stack"><div class="box stack"><h3>질문 올리기</h3><label><span class="formlabel">질문</span><textarea class="questioninput" rows="2" maxlength="300" placeholder="직접 입력하거나 왼쪽에서 랜덤으로 뽑으세요" aria-label="올릴 질문"></textarea></label><div class="choices stack"></div><p class="muted">선택지 2~4개를 쓰거나 전부 비우세요. 강조를 체크한 선택지는 답변 시 주목 알림이 떠요.</p>
-      <label><span class="formlabel">답변할 참가자</span><select class="targetselect" aria-label="답변할 참가자"><option value="random">🎯 접속자 중 랜덤 1명</option><option value="all">👥 모두에게 질문</option></select></label><label><span class="formlabel">제한 시간 (초, 0이면 무제한)</span><input class="seconds" type="number" min="0" max="3600" value="60" aria-label="제한 시간"></label><button type="button" class="primary publish">지금 질문 올리기 · 전체 알림</button><p class="muted">새 질문을 올리면 이전 질문과 답변 목록이 교체돼요. 참가자는 공개 안내를 확인하고 제출하거나 패스할 수 있어요.</p></div>
+      <label><span class="formlabel">답변할 참가자</span><select class="targetselect" aria-label="답변할 참가자"><option value="random">🎯 접속자 중 랜덤 1명</option><option value="all">👥 모두에게 질문</option></select></label><label><span class="formlabel">제한 시간 (초, 0이면 무제한)</span><input class="seconds" type="number" min="0" max="3600" value="60" aria-label="제한 시간"></label><button type="button" class="primary publish">지금 질문 올리기 · 전체 알림</button><p class="muted">질문은 알림으로 도착하고, 참가자가 ‘답변하기’를 누르면 답변창이 열려요. 새 질문을 올리면 이전 질문과 답변 목록이 교체돼요. 참가자는 공개 안내를 확인하고 제출하거나 패스할 수 있어요.</p></div>
       <div class="box stack"><h3>진행 상황</h3><div class="eventstatus wrap"></div><div class="row"><button type="button" class="closeevent">질문 마감</button><button type="button" class="danger clearevent">질문·답변 내리기</button></div><div class="adminfeed answers"></div></div></div></div><div class="adminstatus wrap" role="status"></div></details>`;
     document.body.prepend(adminHost);
     for (let i=0;i<4;i++) {
@@ -200,7 +264,10 @@
     unsubscribe.push(()=>ref.off("value",fn));
   }
   function cleanup() {
-    unsubscribe.forEach(fn=>fn());unsubscribe=[];clearInterval(clock);clearTimeout(hideTimer);
+    unsubscribe.forEach(fn=>fn());unsubscribe=[];clearInterval(clock);
+    for (const n of Array.from(alerts.keys())) removeAlert(n);
+    if (bellObserver) bellObserver.disconnect(); if (bellHost) bellHost.remove();
+    bellHost=bellRoot=bellObserver=null;unread=0;returnFocus=null;
     if(host)host.remove();if(adminHost)adminHost.remove();host=root=adminHost=admin=null;ev={};key=null;roundID=null;noticeID=null;formSignature="";seen=new Set();busy=false;adminBusy=false;
   }
   async function authChanged(user) {
