@@ -96,6 +96,15 @@ nav a.on{color:#191F28;font-weight:700;background:#F2F4F6}
 input[type=range]{width:100%;accent-color:#3182F6}
 .inp{height:46px;border:0;border-radius:12px;background:#F2F4F6;font-size:17px;font-weight:800;padding:0 14px;outline:none;color:#191F28;width:100%}
 .inp:focus{box-shadow:inset 0 0 0 2px #3182F6;background:#fff}
+.lhero{background:linear-gradient(135deg,#191F28,#2D3A4D);color:#fff;border-radius:20px;padding:20px}
+.lhero .tt{display:flex;align-items:center;gap:12px;margin-top:8px}.lhero .tt .e{font-size:38px;line-height:1}.lhero .tt b{font-size:25px;font-weight:900;letter-spacing:-.5px}
+.lstats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:16px}.lstats div{background:rgba(255,255,255,.08);border-radius:12px;padding:9px 4px;text-align:center}.lstats b{display:block;font-size:15px;font-weight:900}.lstats span{font-size:11px;color:#B0B8C1}
+.lbar{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:12px}.lbar i{display:block;height:100%;background:linear-gradient(90deg,#FFB020,#FFD66B);border-radius:99px}
+.lrank{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:12px;cursor:pointer}.lrank:hover{background:#F9FAFB}.lrank.me{background:#FFF8E6}
+.lrank .no{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex:none}
+.lrank .bar{height:5px;border-radius:9px;background:#F2F4F6;margin-top:5px;overflow:hidden}.lrank .bar i{display:block;height:100%;border-radius:9px}
+.lown{display:inline-block;width:max-content;transform:translate(-50%,-135%);white-space:nowrap;pointer-events:none;padding:4px 9px;border-radius:999px;background:rgba(25,31,40,.9);color:#fff;font-size:11px;font-weight:800;border:1.5px solid var(--c);box-shadow:0 3px 10px rgba(0,0,0,.4)}
+#ttl:empty{display:none}.ttlc{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:#191F28;color:#FFD66B;font-size:12px;font-weight:800;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -104,11 +113,11 @@ input[type=range]{width:100%;accent-color:#3182F6}
   <nav>
     <a href="trade.dc.html">거래소</a><a href="bank.dc.html">내 계좌</a><a href="games.dc.html">보드게임</a><a href="tournament.dc.html">토너먼트</a><a href="estate.html" class="on">부동산</a><a href="company.dc.html">증권사</a><a href="coin.dc.html">코인</a><a href="ranking.dc.html">랭킹</a><a href="hack.dc.html">해킹</a><a href="lotto.dc.html">복권</a>
   </nav>
-  <div style="display:flex;align-items:center;gap:10px;flex:none"><div class="cash"><div>보유 현금</div><div id="cash">—</div></div><button class="btn-s" id="logout">로그아웃</button></div>
+  <div style="display:flex;align-items:center;gap:10px;flex:none"><span id="ttl"></span><div class="cash"><div>보유 현금</div><div id="cash">—</div></div><button class="btn-s" id="logout">로그아웃</button></div>
 </div></header>
 <div id="app">
   <aside id="panel">
-    <div class="ptabs"><button data-tab="map" class="on">매물</button><button data-tab="mine">내 집</button><button data-tab="news">부동산 뉴스</button></div>
+    <div class="ptabs"><button data-tab="map" class="on">매물</button><button data-tab="mine">내 집</button><button data-tab="land">땅따먹기</button><button data-tab="news">부동산 뉴스</button></div>
     <div class="pbody" id="pbody"></div>
     <div id="sheet"><div class="in" id="sheetIn"></div></div>
   </aside>
@@ -251,7 +260,7 @@ input[type=range]{width:100%;accent-color:#3182F6}
   // ---------- 지도 ----------
   function pinHtml(p, t) { const pr = repPrice(p, t), c = chg(p, t), H = homes(), mine = Object.values(H).some(h => h.pid === p.id), dl = dealNow(t), deal = dl.p.id === p.id && dl.u, ll = landlord(p.id), z = map ? map.getZoom() : 12, forSale = p.units.length - Object.keys(unitsOf(p.id)).length + Object.values(unitsOf(p.id)).filter(x => x && x.ask).length;
     return '<div class="pin' + (S.sel === p.id ? " sel" : "") + (mine ? " mine" : "") + (deal ? " deal" : "") + (z < 13 && !deal ? " small" : "") + '">' + (ll ? '<div class="cr">👑 ' + esc(((S.users[ll] || {}).name) || "?") + "</div>" : "") + '<div class="b">' + (deal ? "⚡급매 " : "") + '<em>' + p.repPy + "평</em>" + short(pr) + '<i style="background:' + (c >= 0 ? "#F04452" : "#3182F6") + '">' + (c >= 0 ? "▲" : "▼") + Math.abs(c).toFixed(1) + '</i><em>' + forSale + "</em></div><div class=\"t\"></div></div>"; }
-  function drawPins() { if (!map) return; const t = Date.now(), H = homes(), z = map.getZoom(), bw = z < 13 ? 58 : 110, bh = z < 13 ? 24 : 30, kept = [], full = {}, dl = dealNow(t);
+  function drawPins() { if (!map) return; if (S.tab === "land") return landShow(true); landShow(false); const t = Date.now(), H = homes(), z = map.getZoom(), bw = z < 13 ? 58 : 110, bh = z < 13 ? 24 : 30, kept = [], full = {}, dl = dealNow(t);
     const vis = P.filter(p => (S.type === "전체" || p.type === S.type) && (!S.q || (p.name + p.area).includes(S.q))), mineSet = new Set(Object.values(H).map(h => h.pid));
     vis.slice().sort((a, b) => ((b.id === S.sel) * 4 + (dl.p.id === b.id) * 2 + mineSet.has(b.id)) - ((a.id === S.sel) * 4 + (dl.p.id === a.id) * 2 + mineSet.has(a.id)) || repPrice(b, t) - repPrice(a, t)).forEach(p => { const pt = map.latLngToContainerPoint([p.lat, p.lng]), force = p.id === S.sel || mineSet.has(p.id) || dl.p.id === p.id || landlord(p.id);
       if (force || !kept.some(k => Math.abs(k.x - pt.x) < bw && Math.abs(k.y - pt.y) < bh)) { kept.push(pt); full[p.id] = 1; } });
@@ -334,8 +343,8 @@ input[type=range]{width:100%;accent-color:#3182F6}
       + '<b style="font-size:15px;padding:8px 4px 0">부동산 부자</b>' + (rich.length ? rich.map(([k, v, n], i) => '<div style="display:flex;align-items:center;gap:10px;padding:8px 6px"><span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:' + (["#FFC342", "#B0B8C1", "#D9925B"][i] || "#8B95A1") + '">' + (i + 1) + '</span><span style="flex:1;font-weight:700;font-size:14px">' + esc((S.users[k] || {}).name || "?") + (k === me ? " (나)" : "") + ' <span class="lbl">' + n + "채</span></span><b style=\"font-size:14px\">" + short(v) + "준</b></div>").join("") : '<div class="lbl" style="padding:0 6px">아직 아무도 집을 안 샀어요</div>'); }
   function newsView() { const L2 = news(40); return '<b style="font-size:15px;padding:0 4px">최근 3주 부동산 소식</b>' + (L2.length ? L2.map(e => '<div class="news" data-sel="' + e.p.id + '"><span class="dot" style="background:' + (e.good ? "#F04452" : "#3182F6") + '"></span><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">' + esc(e.p.name) + ", " + e.text + '</div><div class="lbl" style="margin-top:2px">' + esc(e.p.area) + " · " + ago(e.start) + '</div></div><span class="' + (e.good ? "up" : "dn") + '" style="font-size:13px;font-weight:800;flex:none">' + (e.good ? "+" : "") + (e.mag * 100).toFixed(1) + "%</span></div>").join("") : '<div class="empty">조용한 시장이에요</div>'); }
   let rq = 0; function renderSoon() { if (rq) return; rq = requestAnimationFrame(() => { rq = 0; render(); }); }
-  function render() { const body = $("pbody"), a = document.activeElement; if (a && a.id === "q") { const v = a.selectionStart; body.innerHTML = S.tab === "map" ? (S.sel ? detailView() : listView()) : S.tab === "mine" ? mineView() : newsView(); const el = $("q"); if (el) { el.focus(); try { el.setSelectionRange(v, v); } catch (e) {} } return; }
-    body.innerHTML = S.tab === "map" ? (S.sel ? detailView() : listView()) : S.tab === "mine" ? mineView() : newsView(); }
+  function render() { const body = $("pbody"), a = document.activeElement; if (a && a.id === "q") { const v = a.selectionStart; body.innerHTML = S.tab === "map" ? (S.sel ? detailView() : listView()) : S.tab === "mine" ? mineView() : S.tab === "land" ? landView() : newsView(); const el = $("q"); if (el) { el.focus(); try { el.setSelectionRange(v, v); } catch (e) {} } return; }
+    body.innerHTML = S.tab === "map" ? (S.sel ? detailView() : listView()) : S.tab === "mine" ? mineView() : S.tab === "land" ? landView() : newsView(); }
 
   // ---------- 계약서 ----------
   function openContract(pid, key) { const p = byId[pid], u = p.units.find(x => x.k === key); const x = listings(p, Date.now()).find(l => l.u.k === key); if (!x) return toast("이미 팔린 매물이에요"); S.sheet = { pid, key, price: x.price, seller: x.seller, sn: x.sn, deal: x.deal, ltv: Math.min(LTV_MAX, x.price > (S.user.cash || 0) ? 60 : 0), done: false }; drawSheet(); }
@@ -401,8 +410,69 @@ input[type=range]{width:100%;accent-color:#3182F6}
     const r = await db.ref("users/" + me).transaction(x => { if (!x || !x.estate) return; x.cash = (x.cash || 0) + Math.round(back); x.estate = null; return x; }).catch(() => ({ committed: false }));
     if (r.committed) { Object.keys(E).forEach(id => db.ref("estate/" + id + "/own/" + me).remove().catch(() => {})); if (back > 0) toast("부동산이 집 단위 거래로 바뀌어 예전 지분을 시세로 돌려드렸어요 <b>+" + fmt(back) + "준</b>", "🏠"); } }
 
+  // ---------- 땅따먹기 ----------
+  // 전국을 0.05° 격자(약 25km²)로 나눈 육지 칸을 사서 영토를 넓힌다. 월세·시세차익·보유세 없음. 칸을 살수록 다음 칸이 비싸진다.
+  const LAT0 = 33.0, LNG0 = 125.0, LSTEP = .05, LR = 114, LC = 140, LAND_BASE = 500000, LAND_HEAT = 8, LAND_UP = .04;
+  const LMASK = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAH/4AAAAAAAAAAAAAAAAAAAAB//gAAAAAAAAAAAAAAAAAAAAP/8AAAAAAAAAAAAAAAAAAAAB//gAAAAAAAAAAAAAAAAAAAAP/4AAAAAAAAAAAAAAAAAAAAAf8AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAAAAAAAADxgAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAD/MAAAAAAAAAAAAAAAAAAABx/iAAAAAAAAAAAAAAAAAAAA+fcOGAAAAAAAAAAAAAAAAAAH37j5AAAAAAAAAAAAAAAAAAA++8/gwAAAAAAAAAAAAAAAADH//HsEAAAAAAAAAAAAAAAAAx//4fLgMAAAAAAAAAAAAAIAwef/3mQAAAAAAAAAAAAAAAAM3///x94AMAAAAAAAAAAAAADcf//8efAnAAAAAAAAAAAAAAGH/////yb4AAAAAAAAAAAAADm////D4P+AAAAAAAAAAAAAAS////8Z/jgAAAAAAAAAAAAAAP/////f4YAAAAAAAAAAAAAAR///////CgAAAAAAAAAAAAAf3//////2dgAAAAAAAAAAAACb///////f+AAAAAAAAAAAAAB/////////wAAAAAAAAAAAAAf////////+AAAAAAAAAAAAAH/////////gAAAAAAAAAAAAB/////////+AAAAAAAAAAAAAP/////////gAAAAAAAAAAAAD/////////8AAAAAAAAAAAAAf/////////gAAAAAAAAAAAAD/////////4AAAAAAAAAAAAQ//////////AAAAAAAAAAAAAf/////////gAAAAAAAAAAAAD/////////8AAAAAAAAAAAAAP/////////AAAAAAAAAAAAAD/////////wAAAAAAAAAAAAAP////////+AAAAAAAAAAAAAH/////////gAAAAAAAAAAAAD/////////4AAAAAAAAAAAAD/////////+AAAAAAAAAAAAAH////////8wAAAAAAAAAAAAD/////////kAAAAAAAAAAAAB/////////4AAAAAAAAAAAAA/////////8AAAAAAAAAAAAAH/////////AAAAAAAAAAAAAB/////////wAAAAAAAAAAAAA/////////8AAAAAAAAAAAAAP/////////gAAAAAAAAAAAAb/////////4AAAAAAAAAAAAN/////////+AAAAAAAAAAAADf/////////gAAAAAAAAAAAA3/////////4AAAAAAAAAAAAO/////////+AAAAAAAAAAAAf//////////gAAAAAAAAAAAL//////////8AAAAAAAAAAAD///////////AAAAAAAAAAAAP//////////gAAAAAAAAAAADv/////////4AAAAAAAAAAAAT/P///////+AAAAAAAAAAAABv/////////gAAAAAAAAAAAADD////////4AAAAAAAAAAAAAB////////+AAAAAAAAAAAAAA/////////AAAAAAAAAAAAAAf////////wAAAAAAAAAAACAX////////4AAAAAAAAAAAAAUP///////+AAAAAAAAAAAAAAP////////AAAAAAAAAAAAAAP////////gAAAAAAAAAAAAAz////////4AAAAAAAAAAAAAf////////8AAAAAwAAAAAAAAv///////+AAAAAOAAAAAAAAH////////gAAAAAAAAAAAAAf////////wAAAAAAAAAAAAAP////////8AAAAAAAAAAAAAD////////+AAAAAAAAAAAAAD/f///////AAAAAAAAAAAAAASH///////AAAAAAAAAAAAAAAB///////wAAAAAAAAAAAAAAAf//////4AAAAAAAAAAAAAAAB//////8AAAAAAAAAAAAAAAAP/////+AAAAAAAAAAAAAAAAB//////AAAAAAAAAAAAAAAAAP/////gAAAAAAAAAAAAAAAAD/////4AAAAAAAAAAAAAAAAAf////8AAAAAAAAAAAAAAAAAB/////AAAAAAAAAAAAAAAAAADx8H/gAAAAAAAAAAAAAAAAAAAAAfwAAAAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAAAAAAAAAeAAAAAAAAAAAAAAAAAAAAAAHgAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  const LAND_TITLES = [[0, "🚶", "뚜벅이"], [1, "🏡", "이장님"], [3, "🧑‍🌾", "지주"], [8, "🏯", "영주"], [20, "🛡️", "백작"], [45, "⚔️", "공작"], [90, "👑", "왕"], [180, "🐉", "황제"], [350, "🌏", "대륙의 지배자"]];
+  let LCELLS = null, cellById = {}, landLayer = null, landLabels = null, landRects = {}, landLblSig = "", landBusy = false;
+  const LAND = () => EST.land || {};
+  const landTitle = n => { let t = LAND_TITLES[0]; LAND_TITLES.forEach(x => { if (n >= x[0]) t = x; }); return t; };
+  const ownerColor = k => "hsl(" + (sHash(k) % 360) + ",78%,58%)";
+  function landCells() { if (LCELLS) return LCELLS; const bin = atob(LMASK), out = [];
+    for (let i = 0; i < LR * LC; i++) if ((bin.charCodeAt(i >> 3) >> (7 - (i & 7))) & 1) { const r = Math.floor(i / LC), c = i % LC, lat = LAT0 + (r + .5) * LSTEP, lng = LNG0 + (c + .5) * LSTEP; let heat = 0, nd = 9, np = null;
+      P.forEach(p => { const d = Math.hypot((lng - p.lng) * .8, lat - p.lat); heat = Math.max(heat, p.base * Math.exp(-d / .15)); if (d < nd) { nd = d; np = p; } });
+      const ar = np.area.split(" "), near = ar[0].endsWith("구") ? "서울 " + ar[0] : ar.slice(0, 2).join(" ");
+      const cell = { id: r + "_" + c, r, c, lat, lng, km: Math.pow(LSTEP * 111.32, 2) * Math.cos(lat * Math.PI / 180), base: Math.round((LAND_BASE + heat * LAND_HEAT) / 1e4) * 1e4, near }; out.push(cell); cellById[cell.id] = cell; }
+    return LCELLS = out; }
+  const landPrice = (cell, n) => Math.round(cell.base * (1 + LAND_UP * n) / 1e4) * 1e4;
+  function landStats() { landCells(); const L = LAND(), by = {};
+    Object.keys(L).forEach(id => { const x = L[id], cell = cellById[id]; if (!x || !x.o || !cell) return; const s = by[x.o] || (by[x.o] = { k: x.o, n: 0, km: 0, name: x.on, first: x.ts || 0 }); s.n++; s.km += cell.km; if ((x.ts || 0) < s.first) s.first = x.ts; });
+    const list = Object.keys(by).map(k => by[k]).sort((a, b) => b.n - a.n || a.first - b.first); list.forEach(s => { s.name = (S.users[s.k] || {}).name || s.name || "?"; }); return { list, by }; }
+  function landHeader() { const el = $("ttl"); if (!el || !me) return; const s = landStats().by[me]; if (!s) { el.innerHTML = ""; return; } const t = landTitle(s.n); el.innerHTML = '<span class="ttlc">' + t[1] + " " + t[2] + " · " + s.n + "칸</span>"; }
+  function cellStyle(cell, x) { const sel = S.land === cell.id;
+    if (!x) return { color: "#fff", weight: sel ? 2.5 : .4, opacity: sel ? 1 : .22, fillColor: "#fff", fillOpacity: sel ? .38 : .05 };
+    const mine = x.o === me, col = ownerColor(x.o); return { color: sel ? "#fff" : mine ? "#FFB020" : col, weight: sel ? 3 : mine ? 2 : .8, opacity: 1, fillColor: col, fillOpacity: mine ? .75 : .55 }; }
+  function landShow(on) { if (!map) return; const ctl = $("mapctl"); if (ctl) ctl.style.display = on ? "none" : "";
+    if (!on) { if (landLayer && map.hasLayer(landLayer)) { map.removeLayer(landLayer); map.removeLayer(landLabels); } return; }
+    Object.keys(markers).forEach(k => { map.removeLayer(markers[k]); delete markers[k]; });
+    const L = LAND(), cells = landCells();
+    if (!landLayer) { const rend = L_canvas(); landLayer = L_group(); landLabels = L_group();
+      cells.forEach(cell => { const r = Lf.rectangle([[LAT0 + cell.r * LSTEP, LNG0 + cell.c * LSTEP], [LAT0 + (cell.r + 1) * LSTEP, LNG0 + (cell.c + 1) * LSTEP]], Object.assign({ renderer: rend, interactive: true, bubblingMouseEvents: false }, cellStyle(cell, L[cell.id]))); r._sig = ""; r.on("click", () => { S.land = cell.id; landShow(true); render(); $("pbody").scrollTop = 0; }); r.addTo(landLayer); landRects[cell.id] = r; }); }
+    if (!map.hasLayer(landLayer)) { landLayer.addTo(map); landLabels.addTo(map); }
+    cells.forEach(cell => { const x = L[cell.id], r = landRects[cell.id], sig = (x ? x.o : "") + (S.land === cell.id ? "*" : "") + (x && x.o === me ? "m" : ""); if (r._sig !== sig) { r._sig = sig; r.setStyle(cellStyle(cell, x)); if (S.land === cell.id) r.bringToFront(); } });
+    const st = landStats(), top = st.list.slice(0, 8), sg = top.map(s => s.k + s.n + s.name).join("|");
+    if (sg !== landLblSig) { landLblSig = sg; landLabels.clearLayers();
+      top.forEach((s, i) => { const mine = cells.filter(c => (L[c.id] || {}).o === s.k); let la = 0, ln = 0; mine.forEach(c => { la += c.lat; ln += c.lng; }); la /= mine.length; ln /= mine.length; let best = mine[0], bd = 9; mine.forEach(c => { const d = Math.hypot(c.lat - la, c.lng - ln); if (d < bd) { bd = d; best = c; } });
+        Lf.marker([best.lat, best.lng], { interactive: false, keyboard: false, icon: Lf.divIcon({ className: "", iconSize: [0, 0], html: '<div class="lown" style="--c:' + ownerColor(s.k) + '">' + landTitle(s.n)[1] + " " + esc(s.name) + " · " + s.n + "칸</div>" }) }).addTo(landLabels); }); } }
+  const Lf = window.L, L_canvas = () => Lf.canvas({ padding: .3 }), L_group = () => Lf.layerGroup();
+  function landMe(uid) { const L = LAND(), ids = Object.keys(L).filter(id => L[id] && L[id].o === (uid || me) && cellById[id]); if (!ids.length) return toast("아직 내 땅이 없어요", "🚩"); const b = Lf.latLngBounds(ids.map(id => [cellById[id].lat, cellById[id].lng])); map.flyToBounds(b.pad(.5), { maxZoom: 11, duration: .8 }); }
+  function landView() { const st = landStats(), tot = landCells().length, my = st.by[me], n = my ? my.n : 0, tt = landTitle(n), nx = LAND_TITLES.find(x => x[0] > n), rk = my ? st.list.indexOf(my) + 1 : 0, sold = st.list.reduce((a, s) => a + s.n, 0), cash = (S.user && S.user.cash) || 0;
+    let h = '<div class="lhero"><div style="font-size:13px;color:#B0B8C1;font-weight:700">내 영토</div><div class="tt"><span class="e">' + tt[1] + '</span><div><b>' + tt[2] + '</b><div style="font-size:12px;color:#B0B8C1;margin-top:2px">' + esc(myName()) + (rk === 1 ? " · 👑 전국 1위" : "") + "</div></div></div>"
+      + (n ? '<div class="lstats"><div><b>' + n + '칸</b><span>영토</span></div><div><b>' + fmt(my.km) + '</b><span>km²</span></div><div><b>' + (n / tot * 100).toFixed(1) + '%</b><span>전국 점유</span></div><div><b>' + rk + '위</b><span>랭킹</span></div></div>' : '<div style="margin-top:14px;font-size:14px;line-height:1.6;color:#DDE1E6">아직 내 땅이 없어요.<br>지도에서 칸을 눌러 첫 깃발을 꽂아 보세요 🚩</div>')
+      + (nx ? '<div class="lbar"><i style="width:' + Math.min(100, (n - landTitle(n)[0]) / (nx[0] - landTitle(n)[0]) * 100) + '%"></i></div><div style="font-size:12px;color:#B0B8C1;margin-top:6px">다음 칭호 ' + nx[1] + " " + nx[2] + "까지 " + (nx[0] - n) + "칸</div>" : '<div style="font-size:12px;color:#FFD66B;margin-top:10px;font-weight:800">최고 칭호 달성 🌏</div>') + "</div>";
+    const sc = S.land && cellById[S.land];
+    if (sc) { const x = LAND()[sc.id], price = landPrice(sc, n);
+      if (x) h += '<div class="card" style="display:flex;flex-direction:column;gap:6px;' + (x.o === me ? "background:#FFF8E6" : "") + '"><div class="lbl">' + esc(sc.near) + " 인근 · " + sc.km.toFixed(1) + 'km²</div><div style="font-size:16px;font-weight:900">' + (x.o === me ? "🚩 내 땅" : "🚩 " + esc(((S.users[x.o] || {}).name) || x.on || "?") + " 님의 땅") + '</div><div class="lbl">' + short(x.p || 0) + "준에 매입 · " + ago(x.ts || Date.now()) + "</div></div>";
+      else h += '<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="lbl">' + esc(sc.near) + " 인근 · " + sc.km.toFixed(1) + 'km² · 주인 없는 땅</div><div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:22px;font-weight:900">' + fmt(price) + '준</div><div class="lbl">내 ' + (n + 1) + '번째 땅</div></div><button class="big-btn" data-buyland="' + sc.id + '" style="background:' + (cash >= price ? "#3182F6" : "#F2F4F6") + ";color:" + (cash >= price ? "#fff" : "#B0B8C1") + '">' + (cash >= price ? "🚩 깃발 꽂기" : "현금이 모자라요") + "</button></div>"; }
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 4px 0"><b style="font-size:15px">영토 랭킹</b><span class="lbl">전국 ' + fmt(tot) + "칸 중 " + fmt(sold) + "칸 점유</span></div>";
+    if (!st.list.length) h += '<div class="empty">아직 깃발이 하나도 없어요.<br>첫 번째 땅 주인이 되세요</div>';
+    else { const top = st.list.slice(0, 10); if (my && rk > 10) top.push(my); const mx = st.list[0].n;
+      h += top.map(s => { const i = st.list.indexOf(s), t = landTitle(s.n); return '<div class="lrank' + (s.k === me ? " me" : "") + '" data-landme="' + s.k + '"><span class="no" style="background:' + (["#FFC342", "#B0B8C1", "#D9925B"][i] || "#8B95A1") + '">' + (i + 1) + '</span><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px"><span style="font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + t[1] + " " + esc(s.name) + (s.k === me ? " (나)" : "") + '</span><b style="font-size:14px;flex:none">' + s.n + '칸</b></div><div class="bar"><i style="width:' + (s.n / mx * 100) + "%;background:" + ownerColor(s.k) + '"></i></div><div class="lbl" style="margin-top:3px">' + t[2] + " · " + fmt(s.km) + "km² · 전국 " + (s.n / tot * 100).toFixed(1) + "%</div></div></div>"; }).join(""); }
+    return h + '<div class="card" style="font-size:12px;color:#4E5968;line-height:1.7"><b style="font-size:13px;color:#191F28">땅따먹기는 투자가 아니에요</b><br>· 월세·시세차익·보유세가 없어요. 오직 영토와 칭호, 랭킹을 위한 땅이에요<br>· 도시에 가까울수록 비싸고, 내 땅이 늘수록 다음 칸이 4%씩 비싸져요<br>· 한 번 산 땅은 무를 수도 팔 수도 없어요<br>· 칸 수에 따라 칭호가 올라가요: ' + LAND_TITLES.slice(1).map(x => x[1] + x[2] + " " + x[0] + "칸").join(" · ") + "</div>"; }
+  async function buyLand(id) { const cell = cellById[id]; if (!cell || landBusy || !S.user) return; if (LAND()[id]) return toast("이미 주인이 있는 땅이에요", "🚩");
+    const my = landStats().by[me], n = my ? my.n : 0, price = landPrice(cell, n); if ((S.user.cash || 0) < price) return toast("현금이 모자라요 · 필요 " + fmt(price) + "준", "💸");
+    landBusy = true; const t0 = Date.now();
+    try { let got = false; const r1 = await db.ref("estate/land/" + id).transaction(x => { got = false; if (x) return; got = true; return { o: me, on: myName(), p: price, ts: t0 }; }).catch(() => ({ committed: false }));
+      if (!r1.committed || !got) return toast("방금 다른 사람이 샀어요", "🚩");
+      let ok = false; const r2 = await db.ref("users/" + me).transaction(x => { ok = false; if (!x) return x; if ((x.cash || 0) < price) return; ok = true; x.cash -= price; return x; }).catch(() => ({ committed: false }));
+      if (!r2.committed || !ok) { await db.ref("estate/land/" + id).remove().catch(() => {}); return toast("현금이 모자라요", "💸"); }
+      try { WJ.log(me, "buy", { stock: "땅 " + cell.near + " (땅따먹기)", qty: 1, price }); } catch (e) {}
+      const a = landTitle(n), b = landTitle(n + 1); toast(a[0] !== b[0] ? "<b>" + b[1] + " " + b[2] + "(으)로 승급!</b> 영토 " + (n + 1) + "칸" : "<b>" + (n + 1) + "번째 땅</b>에 깃발을 꽂았어요 · −" + fmt(price) + "준", "🚩"); try { WJ.sfx && WJ.sfx("win"); a[0] !== b[0] && WJ.confetti && WJ.confetti(); } catch (e) {}
+    } finally { landBusy = false; } }
+
   // ---------- 이벤트 ----------
-  document.addEventListener("click", e => { const t = e.target.closest("[data-tab],[data-sel],[data-back],[data-sort],[data-range],[data-dtab],[data-rent],[data-type],[data-contract],[data-close],[data-sign],[data-list],[data-unlist],[data-unlist2],[data-quick],[data-repay],[data-mode],[data-rm],[data-all]"); if (!t) return; const d = t.dataset;
+  document.addEventListener("click", e => { const t = e.target.closest("[data-tab],[data-sel],[data-back],[data-sort],[data-range],[data-dtab],[data-rent],[data-type],[data-contract],[data-close],[data-sign],[data-list],[data-unlist],[data-unlist2],[data-quick],[data-repay],[data-mode],[data-rm],[data-all],[data-buyland],[data-landme]"); if (!t) return; const d = t.dataset;
     if (d.tab) { S.tab = d.tab; if (d.tab !== "map") S.sel = null; setTabs(); drawPins(); render(); }
     else if (d.all) { if (map && KOR) map.flyToBounds(KOR, { duration: .8 }); }
     else if (d.type) { S.type = d.type; renderCtl(); drawPins(); render(); }
@@ -416,6 +486,8 @@ input[type=range]{width:100%;accent-color:#3182F6}
     else if (d.repay) repay(d.repay);
     else if (d.mode) { const [hid, m] = d.mode.split("|"); setMode(hid, m); }
     else if (d.rm) remodel(d.rm);
+    else if (d.buyland) buyLand(d.buyland);
+    else if (d.landme) landMe(d.landme);
     else if (d.sel) select(d.sel, true);
     else if (d.back) { S.sel = null; drawPins(); render(); }
     else if (d.sort) { S.sort = d.sort; render(); }
@@ -434,7 +506,7 @@ input[type=range]{width:100%;accent-color:#3182F6}
     let first = true;
     db.ref("users/" + me).on("value", s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); S.user = u; $("cash").textContent = fmt(u.cash) + "준"; if (first) { first = false; migrate(); setTimeout(() => claimRent(true), 1500); } drawPins(); renderSoon(); if (S.sheet && !S.sheet.busy && !S.sheet.done) drawSheet(); });
     const loadUsers = () => db.ref("users").once("value").then(s => { S.users = s.val() || {}; drawPins(); if (S.tab === "mine" || S.sel) renderSoon(); }).catch(() => {}); loadUsers(); setInterval(loadUsers, 60000);
-    db.ref("estate").on("value", s => { EST = s.val() || {}; drawPins(); renderSoon(); }, e => toast(/permission/i.test(String(e)) ? "Firebase 규칙에 estate 경로를 추가해야 해요" : "불러오지 못했어요", "⚠️"));
+    db.ref("estate").on("value", s => { EST = s.val() || {}; landHeader(); drawPins(); renderSoon(); }, e => toast(/permission/i.test(String(e)) ? "Firebase 규칙에 estate 경로를 추가해야 해요" : "불러오지 못했어요", "⚠️"));
     setInterval(() => { drawPins(); const a = document.activeElement; if (!(a && a.id === "q") && !S.sheet) render(); }, 10000);
   })();
 })();
