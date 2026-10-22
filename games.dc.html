@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="mobile.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script src="game-core.js"></script>
+<script src="board-queue.js?v=20261022-matchfix"></script>
 <link rel="stylesheet" href="wj-ui.css">
 <script src="wj-ui.js"></script>
 <script src="physics.js"></script>
@@ -124,8 +125,8 @@ input,button{font-family:inherit;letter-spacing:inherit}
               <div style="font-size:12px;color:#8B95A1;font-weight:600">{{ g.meta }}</div>
               <div class="wj-desc" style="font-size:13px;color:#6B7684;line-height:1.5;flex:1">{{ g.desc }}</div>
               <div style="display:flex;gap:6px;margin-top:6px">
-                <button onClick="{{ g.match }}" style="flex:1;height:44px;border:0;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;background:{{ g.btnBg }};color:{{ g.btnFg }}" style-active="transform:scale(.97)">{{ g.btn }}</button>
-                <button onClick="{{ g.invite }}" aria-label="친구 초대방 만들기" title="친구 초대방 만들기" style="flex:none;width:44px;height:44px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:16px;cursor:pointer" style-hover="background:#E8F3FF;color:#3182F6">🔗</button>
+                <button disabled="{{ busy }}" onClick="{{ g.match }}" style="flex:1;height:44px;border:0;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;background:{{ g.btnBg }};color:{{ g.btnFg }}" style-active="transform:scale(.97)">{{ g.btn }}</button>
+                <button disabled="{{ busy }}" onClick="{{ g.invite }}" aria-label="친구 초대방 만들기" title="친구 초대방 만들기" style="flex:none;width:44px;height:44px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:16px;cursor:pointer" style-hover="background:#E8F3FF;color:#3182F6">🔗</button>
               </div>
             </div>
           </div>
@@ -146,7 +147,7 @@ input,button{font-family:inherit;letter-spacing:inherit}
           <sc-for list="{{ waiting }}" as="r" hint-placeholder-count="0">
             <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:#F9FAFB">
               <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px">{{ r.game }}</div><div style="font-size:12px;color:#8B95A1">{{ r.host }} · {{ r.stake }}</div></div>
-              <button onClick="{{ r.join }}" style="height:34px;padding:0 14px;border:0;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:{{ r.bg }};color:{{ r.fg }}">{{ r.btn }}</button>
+              <button disabled="{{ r.disabled }}" onClick="{{ r.join }}" style="height:34px;padding:0 14px;border:0;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:{{ r.bg }};color:{{ r.fg }}">{{ r.btn }}</button>
             </div>
           </sc-for>
           <sc-if value="{{ noWaiting }}" hint-placeholder-val="{{ true }}"><div style="padding:10px 6px;font-size:13px;color:#8B95A1;line-height:1.5">대기 중인 대국이 없어요. 게임을 골라 먼저 방을 열어 보세요.</div></sc-if>
@@ -232,7 +233,7 @@ input,button{font-family:inherit;letter-spacing:inherit}
         <button onClick="{{ copyInvite }}" style="height:42px;border:0;border-radius:12px;background:#E8F3FF;color:#3182F6;font-size:14px;font-weight:700;cursor:pointer">🔗 친구 초대 · 관전 링크 복사</button>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <button onClick="{{ resign }}" style="height:44px;border:0;border-radius:12px;background:#FFF0F2;color:#F04452;font-size:14px;font-weight:700;cursor:pointer">{{ resignLabel }}</button>
-          <button onClick="{{ leave }}" style="height:44px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:14px;font-weight:700;cursor:pointer">{{ leaveLabel }}</button>
+          <button disabled="{{ busy }}" onClick="{{ leave }}" style="height:44px;border:0;border-radius:12px;background:#F2F4F6;color:#4E5968;font-size:14px;font-weight:700;cursor:pointer">{{ leaveLabel }}</button>
         </div>
       </div>
       <div style="background:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px">
@@ -265,7 +266,7 @@ const QUICK = new Set(["uno", "minigolf", "marbles", "neon4", "race21", "halliga
 const LIGHT = c => c === "#FFFFFF" || c === "#E5E8EB" || c === "#FFC342";
 
 class Component extends DCLogic {
-  state = { v: 0, stakeOpen: false, user: null, online: 1, tables: {}, bstats: {}, favorites: [], stake: 10000, category: "popular", gq: "", focus: "", msg: "", view: "lobby", room: null, R: null, sel: -1, hover: -1, hideRes: false, rotateOff: false, pseudoFs: false, chatText: "" };
+  state = { v: 0, busy: false, stakeOpen: false, user: null, online: 1, tables: {}, bstats: {}, favorites: [], stake: 10000, category: "popular", gq: "", focus: "", msg: "", view: "lobby", room: null, R: null, sel: -1, hover: -1, hideRes: false, rotateOff: false, pseudoFs: false, chatText: "" };
   cvRef = React.createRef(); boardRef = React.createRef(); off = 0;
 
   toggleFullscreen = () => {
@@ -277,7 +278,7 @@ class Component extends DCLogic {
     } else this.setState({ pseudoFs: true });
   };
   async componentDidMount() {
-    while (!window.WJ || !window.BG) await new Promise(r => setTimeout(r, 30));
+    while (!window.WJ || !window.BG || !window.WJBoardQueue) await new Promise(r => setTimeout(r, 30));
     await WJ.authReady;
     const params = new URLSearchParams(location.search);
     const uid = WJ.uid(); if (!uid) { const room = params.get("room"); if (room && /^[-0-9A-Z_a-z]{20}$/.test(room)) location.href = "index.html?return=" + encodeURIComponent("games.dc.html?room=" + room); else WJ.requireUser(); return; } this.uid = uid;
@@ -285,11 +286,13 @@ class Component extends DCLogic {
     try { this.setState({ rotateOff: localStorage.getItem("wj_rotate_off") === "1", stake: +(localStorage.getItem("wj_stake") ?? 10000) }); } catch (_) {}
     if (!STAKES.some(s => s[0] === this.state.stake)) this.setState({ stake: 10000 });
     const db = await WJ.ready; this.db = db; WJ.presence(uid);
+    this.queue = new WJBoardQueue.Queue({db, uid, name: () => this.name(), now: () => this.now(), stakes: STAKES.map(s => s[0]), game: id => this.gdef(id), linked: (a,b) => WJ.isLinked(a,b)});
     this.subs = [
       [db.ref(".info/serverTimeOffset"), s => { this.off = s.val() || 0; }],
       [db.ref("users/" + uid), s => { const u = s.val(); if (!u || u.banned) return WJ.logout(); this.setState({ user: u }); }],
       [db.ref("online"), s => this.setState({ online: Math.max(1, WJ.onlineCount(s.val())) })],
-      [db.ref("tables").orderByChild("ts").limitToLast(80), s => { this.setState({ tables: s.val() || {} }); this.sweep(); }],
+      [db.ref("tables").orderByChild("ts").limitToLast(80), s => { this.recentTables = s.val() || {}; this.refreshTables(); }],
+      [db.ref("tables").orderByChild("st").equalTo("wait"), s => { this.waitingTables = s.val() || {}; this.refreshTables(); }],
       [db.ref("tstats"), s => this.setState({ bstats: s.val() || {} })]
     ];
     this.subs.forEach(([r, f]) => r.on("value", f));
@@ -298,14 +301,18 @@ class Component extends DCLogic {
       if (e.key === "Escape" && this.state.pseudoFs) { this.setState({ pseudoFs: false }); return; }
       const R = this.state.R; if (this.state.view !== "match" || !R || R.st !== "play") return; const g = this.gdef(R.g); if (!g.key || /INPUT|TEXTAREA/.test(e.target.tagName)) return; const mi = this.meIdx(R); if (R.h !== this.uid && R.gu !== this.uid) return; const r = g.key(this.S, e.code, { me: mi, myTurn: this.myTurn(), ui: this.ui || (this.ui = {}) }); if (r) { e.preventDefault(); if (r.move != null) this.play(r.move); else WJ.sfx("click"); } };
     window.addEventListener("keydown", this.kd);
-    this.slow = setInterval(() => this.state.view === "lobby" && this.bump(), 4000);
+    this.slow = setInterval(() => { this.sweep(); this.autoMatchWaiting(); if (this.state.view === "lobby") this.bump(); }, 4000);
     const focus = params.get("focus");
     if (focus && this.gdef(focus) && !params.get("room")) {
       this.setState({ category: "all", focus }, () => setTimeout(() => { const el = document.getElementById("game-" + focus); el && el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 350));
       setTimeout(() => this.setState({ focus: "" }), 3800);
       try { const url = new URL(location.href); url.searchParams.delete("focus"); history.replaceState(null, "", url); } catch (_) {}
     }
-    this.openLinkedRoom();
+    try {
+      const restored = await this.queue.recover(params.get("room"));
+      if (!params.get("room") && restored) this.enterRoom(restored);
+      else await this.openLinkedRoom();
+    } catch (e) { if (e.room) this.enterRoom(e.room); this.say(e.message || "이전 대기 복구에 실패했어요. 다시 시도해 주세요."); }
     this.bump();
   }
   componentWillUnmount() { this.unmounted = true; (this.subs || []).forEach(([r]) => r.off()); this.roomRef && this.roomRef.off(); clearInterval(this.iv); clearInterval(this.slow); cancelAnimationFrame(this.raf); window.removeEventListener("keydown", this.kd); }
@@ -320,55 +327,74 @@ class Component extends DCLogic {
   roomUrl(id = this.state.room) { const url = new URL(location.href); if (id) url.searchParams.set("room", id); else url.searchParams.delete("room"); return url; }
   setRoomUrl(id) { try { history.replaceState(null, "", this.roomUrl(id)); } catch (_) {} }
   copyInvite = async () => { if (!this.state.room) return; const url = this.roomUrl().href; try { await navigator.clipboard.writeText(url); window.WJUI ? WJUI.toast("초대 링크를 복사했어요", { icon: "🔗" }) : this.say("초대 링크를 복사했어요"); WJ.sfx("click"); } catch (_) { window.prompt("초대 링크를 복사해 친구에게 보내세요", url); } };
+  async lobbyAction(fn) {
+    if (this.queueBusy || this.leaving) return;
+    this.queueBusy = true; this.setState({busy:true, stakeOpen:false});
+    try { return await fn(); }
+    catch (e) { if (e.room) this.enterRoom(e.room); this.say(e.message || "대기 요청을 처리하지 못했어요. 다시 시도하세요."); }
+    finally { this.queueBusy = false; if (!this.unmounted) this.setState({busy:false}, () => this.autoMatchWaiting()); }
+  }
   async openLinkedRoom() {
     const id = new URLSearchParams(location.search).get("room"); if (!id) return;
     if (!/^[-0-9A-Z_a-z]{20}$/.test(id)) { this.setRoomUrl(null); this.say("초대 링크가 올바르지 않아요"); return; }
-    try {
-      const snap = await this.db.ref("tables/" + id).once("value"), room = snap.val();
-      if (!room || room.st === "done" || (room.st === "wait" && this.now() - (room.ts || 0) > 600000)) { this.setRoomUrl(null); this.say("종료되었거나 만료된 대국이에요"); return; }
+    return this.lobbyAction(async () => {
+      const room = await this.queue.room(id);
+      if (!room || room.st === "cancelled" || room.st === "done" || (room.st === "wait" && !this.queue.fresh(room))) { this.setRoomUrl(null); this.say("종료되었거나 만료된 대국이에요"); return; }
       if (!this.gdef(room.g)) { this.setRoomUrl(null); this.say("지원하지 않는 게임이에요"); return; }
-      if (room.st === "wait" && room.h !== this.uid && !(await this.joinRoom(id, room))) { this.setRoomUrl(null); return; }
+      if (room.st === "wait" && room.h !== this.uid) await this.queue.join(id, this.state.stake);
       this.enterRoom(id);
-    } catch (_) { this.setRoomUrl(null); this.say("초대방을 불러오지 못했어요"); }
+    });
   }
   replay(R) { const g = this.gdef(R.g); let s = g.init(R.seed); (R.m || []).forEach(m => { s = g.apply(s, m); }); return s; }
   meIdx(R) { return R.p0 === this.uid ? 0 : 1; }
 
-  async createRoom(gid, stake, invite = false) {
-    if (stake > 0 && !(await WJ.addCash(this.uid, -stake))) { WJ.sfx("lose"); this.say("현금이 부족해요"); return null; }
-    try { const ref = this.db.ref("tables").push(); await ref.set({ g: gid, stake, h: this.uid, hn: this.name(), st: "wait", invite, ts: this.now() }); return ref.key; }
-    catch (_) { if (stake > 0) await WJ.addCash(this.uid, stake, true); this.say("대국을 만들지 못했어요"); return null; }
-  }
-  async joinRoom(id, linkedRoom = null) {
-    const r0 = linkedRoom || this.state.tables[id]; if (!r0 || r0.st !== "wait") return false; const stake = r0.stake || 0;
-    if (stake > 0 && await WJ.isLinked(this.uid, r0.h)) { WJ.sfx("lose"); this.say("같은 기기에서 쓴 계정끼리는 돈 걸린 대국을 할 수 없어요"); return false; }
-    if (stake > 0 && !(await WJ.addCash(this.uid, -stake))) { WJ.sfx("lose"); this.say("현금이 부족해요"); return false; }
-    const me = this.uid, nm = this.name(), now = this.now(), first = Math.random() < .5;
-    let res; try { res = await this.db.ref("tables/" + id).transaction(r => { if (!r || r.st !== "wait" || r.h === me) return; r.gu = me; r.gn = nm; r.st = "play"; r.p0 = first ? r.h : me; r.seed = Math.floor(Math.random() * 2e9); r.dl = now + ((BG.GAMES.find(q => q.id === r.g) || {}).turnSec || BG.TURN) * 1000 + 3000; r.m = []; return r; }); } catch (_) { if (stake > 0) await WJ.addCash(me, stake, true); this.say("대국 연결에 실패했어요"); return false; }
-    if (!res.committed) { if (stake > 0) await WJ.addCash(me, stake, true); this.say("이미 시작된 대국이에요"); return false; }
-    return true;
+  async joinFromList(id) {
+    if (this.state.room) return;
+    const selectedStake = this.state.stake;
+    return this.lobbyAction(async () => {
+      const room = await this.queue.room(id);
+      if (room?.h === this.uid && this.queue.fresh(room)) return this.enterRoom(id);
+      if (await this.queue.join(id, selectedStake)) this.enterRoom(id);
+    });
   }
   async match(gid) {
-    if (this.state.room) return; WJ.sfx("click"); window.WJUI && WJUI.askNotify();
-    const stake = this.state.stake, now = this.now(), T = this.state.tables;
-    const mine = Object.keys(T).find(k => T[k].st === "wait" && T[k].h === this.uid && T[k].g === gid);
-    if (mine) return this.enterRoom(mine);
-    const cand = Object.keys(T).filter(k => { const r = T[k]; return r.st === "wait" && !r.invite && r.h !== this.uid && r.g === gid && (r.stake || 0) === stake && now - r.ts < 600000; }).sort((a, b) => T[a].ts - T[b].ts);
-    for (const k of cand) if (await this.joinRoom(k)) return this.enterRoom(k);
-    const id = await this.createRoom(gid, stake); if (id) { WJ.sfx("coin"); this.enterRoom(id); }
+    if (this.state.room) return;
+    const stake = this.state.stake;
+    return this.lobbyAction(async () => {
+      WJ.sfx("click"); window.WJUI && WJUI.askNotify();
+      const T = await this.queue.waits();
+      const own = Object.keys(T).find(id => { const r = T[id]; return this.queue.fresh(r) && r.h === this.uid && r.g === gid && r.stake === stake && !r.invite; });
+      if (own) { await this.queue.cancelAll(own); return this.enterRoom(own); }
+      const candidates = Object.keys(T).filter(id => { const r = T[id]; return this.queue.fresh(r) && !r.invite && r.h !== this.uid && r.g === gid && r.stake === stake; }).sort((a,b) => T[a].ts-T[b].ts);
+      for (const id of candidates) {
+        // 종료/동시 입장에 진 후보만 건너뛴다. 잔액/연결 오류가 나면 새 방을 만들지 않는다.
+        try { if (await this.queue.join(id,stake)) return this.enterRoom(id); }
+        catch (e) { const r = await this.queue.room(id); if (e.room || !r || r.st !== "wait") { if (e.room) throw e; continue; } throw e; }
+      }
+      const id = await this.queue.create(gid,stake); if (id) { WJ.sfx("coin"); this.enterRoom(id); }
+    });
   }
   async createInvite(gid) {
-    if (this.state.room) return; window.WJUI && WJUI.askNotify();
-    const own = Object.keys(this.state.tables).find(k => { const r = this.state.tables[k]; return r.st === "wait" && r.h === this.uid && r.g === gid; });
-    if (own) return this.enterRoom(own);
-    try { const id = await this.createRoom(gid, this.state.stake, true); if (id) { this.enterRoom(id); this.copyInvite(); } } catch (_) { this.say("초대방을 만들지 못했어요"); }
+    if (this.state.room) return;
+    const stake = this.state.stake;
+    return this.lobbyAction(async () => {
+      const id = await this.queue.create(gid,stake,true);
+      if (id) { this.enterRoom(id); this.copyInvite(); }
+    });
   }
   enterRoom(id) {
-    this.setRoomUrl(id);
+    this.activeRoomId = id; this.setRoomUrl(id);
     this.roomRef && this.roomRef.off(); this.done = false; this.lastLen = -1; this.wasMyTurn = false;
-    this.roomRef = this.db.ref("tables/" + id);
-    this.roomRef.on("value", s => { const R = s.val(); if (R && R.st !== "wait") { const len = (R.m || []).length; if (this.lastLen >= 0 && len > this.lastLen) WJ.sfx("flip"); if (this.lastLen === -1 && R.st === "play") WJ.sfx("bell"); this.lastLen = len; const rk = id + ":" + R.seed; if (this.rpKey === rk && this.S && this.rpN <= len) { const gd = this.gdef(R.g); for (let k = this.rpN; k < len; k++) this.S = gd.apply(this.S, R.m[k]); } else this.S = this.replay(R); this.rpKey = rk; this.rpN = len; } else { this.rpKey = null; this.S = R ? this.gdef(R.g).init(R.seed) : null; } if (R && R.st === "play" && this.prevSt === "wait") { WJ.sfx("bell"); if (document.hidden && window.WJUI) { WJUI.blink("● 대국 시작!"); WJUI.notify("우준은행 보드게임", "상대가 들어왔어요. 대국이 시작됐어요!"); } } this.prevSt = R && R.st; this.setState({ R, sel: -1 }); });
     this.setState({ view: "match", room: id, hideRes: false, chatText: "" });
+    this.roomRef = this.db.ref("tables/" + id);
+    this.roomRef.on("value", s => { if (this.activeRoomId !== id) return; const R = s.val();
+      if (!R || R.st === "cancelled") {
+        if (R && R.h === this.uid && !R.waitRefunded) this.queue.refundWait(id,R).catch(e => this.say(e.message));
+        if (!this.leaving && !this.switchingRoom) { this.resetRoom(); this.say("대기가 취소되었어요."); } return;
+      }
+      if (R.st === "play" && this.ticketCleared !== id && !this.clearingTicket) {
+        this.clearingTicket = true; this.queue.clearTicket(id).then(() => { this.ticketCleared = id; }).catch(() => {}).finally(() => { this.clearingTicket = false; });
+      } if (R && R.st !== "wait") { const len = (R.m || []).length; if (this.lastLen >= 0 && len > this.lastLen) WJ.sfx("flip"); if (this.lastLen === -1 && R.st === "play") WJ.sfx("bell"); this.lastLen = len; const rk = id + ":" + R.seed; if (this.rpKey === rk && this.S && this.rpN <= len) { const gd = this.gdef(R.g); for (let k = this.rpN; k < len; k++) this.S = gd.apply(this.S, R.m[k]); } else this.S = this.replay(R); this.rpKey = rk; this.rpN = len; } else { this.rpKey = null; this.S = R ? this.gdef(R.g).init(R.seed) : null; } if (R && R.st === "play" && this.prevSt === "wait") { WJ.sfx("bell"); if (document.hidden && window.WJUI) { WJUI.blink("● 대국 시작!"); WJUI.notify("우준은행 보드게임", "상대가 들어왔어요. 대국이 시작됐어요!"); } } this.prevSt = R && R.st; this.setState({ R, sel: -1 }); });
     window.scrollTo({ top: 0, behavior: "smooth" });
     let lastFrame = 0, lastStamp = ""; const loop = ts => { const rect = this.boardRef.current?.getBoundingClientRect(), visible = rect && rect.bottom > 0 && rect.top < innerHeight; if (!document.hidden && visible) { const drag = this.ui?.drag, stamp = [this.state.v, (this.state.R?.m || []).length, this.state.R?.st, this.state.sel, this.state.hover, this.state.pseudoFs, drag?.tx, drag?.ty, this.ui?.hovT].join("|"); const anim = (this.ui?.animUntil || 0) > Date.now(), gap = anim ? 14 : drag ? 16 : 80; if (ts - lastFrame >= gap && (anim || drag || stamp !== lastStamp)) { this.draw(); lastFrame = ts; lastStamp = stamp; } } this.raf = requestAnimationFrame(loop); }; cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(loop);
   }
@@ -418,14 +444,63 @@ class Component extends DCLogic {
     this.wasMyTurn = mt;
     if (R.st === "done" && !this.done) { this.done = true; const win = R.win === this.uid; if (win) { WJ.sfx("win"); this.winBonus(this.state.room, R, R.stake || 0); } else if (R.win !== "draw" && this.isPlayer(R)) WJ.sfx("lose"); }
   }
-  sweep() { const now = this.now(), T = this.state.tables; Object.keys(T).forEach(k => { const r = T[k]; if (r.st === "play" && now > (r.dl || 0) + 10000) this.finish(k, "timeout"); if (r.st === "wait" && r.h === this.uid && now - r.ts > 600000 && k !== this.state.room) this.cancel(k, r); }); }
-  async cancel(id, r) { const res = await this.db.ref("tables/" + id).transaction(x => { if (!x || x.st !== "wait") return; return null; }); if (res.committed && (r.stake || 0) > 0) await WJ.addCash(r.h, r.stake, true); }
+  refreshTables() {
+    // 대기는 최근 결과 80개 제한과 분리한다. 취소된 대기가 캐시에서 되살아나지 않는다.
+    const tables = Object.fromEntries(Object.entries(this.recentTables || {}).filter(([,r]) => r.st !== "wait"));
+    Object.assign(tables,this.waitingTables || {});
+    this.setState({tables}, () => { this.sweep(); this.autoMatchWaiting(); });
+  }
+  autoMatchWaiting() {
+    const R = this.state.R, ownID = this.state.room;
+    if (this.unmounted || this.queueBusy || this.leaving || this.autoJoining || !ownID || !R || R.h !== this.uid || !this.queue?.fresh(R) || R.invite) return;
+    const candidate = Object.keys(this.state.tables).filter(id => {
+      const r=this.state.tables[id];
+      return this.queue.fresh(r) && !r.invite && r.h!==this.uid && r.g===R.g && r.stake===R.stake && (r.ts<R.ts || r.ts===R.ts && id<ownID);
+    }).sort((a,b)=>this.state.tables[a].ts-this.state.tables[b].ts || a.localeCompare(b))[0];
+    if (!candidate) return;
+    this.autoJoining = true;
+    this.lobbyAction(async () => {
+      const own = await this.queue.room(ownID); if (!this.queue.fresh(own)) return;
+      this.switchingRoom = true;
+      try { if (await this.queue.join(candidate,R.stake)) this.enterRoom(candidate); }
+      finally {
+        this.switchingRoom = false;
+        const current = await this.queue.room(ownID);
+        if (this.activeRoomId===ownID && (!current || !["wait","play"].includes(current.st))) this.resetRoom();
+      }
+    }).finally(() => { this.autoJoining = false; });
+  }
+  sweep() {
+    const now = this.now();
+    Object.entries(this.state.tables).forEach(([id,r]) => {
+      if (r.st === "play" && now > (r.dl || 0)+10000) this.finish(id,"timeout").catch(() => {});
+      if (r.st === "wait" && r.h === this.uid && now-r.ts >= WJBoardQueue.WAIT_MS) this.queue?.cancel(id).catch(e => this.say(e.message));
+    });
+  }
+  resetRoom() {
+    this.activeRoomId = null;
+    this.roomRef && this.roomRef.off(); this.roomRef = null; cancelAnimationFrame(this.raf);
+    this.setState({view:"lobby",room:null,R:null,pseudoFs:false}); this.setRoomUrl(null);
+  }
   async leave() {
-    const R = this.state.R, id = this.state.room;
-    if (R && R.st === "wait" && R.h === this.uid) { await this.cancel(id, R); this.say("대기를 취소하고 판돈을 돌려받았어요"); }
-    else if (R && R.st === "play" && this.isPlayer(R)) { if (!confirm("나가면 기권 처리돼요. 나갈까요?")) return; await this.finish(id, "resign"); }
-    this.roomRef && this.roomRef.off(); this.roomRef = null; cancelAnimationFrame(this.raf); this.setState({ view: "lobby", room: null, R: null, pseudoFs: false });
-    this.setRoomUrl(null);
+    if (this.leaving || this.queueBusy) return;
+    this.leaving = true; this.setState({busy:true});
+    const id = this.state.room;
+    try {
+      // 화면 캐시가 아닌 현재 DB 상태를 확인한 뒤 취소한다.
+      const r = id ? await this.queue.room(id) : null;
+      if (r?.h === this.uid && r.st === "wait") {
+        const result = await this.queue.cancel(id);
+        if (result.status === "matched") { this.say("상대가 입장해 대국이 시작됐어요. 대기 취소 대신 대국을 계속해 주세요."); return; }
+        await this.queue.cancelAll();
+        this.say("내 대기를 모두 취소하고 판돈을 돌려받았어요.");
+      } else if (r?.st === "play" && this.isPlayer(r)) {
+        if (!confirm("나가면 기권 처리돼요. 나갈까요?")) return;
+        await this.finish(id,"resign");
+      } else if (r?.st === "cancelled" && r.h === this.uid) { await this.queue.refundWait(id,r); await this.queue.cancelAll(); }
+      this.resetRoom();
+    } catch (e) { if (e.room) this.enterRoom(e.room); this.say(e.message || "취소를 확인하지 못했어요. 다시 눌러 주세요."); }
+    finally { this.leaving = false; if (!this.unmounted) this.setState({busy:false}); }
   }
   sendChat = (text) => {
     const t = String(typeof text === "string" ? text : this.state.chatText).trim().slice(0, 40); if (!t || !this.roomRef) return;
@@ -440,27 +515,27 @@ class Component extends DCLogic {
     const q = st.gq.trim();
     let shown = q ? games : st.category === "all" ? games : st.category === "strategy" ? games.filter(g => ["전략", "두뇌", "추리", "전통"].includes(g.tag)) : st.category === "quick" ? games.filter(g => QUICK.has(g.id)) : st.category === "favorite" ? games.filter(g => st.favorites.includes(g.id)) : games.filter(g => POPULAR.includes(g.id));
     if (q) shown = shown.filter(g => (g.name + " " + g.tag).includes(q));
-    const waitK = keys.filter(k => T[k].st === "wait" && !T[k].invite && now - T[k].ts < 600000), ownWaitK = keys.filter(k => T[k].st === "wait" && T[k].invite && T[k].h === this.uid && now - T[k].ts < 600000), visibleWaitK = waitK.concat(ownWaitK), stakeL = s => s ? F(s) + "준" : "친선";
+    const validWait = this.queue ? this.queue.visible(T) : [], waitK = validWait.filter(k => !T[k].invite), ownWaitK = validWait.filter(k => T[k].invite && T[k].h === this.uid), visibleWaitK = waitK.concat(ownWaitK), stakeL = s => s ? F(s) + "준" : "친선";
     const my = st.bstats[this.uid] || { w: 0, l: 0, d: 0, earn: 0 }, tot = my.w + my.l + (my.d || 0);
     const out = {
-      onlineLabel: st.online + "명 접속 중", cashStr: F(u.cash), waitingN: visibleWaitK.length, myName: this.name(), isLobby: st.view === "lobby", isMatch: st.view === "match", msg: st.view === "lobby" ? st.msg : "",
+      busy: !!st.busy, onlineLabel: st.online + "명 접속 중", cashStr: F(u.cash), waitingN: visibleWaitK.length, myName: this.name(), isLobby: st.view === "lobby", isMatch: st.view === "match", msg: st.view === "lobby" ? st.msg : "",
       logout: () => W && W.logout(),
       stakeLabel: (STAKES.find(s => s[0] === st.stake) || STAKES[1])[1], stakeCaret: st.stakeOpen ? "▲" : "▼", stakeOpen: !!st.stakeOpen,
-      toggleStake: () => this.setState({ stakeOpen: !st.stakeOpen }), closeStake: () => this.setState({ stakeOpen: false }),
-      stakeItems: STAKES.map(([v, l, sub]) => ({ label: l, sub, color: v === st.stake ? BL : INK, bg: v === st.stake ? "#E8F3FF" : "transparent", pick: () => { WJ.sfx("click"); try { localStorage.setItem("wj_stake", v); } catch (_) {} this.setState({ stake: v, stakeOpen: false }); } })),
+      toggleStake: () => { if (!this.queueBusy && !this.leaving) this.setState({ stakeOpen: !st.stakeOpen }); }, closeStake: () => this.setState({ stakeOpen: false }),
+      stakeItems: STAKES.map(([v, l, sub]) => ({ label: l, sub, color: v === st.stake ? BL : INK, bg: v === st.stake ? "#E8F3FF" : "transparent", pick: () => { if (this.queueBusy || this.leaving) return; WJ.sfx("click"); try { localStorage.setItem("wj_stake", v); } catch (_) {} this.setState({ stake: v, stakeOpen: false }); } })),
       filters: [["popular", "추천"], ["all", "전체 " + games.length], ["favorite", "★ 즐겨찾기 " + st.favorites.length], ["strategy", "전략·두뇌"], ["quick", "빠른 게임"]].map(([id, label]) => ({ label, bg: st.category === id && !q ? "#E8F3FF" : "transparent", fg: st.category === id && !q ? BL : MU, pick: () => this.setState({ category: id, gq: "" }) })),
       gq: st.gq, setGq: e => this.setState({ gq: e.target.value }),
       noFavorites: !q && st.category === "favorite" && st.favorites.length === 0, noSearch: !!q && shown.length === 0, pickPopular: () => this.setState({ category: "popular" }),
-      cards: shown.map((g, idx) => { const w = waitK.filter(k => T[k].g === g.id && T[k].h !== this.uid).length, mine = visibleWaitK.some(k => T[k].g === g.id && T[k].h === this.uid), favorite = st.favorites.includes(g.id), live = keys.filter(k => T[k].g === g.id && T[k].st === "play").length;
+      cards: shown.map((g, idx) => { const w = waitK.filter(k => T[k].g === g.id && T[k].h !== this.uid && T[k].stake === st.stake).length, mine = visibleWaitK.some(k => T[k].g === g.id && T[k].h === this.uid && T[k].stake === st.stake), favorite = st.favorites.includes(g.id), live = keys.filter(k => T[k].g === g.id && T[k].st === "play").length;
         return { anchor: "game-" + g.id, cls: "wj-gcard" + (st.focus === g.id ? " wj-focus" : ""), name: g.name, tag: g.tag, desc: g.desc, tint: (g.color || "#3182F6") + "1F", thumbSrc: B.thumb ? B.thumb(g.id) : "", tintBg: g.color || "#3182F6", waiting: w,
-          meta: this.turnLabel(g) + (live ? " · 진행 중 " + live + "판" : ""), btn: mine ? "내 대기방으로" : w ? "바로 대국 · " + w + "명 대기" : "대국 시작", btnBg: mine ? "#F2F4F6" : w ? UP : BL, btnFg: mine ? INK : "#fff", ring: w ? "0 0 0 2px #F04452" : "none",
+          meta: this.turnLabel(g) + (live ? " · 진행 중 " + live + "판" : ""), btn: st.busy ? "처리 중…" : mine ? "내 대기방으로" : w ? "바로 대국 · " + w + "명 대기" : "대국 시작", btnBg: mine ? "#F2F4F6" : w ? UP : BL, btnFg: mine ? INK : "#fff", ring: w ? "0 0 0 2px #F04452" : "none",
           favoriteIcon: favorite ? "★" : "☆", favoriteLabel: favorite ? g.name + " 즐겨찾기 해제" : g.name + " 즐겨찾기", favoriteColor: favorite ? "#FFB020" : "#B0B8C1", favorite: () => this.toggleFavorite(g.id), invite: () => this.createInvite(g.id), match: () => this.match(g.id) }; }),
       lobbyStats: [{ label: "게임", value: games.length + "종", sub: "전략·순발력·캐주얼", color: INK }, { label: "대기 중인 방", value: waitK.length + "개", sub: "눌러서 바로 참가", color: BL }, { label: "진행 중 대국", value: keys.filter(k => T[k].st === "play").length + "판", sub: "실시간 관전 가능", color: UP }],
       myW: my.w, myL: my.l, myRate: tot ? "승률 " + Math.round(my.w / tot * 100) + "%" : "첫 대국을 해보세요", myRateW: (tot ? Math.round(my.w / tot * 100) : 0) + "%", myEarn: (my.earn >= 0 ? "+" : "") + F(my.earn) + "준", myEarnColor: my.earn >= 0 ? UP : BL,
-      waiting: visibleWaitK.slice(0, 20).map(k => { const r = T[k], mine = r.h === this.uid, gd = this.gdef(r.g); return { game: gd ? gd.name : r.g, host: r.hn, stake: stakeL(r.stake), btn: mine ? "내 방" : "참가", bg: mine ? "#F2F4F6" : BL, fg: mine ? MU : "#fff", join: async () => { if (mine) return this.enterRoom(k); if (await this.joinRoom(k)) this.enterRoom(k); } }; }),
+      waiting: visibleWaitK.slice(0, 20).map(k => { const r=T[k], mine=r.h===this.uid, same=r.stake===st.stake, gd=this.gdef(r.g); return {game:gd?.name || r.g,host:r.hn,stake:stakeL(r.stake),btn:st.busy ? "처리 중…" : mine ? "내 방" : same ? "참가" : "판돈 다름",disabled:!!st.busy || (!mine && !same),bg:mine || !same ? "#F2F4F6" : BL,fg:mine || !same ? MU : "#fff",join:()=>this.joinFromList(k)}; }),
       noWaiting: visibleWaitK.length === 0,
-      results: keys.filter(k => T[k].st !== "wait").slice(0, 20).map(k => { const r = T[k], gd = this.gdef(r.g), live = r.st === "play"; return { tag: live ? "LIVE" : stakeL(r.stake), tagBg: live ? "#FFF0F2" : "#F2F4F6", tagFg: live ? UP : "#4E5968", game: gd ? gd.name : "", moves: (r.m || []).length, a: r.hn, b: r.gn || "?", aC: r.win === r.h ? UP : INK, bC: r.win === r.gu ? UP : INK, why: live ? "대국 중 · 눌러서 관전" : r.why || "", cursor: live ? "pointer" : "default", watch: () => live && this.enterRoom(k) }; }),
-      noResults: !keys.some(k => T[k].st !== "wait"),
+      results: keys.filter(k => T[k].st === "play" || T[k].st === "done").slice(0, 20).map(k => { const r = T[k], gd = this.gdef(r.g), live = r.st === "play"; return { tag: live ? "LIVE" : stakeL(r.stake), tagBg: live ? "#FFF0F2" : "#F2F4F6", tagFg: live ? UP : "#4E5968", game: gd ? gd.name : "", moves: (r.m || []).length, a: r.hn, b: r.gn || "?", aC: r.win === r.h ? UP : INK, bC: r.win === r.gu ? UP : INK, why: live ? "대국 중 · 눌러서 관전" : r.why || "", cursor: live ? "pointer" : "default", watch: () => live && this.enterRoom(k) }; }),
+      noResults: !keys.some(k => T[k].st === "play" || T[k].st === "done"),
       board: Object.keys(st.bstats).map(k => st.bstats[k]).sort((a, b) => b.w - a.w || b.earn - a.earn).slice(0, 8).map((s, i) => ({ rank: i + 1, n: s.n || "?", w: s.w, l: s.l, bg: ["#FFC342", "#B0B8C1", "#D9925B"][i] || MU })),
       noBoard: Object.keys(st.bstats).length === 0, cvRef: this.cvRef, boardRef: this.boardRef, toggleFullscreen: this.toggleFullscreen, copyInvite: this.copyInvite
     };
