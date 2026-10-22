@@ -20,8 +20,18 @@
     wrap.appendChild(el);
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("in")));
     const outOf = n => { if (n.dataset.out) return; n.dataset.out = 1; n.classList.add("fade"); setTimeout(() => { n.classList.remove("in"); n.classList.add("out"); }, 700); setTimeout(() => n.remove(), 1050); };
+    // 기존 토스트를 클릭 가능한 알림으로도 사용한다. 일반 알림의 표시는 그대로다.
+    if (typeof opt.onClick === "function") {
+      el.style.pointerEvents = "auto"; el.style.cursor = "pointer";
+      el.setAttribute("role", "button"); el.setAttribute("tabindex", "0");
+      el.setAttribute("aria-label", opt.label || el.textContent);
+      const activate = () => { opt.onClick(); outOf(el); };
+      el.addEventListener("click", activate);
+      el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); } });
+    }
     const live = [...wrap.children].filter(c => !c.dataset.out); if (live.length > 4) outOf(live[0]);
     setTimeout(() => outOf(el), opt.ms || 3200);
+    return { close: () => outOf(el) };
   }
 
   // ---------- 페이지 전환 ----------
@@ -458,6 +468,7 @@
     out.push({ g: "바로 하기", em: "💰", t: "주급 받기", s: "매주", run: () => claimWeekly() });
     out.push({ g: "바로 하기", em: localStorage.getItem("wj_mute") === "1" ? "🔈" : "🔇", t: localStorage.getItem("wj_mute") === "1" ? "소리 켜기" : "소리 끄기", s: "", run: () => { const m = localStorage.getItem("wj_mute") === "1"; localStorage.setItem("wj_mute", m ? "0" : "1"); toast(m ? "소리를 켰어요" : "소리를 껐어요", { icon: m ? "🔊" : "🔇" }); } });
     out.push({ g: "바로 하기", em: "🔔", t: "내 차례 알림 허용", s: "", run: () => { askNotify(); toast("브라우저 알림 권한을 요청했어요", { icon: "🔔" }); } });
+    if (window.WJLiveEvent?.active?.()) out.push({ g: "바로 하기", em: "❓", t: "질문 이벤트 확인", s: "진행 중인 질문 · 공지", run: () => window.WJLiveEvent.open() });
     if (W) out.push({ g: "바로 하기", em: "🚪", t: "로그아웃", s: "", run: () => W.logout() });
     GAMES.forEach(([id, n]) => out.push({ g: "보드게임", em: "🎲", t: n, s: "게임", run: () => go("games.dc.html?focus=" + id) }));
     if (W) { const t = W.now(); W.STOCKS.forEach(s => { const c = W.change(s.i, t); out.push({ g: "종목", em: s.name[0], t: s.name, s: W.fmt(W.price(s.i, t)) + " · " + W.pct(c), sc: c >= 0 ? "#F04452" : "#3182F6", run: () => { localStorage.setItem("wj_sel", s.i); here() === "trade.dc.html" ? location.reload() : go("trade.dc.html"); } }); }); }
