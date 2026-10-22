@@ -28,6 +28,9 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 @keyframes wjblink{50%{opacity:.3}}
 @keyframes wjslide{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
 @keyframes wjshake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+.history-badge{width:40px;height:40px;flex:0 0 40px;border-radius:50%;background:#F2F4F6;color:#4E5968;display:grid;place-items:center;overflow:hidden;font-size:10.5px;font-weight:700;line-height:1.15;text-align:center}
+.history-badge>span{display:block;width:calc(100% - 4px);white-space:pre-line;overflow-wrap:anywhere}
+.history-badge.compact{width:34px;height:34px;flex-basis:34px;font-size:10px}
 </style>
 </helmet>
 <div style="min-height:100vh;display:flex;flex-direction:column">
@@ -146,7 +149,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
           <div style="max-height:540px;overflow-y:auto;margin:0 -8px;padding:4px 0">
             <sc-for list="{{ history }}" as="h" hint-placeholder-count="6">
               <div style="display:flex;align-items:center;gap:14px;padding:12px 8px">
-                <div style="width:40px;height:40px;border-radius:50%;background:#F2F4F6;color:#4E5968;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none">{{ h.tag }}</div>
+                <div class="history-badge" title="{{ h.tag }}" aria-label="{{ h.tag }}"><span>{{ h.badgeText }}</span></div>
                 <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{ h.text }}</div><div style="font-size:13px;color:#8B95A1">{{ h.time }}</div></div>
                 <div style="font-weight:700;font-size:15px;color:{{ h.color }}">{{ h.amount }}준</div>
               </div>
@@ -186,7 +189,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
         <div style="display:flex;flex-direction:column;gap:2px">
           <sc-for list="{{ recent }}" as="h" hint-placeholder-count="0">
             <div style="display:flex;align-items:center;gap:10px;padding:8px 0">
-              <div style="width:34px;height:34px;border-radius:50%;background:#F2F4F6;color:#4E5968;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none">{{ h.tag }}</div>
+              <div class="history-badge compact" title="{{ h.tag }}" aria-label="{{ h.tag }}"><span>{{ h.badgeText }}</span></div>
               <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.text }}</div><div style="font-size:12px;color:#B0B8C1">{{ h.time }}</div></div>
               <div style="font-weight:700;font-size:14px;color:{{ h.color }}">{{ h.amount }}</div>
             </div>
@@ -303,7 +306,7 @@ class Component extends DCLogic {
     const quickBase = st.tab === "loan" && st.loanMode === "repay" ? Math.min(cash, loan) : st.tab === "loan" ? Math.floor((limit - loan) / 1.1) : cash;
     const quick = [["+1만", 1e4], ["+10만", 1e5], ["+100만", 1e6], ["절반", "h"], ["전액", "a"]].map(([label, v]) => ({ label, pick: () => { W && W.sfx("click"); this.setState({ amount: v === "a" ? Math.max(0, quickBase) : v === "h" ? Math.max(0, Math.floor(quickBase / 2)) : (st.amount || 0) + v }); } }));
     const TAG = { buy: ["매수", UP], sell: ["매도", DN], send: ["송금", DN], recv: ["입금", UP], withdraw: ["출금", "#E07B00"], loan: ["대출", UP], repay: ["상환", DN], autorepay: ["자동상환", "#E07B00"], atm: ["화폐 교환", UP], coin: ["코인", "#7C3AED"], join: ["가입", AC], game: ["게임", AC], admin: ["관리자", "#E07B00"], daily: ["출석", AC], hack: ["해킹", "#00A661"], hacked: ["해킹 피해", DN], hackfail: ["해킹 실패", DN], hackup: ["보안 업글", "#7C3AED"], lotto: ["복권", "#E07B00"] };
-    const history = st.history.map(h => { const [tag, color] = TAG[h.type] || [h.type, MU]; let text = h.type === "buy" || h.type === "sell" ? `${h.stock} ${F(h.qty)}주 @ ${F(h.price)}` : h.type === "send" ? `${h.who}님에게` : h.type === "recv" ? `${h.who}님이 보냄` : h.type === "game" ? h.text || "게임" : h.text || tag; if ((h.type === "sell") && h.tax > 0) text += ` · 세금 ${F(h.tax)}`; const amt = h.type === "sell" ? h.pnl : h.type === "buy" ? -(h.qty * h.price) : h.amount; return { tag, color: amt >= 0 ? UP : DN, text, time: new Date(h.ts).toLocaleString("ko-KR"), amount: ready ? W.signed(amt || 0) : "" }; });
+    const history = st.history.map(h => { const [tag, color] = TAG[h.type] || [h.type, MU]; let text = h.type === "buy" || h.type === "sell" ? `${h.stock} ${F(h.qty)}주 @ ${F(h.price)}` : h.type === "send" ? `${h.who}님에게` : h.type === "recv" ? `${h.who}님이 보냄` : h.type === "game" ? h.text || "게임" : h.text || tag; if ((h.type === "sell") && h.tax > 0) text += ` · 세금 ${F(h.tax)}`; const amt = h.type === "sell" ? h.pnl : h.type === "buy" ? -(h.qty * h.price) : h.amount; const badgeLabel = String(tag).replace(/\s+/g, ""); const badgeText = badgeLabel.length > 4 ? "기타" : badgeLabel.length === 4 ? badgeLabel.slice(0, 2) + "\n" + badgeLabel.slice(2) : badgeLabel; return { tag, badgeText, color: amt >= 0 ? UP : DN, text, time: new Date(h.ts).toLocaleString("ko-KR"), amount: ready ? W.signed(amt || 0) : "" }; });
     const SW = { pending: ["대기중", "#FFF3E0", "#E07B00"], paid: ["지급완료", "#E8F3FF", AC], rejected: ["거절·환불", "#FFF0F2", UP] };
     const myWd = st.wds.map(w => { const s = SW[w.status] || SW.pending; return { amount: F(w.amount) + "준", time: new Date(w.ts).toLocaleString("ko-KR"), status: s[0], bg: s[1], fg: s[2] }; });
     const net = cash + stock - loan, H = u.holdings || {};
