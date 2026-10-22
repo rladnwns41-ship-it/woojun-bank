@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   if (window.WJLiveEvent) return;
-  window.WJLiveEvent = { version: "20261022-question-window" };
+  window.WJLiveEvent = { version: "20261022-left-window" };
   const W = window.WJ;
   if (!W) return;
   const isAdminPage = /(?:^|\/)admin\.dc\.html$/.test(location.pathname);
@@ -11,16 +11,17 @@
     *{box-sizing:border-box} [hidden]{display:none!important} button,input,textarea,select{font:inherit} button{cursor:pointer;border:0;border-radius:11px;background:#eef2f7;color:#344054;padding:10px 14px;font-weight:700}button:hover{filter:brightness(.96)}button:disabled{cursor:wait;opacity:.5}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8ebfff;outline-offset:2px}
     .primary{background:#3182f6;color:white}.danger{background:#fff0f2;color:#d92d4c}.muted{color:#6b7684;font-size:12px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.spread{justify-content:space-between}.stack{display:flex;flex-direction:column;gap:12px}.pill{font-size:11px;font-weight:800;border-radius:30px;background:#e8f3ff;color:#1765ce;padding:4px 9px}.hot{background:#fff1e6;color:#b54708}
     h2,h3,p{margin:0}h2{font-size:20px}h3{font-size:16px}input:not([type=checkbox]):not([type=radio]),textarea,select{width:100%;padding:11px;border:1px solid #dbe1e8;border-radius:10px;background:white;color:#191f28;min-width:0}textarea{resize:vertical}label{display:block}input[type=checkbox]{width:18px;height:18px;flex:none;accent-color:#3182f6}.box{padding:14px;background:#f7f9fc;border-radius:13px}.wrap{white-space:pre-wrap;overflow-wrap:anywhere}.error{color:#d92d4c;font-size:13px;min-height:20px}
-    .panel{position:fixed;inset:0;z-index:99980;width:400px;height:fit-content;max-width:calc(100vw - 24px);max-height:calc(100dvh - 32px);margin:auto;padding:0;background:white;color:#191f28;border:1px solid #e4e9f1;border-radius:16px;box-shadow:0 16px 56px #19294326,0 2px 8px #1929430d;overflow:hidden;animation:window-in .16s ease-out}
+    .panel{--event-bottom:calc(18px + env(safe-area-inset-bottom,0px));--event-room:calc(100dvh - var(--event-bottom) - 12px);position:fixed;inset:auto auto var(--event-bottom) max(18px,env(safe-area-inset-left,0px));z-index:99980;width:350px;height:fit-content;max-width:calc(100vw - max(18px,env(safe-area-inset-left,0px)) - max(18px,env(safe-area-inset-right,0px)));max-height:max(0px,min(var(--event-room),calc(100dvh - var(--event-bottom) - 12px)));margin:0;padding:0;background:white;color:#191f28;border:1px solid #e4e9f1;border-radius:16px;box-shadow:0 16px 56px #19294326,0 2px 8px #1929430d;overflow:hidden;animation:window-in .16s ease-out}
     .head{padding:13px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #edf0f4}.heading{flex:1;min-width:0;display:flex;align-items:center;gap:8px}.heading b{font-size:15px}.event-label{font-size:9px;letter-spacing:.6px;font-weight:800;color:#3182f6;background:#edf4ff;padding:3px 6px;border-radius:5px}.window-actions{display:flex;align-items:center;gap:3px}.window-action{width:28px;height:28px;display:grid;place-items:center;padding:0;border:0;border-radius:8px;background:transparent;color:#8591a4}.window-action:hover{background:#f1f4f8;color:#344054}.window-action svg{width:16px;height:16px;display:block;pointer-events:none}
-    .content{padding:18px;max-height:calc(100dvh - 98px);overflow:auto;overscroll-behavior:contain}.content.stack{gap:16px}.connection{font-size:12px;color:#b54708}.panel .round{gap:16px}.question-block{display:flex;flex-direction:column;gap:10px}.panel .question{font-size:20px;line-height:1.5;letter-spacing:-.5px}.panel .pill{font-size:11px;background:#f2f4f7;color:#4e5968;padding:3px 8px}.panel .timer{font-variant-numeric:tabular-nums}.panel .form form{gap:10px}.panel .option{padding:11px 12px;align-items:center;transition:border-color .12s,background .12s}.panel .option:has(input:checked){border-color:#3182f6;background:#f3f8ff}.panel .option input{margin:0}.panel .consent{font-size:12px;margin:4px 0;line-height:1.55}.panel .consent input{margin:1px 0 0}.form-actions{display:flex;gap:8px}.form-actions .primary{flex:1}.form-actions button{padding:11px 16px}.form-actions .skip{background:#f2f4f7;color:#6b7684}.error:empty{display:none}.panel.minimized .content{display:none}.panel.minimized .head{border-bottom:0}.responses{border-top:1px solid #edf0f4;padding-top:14px}.responses summary{display:flex;align-items:center;gap:7px;cursor:pointer;list-style:none;color:#6b7684;font-size:12px}.responses summary::-webkit-details-marker{display:none}.responses summary svg{width:14px;height:14px;transition:transform .15s}.responses[open] summary svg{transform:rotate(180deg)}.responses .count{margin-left:auto}.responses .answers{margin-top:12px}.panel .answer{font-size:12px;padding:10px}.panel .notice{border-radius:10px;padding:11px 12px;font-size:13px}.notice-title{display:block;font-size:10px;letter-spacing:.5px;font-weight:800;margin-bottom:4px}.notice-text{white-space:pre-wrap;overflow-wrap:anywhere}
+    .content{padding:18px;max-height:max(0px,min(calc(var(--event-room) - 58px),calc(100dvh - var(--event-bottom) - 70px)));overflow:auto;overscroll-behavior:contain}.content.stack{gap:16px}.connection{font-size:12px;color:#b54708}.panel .round{gap:16px}.question-block{display:flex;flex-direction:column;gap:10px}.panel .question{font-size:20px;line-height:1.5;letter-spacing:-.5px}.panel .pill{font-size:11px;background:#f2f4f7;color:#4e5968;padding:3px 8px}.panel .timer{font-variant-numeric:tabular-nums}.panel .form form{gap:10px}.panel .option{padding:11px 12px;align-items:center;transition:border-color .12s,background .12s}.panel .option:has(input:checked){border-color:#3182f6;background:#f3f8ff}.panel .option input{margin:0}.panel .consent{font-size:12px;margin:4px 0;line-height:1.55}.panel .consent input{margin:1px 0 0}.form-actions{display:flex;gap:8px}.form-actions .primary{flex:1}.form-actions button{padding:11px 16px}.form-actions .skip{background:#f2f4f7;color:#6b7684}.error:empty{display:none}.panel.minimized .content{display:none}.panel.minimized .head{border-bottom:0}.responses{border-top:1px solid #edf0f4;padding-top:14px}.responses summary{display:flex;align-items:center;gap:7px;cursor:pointer;list-style:none;color:#6b7684;font-size:12px}.responses summary::-webkit-details-marker{display:none}.responses summary svg{width:14px;height:14px;transition:transform .15s}.responses[open] summary svg{transform:rotate(180deg)}.responses .count{margin-left:auto}.responses .answers{margin-top:12px}.panel .answer{font-size:12px;padding:10px}.panel .notice{border-radius:10px;padding:11px 12px;font-size:13px}.notice-title{display:block;font-size:10px;letter-spacing:.5px;font-weight:800;margin-bottom:4px}.notice-text{white-space:pre-wrap;overflow-wrap:anywhere}
     @keyframes window-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.panel{animation:none}}
     .question{font-size:21px;font-weight:800;line-height:1.45}.answers{display:flex;flex-direction:column;gap:8px}.answer{border-radius:12px;padding:12px;background:#f4f6f9}.answer.hot{background:#fff1e6;color:#823f05}.answer b{font-size:13px}.answer .wrap{margin-top:4px}.option{display:flex;gap:9px;align-items:flex-start;padding:11px;border:1px solid #e4e7ec;border-radius:10px;cursor:pointer}.option input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:#3182f6}.option span{overflow-wrap:anywhere}.consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#4e5968}.notice{background:#e8f3ff;border-radius:12px;padding:12px;color:#1b64da}
     .admin{max-width:1280px;margin:20px auto;padding:22px;background:white;border:1px solid #e1e7ee;border-radius:22px}.admin summary{cursor:pointer;list-style:none}.admin summary::-webkit-details-marker{display:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.formlabel{font-size:13px;font-weight:700;margin-bottom:5px}.choice{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.choice label{display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap}.adminfeed{max-height:250px;overflow:auto}.adminstatus{color:#1765ce;min-height:21px}.small{padding:5px 9px;font-size:12px}
+    .panel.toast-tight .content{display:none}.panel.toast-crowded{visibility:hidden}
     @media(max-width:700px){.grid{grid-template-columns:1fr}.admin{margin:12px;padding:16px}.question{font-size:19px}}
   `;
   let db, ev = {}, key = null, host, root, adminHost, admin, unsubscribe = [], clock, generation = 0;
-  let seen = new Set(), roundID = null, noticeID = null, formSignature = "", busy = false, connected = false, returnFocus;
+  let seen = new Set(), roundID = null, noticeID = null, formSignature = "", busy = false, connected = false, returnFocus, panelFrame = 0;
   const notifications = new Map();
   const $ = (sel, where = root) => where.querySelector(sel);
   const el = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; };
@@ -82,9 +83,46 @@
       $(".minimize").title = folded ? "펼치기" : "접기";
     };
     $(".panel").addEventListener("keydown", e => { if (e.key === "Escape") { e.preventDefault(); openPanel(false); } });
-    $(".panel").addEventListener("close", () => { if (returnFocus?.isConnected) returnFocus.focus(); });
+    $(".panel").addEventListener("close", () => { if (!root || !$(".panel").open) { cancelAnimationFrame(panelFrame); panelFrame = 0; if (returnFocus?.isConnected) returnFocus.focus(); } });
+    const resized = () => { cancelAnimationFrame(panelFrame); fitPanelAboveAlerts(); };
+    window.addEventListener("resize", resized);
+    unsubscribe.push(() => window.removeEventListener("resize", resized));
+    if (typeof ResizeObserver !== "undefined") {
+      let stack = null;
+      const sizes = new ResizeObserver(fitPanelAboveAlerts);
+      const watch = () => {
+        const next = document.querySelector(".wj-toasts");
+        if (next !== stack) { sizes.disconnect(); stack = next; if (stack) sizes.observe(stack); }
+        fitPanelAboveAlerts();
+      };
+      const added = new MutationObserver(watch);
+      added.observe(document.body, {childList:true});
+      unsubscribe.push(() => { added.disconnect(); sizes.disconnect(); });
+      watch();
+    }
 
 
+  }
+  // 기존 알림의 실제 높이를 따라간다. 알림이 늘거나 사라지는 애니메이션 중에도 겹치지 않는다.
+  function fitPanelAboveAlerts() {
+    panelFrame = 0;
+    if (!root || !$(".panel").open) return;
+    const panel = $(".panel"), stack = document.querySelector(".wj-toasts"), rect = stack?.getBoundingClientRect();
+    let bottom;
+    if (rect && rect.height > 0) {
+      bottom = Math.ceil(innerHeight - rect.top + 16);
+      const value = bottom + "px";
+      if (panel.style.getPropertyValue("--event-bottom") !== value) panel.style.setProperty("--event-bottom", value);
+    } else {
+      panel.style.removeProperty("--event-bottom");
+      bottom = parseFloat(getComputedStyle(panel).bottom) || 18;
+    }
+    const room = Math.max(0, innerHeight - bottom - 12), value = room + "px";
+    if (panel.style.getPropertyValue("--event-room") !== value) panel.style.setProperty("--event-room", value);
+    // 아주 낮은 화면에서는 입력 상태를 보존한 채 접었다가 알림이 사라지면 복원한다.
+    panel.classList.toggle("toast-tight", room < 150);
+    panel.classList.toggle("toast-crowded", room < 58);
+    if (typeof ResizeObserver === "undefined") panelFrame = requestAnimationFrame(fitPanelAboveAlerts);
   }
   function openPanel(open) {
     if (!root) return;
@@ -94,6 +132,7 @@
       $(".minimize").setAttribute("aria-expanded", "true");
       $(".minimize").setAttribute("aria-label", "이벤트 접기"); $(".minimize").title = "접기";
       if (!dialog.open) { returnFocus = root.activeElement || document.activeElement; dialog.show(); }
+      cancelAnimationFrame(panelFrame); fitPanelAboveAlerts();
     }
     else if (!open && dialog.open) dialog.close();
   }
@@ -258,7 +297,7 @@
     unsubscribe.push(()=>ref.off("value",fn));
   }
   function cleanup() {
-    unsubscribe.forEach(fn=>fn());unsubscribe=[];clearInterval(clock);
+    unsubscribe.forEach(fn=>fn());unsubscribe=[];clearInterval(clock);cancelAnimationFrame(panelFrame);panelFrame=0;
     for (const [handle, meta] of notifications) { handle?.close?.(); clearTimeout(meta.timer); }
     notifications.clear(); returnFocus=null;
     if(host)host.remove();if(adminHost)adminHost.remove();host=root=adminHost=admin=null;ev={};key=null;roundID=null;noticeID=null;formSignature="";seen=new Set();busy=false;adminBusy=false;
