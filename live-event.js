@@ -231,6 +231,7 @@
       <label><span class="formlabel">답변할 참가자</span><select class="targetselect" aria-label="답변할 참가자"><option value="random">🎯 접속자 중 랜덤 1명</option><option value="all">👥 모두에게 질문</option></select></label><label><span class="formlabel">제한 시간 (초, 0이면 무제한)</span><input class="seconds" type="number" min="0" max="3600" value="60" aria-label="제한 시간"></label><button type="button" class="primary publish">지금 질문 올리기 · 전체 알림</button><p class="muted">질문은 알림으로 도착하고, 참가자가 ‘답변하기’를 누르면 답변창이 열려요. 새 질문을 올리면 이전 질문과 답변 목록이 교체돼요. 참가자는 공개 안내를 확인하고 제출하거나 패스할 수 있어요.</p></div>
       <div class="box stack"><h3>진행 상황</h3><div class="eventstatus wrap"></div><div class="row"><button type="button" class="closeevent">질문 마감</button><button type="button" class="danger clearevent">질문·답변 내리기</button></div><div class="adminfeed answers"></div></div></div></div><div class="adminstatus wrap" role="status"></div></details>`;
     document.body.append(adminHost);
+    if(!document.getElementById("wj-live-event-flow")){const fx=document.createElement("style");fx.id="wj-live-event-flow";fx.textContent="#dc-root,#dc-root>.sc-host{height:auto!important;min-height:100%}";document.head.appendChild(fx);}
     for (let i=0;i<4;i++) {
       const row = el("div",null,"choice"), input = document.createElement("input"); input.className="choiceinput";input.maxLength=80;input.placeholder="선택지 " +(i+1);input.setAttribute("aria-label",input.placeholder);
       const label = el("label"), check = document.createElement("input");check.type="checkbox";check.className="highlightinput";check.setAttribute("aria-label", "선택지 "+(i+1)+" 강조");label.append(check,el("span","강조"));row.append(input,label);$(".choices",admin).appendChild(row);
@@ -300,7 +301,7 @@
     unsubscribe.forEach(fn=>fn());unsubscribe=[];clearInterval(clock);cancelAnimationFrame(panelFrame);panelFrame=0;
     for (const [handle, meta] of notifications) { handle?.close?.(); clearTimeout(meta.timer); }
     notifications.clear(); returnFocus=null;
-    if(host)host.remove();if(adminHost)adminHost.remove();host=root=adminHost=admin=null;ev={};key=null;roundID=null;noticeID=null;formSignature="";seen=new Set();busy=false;adminBusy=false;
+    if(host)host.remove();if(adminHost)adminHost.remove();document.getElementById("wj-live-event-flow")?.remove();host=root=adminHost=admin=null;ev={};key=null;roundID=null;noticeID=null;formSignature="";seen=new Set();busy=false;adminBusy=false;
   }
   async function authChanged(user) {
     const token=++generation;cleanup();if(!user)return;
