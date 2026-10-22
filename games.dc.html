@@ -23,7 +23,7 @@
 <script src="games-extra.js"></script>
 <script src="games-more.js"></script>
 <script src="games-uno.js"></script>
-<script src="games-golf.js"></script>
+<script src="games-golf.js?v=20261022-inline-garden"></script>
 <script src="game-skin.js"></script>
 <style>
 *{box-sizing:border-box}
@@ -264,6 +264,8 @@ const EMO = ["좋은 수!", "잘 부탁해요", "고민 중…", "아차", "한 
 const POPULAR = ["uno", "minigolf", "pool", "chicken", "cucaracha", "yut", "marble", "omok", "janggi", "baduk", "chess", "indian", "baseball", "battleship", "marbles", "halligalli", "rummikub", "othello"];
 const QUICK = new Set(["uno", "minigolf", "marbles", "neon4", "race21", "halligalli", "kebab", "blackjack", "memory", "mines", "bingo", "indian", "baseball", "chicken", "cucaracha"]);
 const LIGHT = c => c === "#FFFFFF" || c === "#E5E8EB" || c === "#FFC342";
+// 첫 샷에 코스 버전을 남겨 기존 방·새 대국 모두 같은 코스로 재생한다.
+const gameRules = r => r.rulesVersion || (r.g === "minigolf" ? ((r.m || []).length ? r.m[0].cv || 1 : 3) : 1);
 
 class Component extends DCLogic {
   state = { v: 0, busy: false, stakeOpen: false, user: null, online: 1, tables: {}, bstats: {}, favorites: [], stake: 10000, category: "popular", gq: "", focus: "", msg: "", view: "lobby", room: null, R: null, sel: -1, hover: -1, hideRes: false, rotateOff: false, pseudoFs: false, chatText: "" };
@@ -345,7 +347,7 @@ class Component extends DCLogic {
       this.enterRoom(id);
     });
   }
-  replay(R) { const g = this.gdef(R.g); let s = g.init(R.seed); (R.m || []).forEach(m => { s = g.apply(s, m); }); return s; }
+  replay(R) { const g = this.gdef(R.g); let s = g.init(R.seed, gameRules(R)); (R.m || []).forEach(m => { s = g.apply(s, m); }); return s; }
   meIdx(R) { return R.p0 === this.uid ? 0 : 1; }
 
   async joinFromList(id) {
@@ -394,12 +396,12 @@ class Component extends DCLogic {
       }
       if (R.st === "play" && this.ticketCleared !== id && !this.clearingTicket) {
         this.clearingTicket = true; this.queue.clearTicket(id).then(() => { this.ticketCleared = id; }).catch(() => {}).finally(() => { this.clearingTicket = false; });
-      } if (R && R.st !== "wait") { const len = (R.m || []).length; if (this.lastLen >= 0 && len > this.lastLen) WJ.sfx("flip"); if (this.lastLen === -1 && R.st === "play") WJ.sfx("bell"); this.lastLen = len; const rk = id + ":" + R.seed; if (this.rpKey === rk && this.S && this.rpN <= len) { const gd = this.gdef(R.g); for (let k = this.rpN; k < len; k++) this.S = gd.apply(this.S, R.m[k]); } else this.S = this.replay(R); this.rpKey = rk; this.rpN = len; } else { this.rpKey = null; this.S = R ? this.gdef(R.g).init(R.seed) : null; } if (R && R.st === "play" && this.prevSt === "wait") { WJ.sfx("bell"); if (document.hidden && window.WJUI) { WJUI.blink("● 대국 시작!"); WJUI.notify("우준은행 보드게임", "상대가 들어왔어요. 대국이 시작됐어요!"); } } this.prevSt = R && R.st; this.setState({ R, sel: -1 }); });
+      } if (R && R.st !== "wait") { const len = (R.m || []).length; if (this.lastLen >= 0 && len > this.lastLen) WJ.sfx("flip"); if (this.lastLen === -1 && R.st === "play") WJ.sfx("bell"); this.lastLen = len; const rk = id + ":" + R.seed + ":" + gameRules(R); if (this.rpKey === rk && this.S && this.rpN <= len) { const gd = this.gdef(R.g); for (let k = this.rpN; k < len; k++) this.S = gd.apply(this.S, R.m[k]); } else this.S = this.replay(R); this.rpKey = rk; this.rpN = len; } else { this.rpKey = null; this.S = R ? this.gdef(R.g).init(R.seed, gameRules(R)) : null; } if (R && R.st === "play" && this.prevSt === "wait") { WJ.sfx("bell"); if (document.hidden && window.WJUI) { WJUI.blink("● 대국 시작!"); WJUI.notify("우준은행 보드게임", "상대가 들어왔어요. 대국이 시작됐어요!"); } } this.prevSt = R && R.st; this.setState({ R, sel: -1 }); });
     window.scrollTo({ top: 0, behavior: "smooth" });
-    let lastFrame = 0, lastStamp = ""; const loop = ts => { const rect = this.boardRef.current?.getBoundingClientRect(), visible = rect && rect.bottom > 0 && rect.top < innerHeight; if (!document.hidden && visible) { const drag = this.ui?.drag, stamp = [this.state.v, (this.state.R?.m || []).length, this.state.R?.st, this.state.sel, this.state.hover, this.state.pseudoFs, drag?.tx, drag?.ty, this.ui?.hovT].join("|"); const anim = (this.ui?.animUntil || 0) > Date.now(), gap = anim ? 14 : drag ? 16 : 80; if (ts - lastFrame >= gap && (anim || drag || stamp !== lastStamp)) { this.draw(); lastFrame = ts; lastStamp = stamp; } } this.raf = requestAnimationFrame(loop); }; cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(loop);
+    let lastFrame = 0, lastStamp = ""; const loop = ts => { const rect = this.boardRef.current?.getBoundingClientRect(), visible = rect && rect.bottom > 0 && rect.top < innerHeight; if (!document.hidden && visible) { const drag = this.ui?.drag, stamp = [this.state.v, (this.state.R?.m || []).length, this.state.R?.st, this.state.sel, this.state.hover, this.state.pseudoFs, drag?.tx, drag?.ty, this.ui?.hovT].join("|"); const continuous = this.gdef(this.state.R?.g)?.continuous === true, anim = continuous || (this.ui?.animUntil || 0) > Date.now(), gap = continuous ? 30 : anim ? 14 : drag ? 16 : 80; if (ts - lastFrame >= gap && (anim || drag || stamp !== lastStamp)) { this.draw(); lastFrame = ts; lastStamp = stamp; } } this.raf = requestAnimationFrame(loop); }; cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(loop);
   }
   draw() {
-    const c = this.cvRef.current, R = this.state.R; if (!c || !R) return; const g = this.gdef(R.g), s = this.S || g.init(R.seed);
+    const c = this.cvRef.current, R = this.state.R; if (!c || !R) return; const g = this.gdef(R.g), s = this.S || g.init(R.seed, gameRules(R));
     const size = Math.min(1120, Math.max(560, Math.round(c.getBoundingClientRect().width * Math.min(devicePixelRatio || 1, 2)))); if (c.width !== size) { c.width = size; c.height = size; } const x = c.getContext("2d"); x.setTransform(size / BG.S, 0, 0, size / BG.S, 0, 0); x.clearRect(0, 0, BG.S, BG.S);
     const me = R.st === "wait" ? 0 : this.meIdx(R); if (!this.ui || this.uiRoom !== this.state.room) { this.ui = {}; this.uiRoom = this.state.room; } g.draw(x, s, { me, sel: this.state.sel, hover: this.state.hover, myTurn: this.myTurn(), ui: this.ui });
   }
@@ -409,7 +411,7 @@ class Component extends DCLogic {
   async play(m) {
     const R = this.state.R, id = this.state.room, g = this.gdef(R.g), len = (R.m || []).length, me = this.uid, now = this.now();
     let paid = null;
-    const res = await this.db.ref("tables/" + id).transaction(r => { paid = null; if (!r || r.st !== "play" || (r.m || []).length !== len) return; let s = g.init(r.seed); (r.m || []).forEach(mm => { s = g.apply(s, mm); }); const mi = r.p0 === me ? 0 : 1, turnUid = g.turn(s) === 0 ? r.p0 : (r.p0 === r.h ? r.gu : r.h); const isFree = g.free && g.free(s, m, mi); if (turnUid !== me && !isFree) return; const next = g.apply(s, m); if (next === s) return; s = next; r.m = (r.m || []).concat([m]); if (!isFree || g.turnSec >= 900) r.dl = now + (g.turnSec || BG.TURN) * 1000;
+    const res = await this.db.ref("tables/" + id).transaction(r => { paid = null; if (!r || r.st !== "play" || (r.m || []).length !== len) return; let s = g.init(r.seed, gameRules(r)); (r.m || []).forEach(mm => { s = g.apply(s, mm); }); const mi = r.p0 === me ? 0 : 1, turnUid = g.turn(s) === 0 ? r.p0 : (r.p0 === r.h ? r.gu : r.h); const isFree = g.free && g.free(s, m, mi); if (turnUid !== me && !isFree) return; const next = g.apply(s, m); if (next === s) return; s = next; r.m = (r.m || []).concat([m]); if (!isFree || g.turnSec >= 900) r.dl = now + (g.turnSec || BG.TURN) * 1000;
       let res2 = g.result(s); while (!res2) { const L = g.legal(s); if (L.length === 1 && L[0] === "pass") { s = g.apply(s, "pass"); r.m.push("pass"); res2 = g.result(s); } else break; }
       if (res2) { r.st = "done"; r.why = res2.why; r.win = res2.w === -1 ? "draw" : res2.w === 0 ? r.p0 : (r.p0 === r.h ? r.gu : r.h); r.fin = now; paid = Object.assign({}, r); } return r; });
     if (res.committed) { WJ.sfx(m && m.a === "ring" ? "bell" : "click"); if (paid) this.payout(paid); }
@@ -426,7 +428,7 @@ class Component extends DCLogic {
   }
   async finish(id, kind) {
     const me = this.uid, now = this.now(); let paid = null;
-    const res = await this.db.ref("tables/" + id).transaction(r => { paid = null; if (!r || r.st !== "play") return; const g = this.gdef(r.g); let s = g.init(r.seed); (r.m || []).forEach(mm => { s = g.apply(s, mm); }); const other = u => u === r.h ? r.gu : r.h;
+    const res = await this.db.ref("tables/" + id).transaction(r => { paid = null; if (!r || r.st !== "play") return; const g = this.gdef(r.g); let s = g.init(r.seed, gameRules(r)); (r.m || []).forEach(mm => { s = g.apply(s, mm); }); const other = u => u === r.h ? r.gu : r.h;
       if (kind === "resign") { r.win = other(me); r.why = "기권"; } else { if (now < (r.dl || 0) + 1500) return; const turnUid = g.turn(s) === 0 ? r.p0 : other(r.p0); r.win = other(turnUid); r.why = "시간 초과"; }
       r.st = "done"; r.fin = now; paid = Object.assign({}, r); return r; });
     if (res.committed && paid) this.payout(paid);
@@ -552,7 +554,7 @@ class Component extends DCLogic {
     });
     if (st.view !== "match") return out;
     const R = st.R; if (!R) return Object.assign(out, { ovResult: true, resTitle: "대국이 닫혔어요", again: () => this.leave(), toLobby: () => this.leave(), leave: () => this.leave(), resignLabel: "—", leaveLabel: "로비로" });
-    const g = this.gdef(R.g), s = this.S || g.init(R.seed), player = this.isPlayer(R), mi = R.st === "wait" ? 0 : this.meIdx(R), oi = 1 - mi;
+    const g = this.gdef(R.g), s = this.S || g.init(R.seed, gameRules(R)), player = this.isPlayer(R), mi = R.st === "wait" ? 0 : this.meIdx(R), oi = 1 - mi;
     const myUid = this.uid, oppN = R.h === myUid ? (R.gn || "상대 대기 중") : R.hn;
     const tsec = this.tsec(g), noLimit = tsec >= 900;
     const turnI = R.st === "play" ? g.turn(s) : -1, myT = R.st === "play" && turnI === mi && player;
