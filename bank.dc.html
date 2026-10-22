@@ -322,9 +322,6 @@ class Component extends DCLogic {
       { label: "부자 순위", value: ri >= 0 ? ri + 1 + "위" : "-", sub: "전체 " + ranked.length + "명 중", color: "#191F28" },
       { label: "대국 전적", value: tr.w + "승 " + tr.l + "패", sub: "대국 수익 " + (ready ? W.signed(tr.earn || 0) : "0") + "준", color: "#191F28" },
       { label: "연속 익절", value: (+(localStorage.getItem("wj_streak") || 0)) + "회", sub: "거래소 기록", color: UP },
-      { label: "올린 퀴즈", value: ((u.qna || {}).postedTotal || 0) + "개", sub: "친구에게 낸 문제", color: "#405fc0" },
-      { label: "푼 퀴즈", value: ((u.qna || {}).solvedTotal || 0) + "개", sub: "정답 " + ((u.qna || {}).correctTotal || 0) + "개", color: "#405fc0" },
-      { label: "Q&A 보상", value: F((u.qna || {}).earned || 0) + "준", sub: "퀴즈로 번 게임머니", color: "#405fc0" },
       { label: "연속 출석", value: ((u.daily || {}).streak || 0) + "일", sub: "매일 접속하면 보상이 커져요", color: AC },
       { label: "대출 여유", value: F(limit - loan) + "준", sub: "한도 " + F(limit) + "준", color: "#191F28" }
     ];
