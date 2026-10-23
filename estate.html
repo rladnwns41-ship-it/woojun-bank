@@ -99,7 +99,12 @@ input[type=range]{width:100%;accent-color:#3182F6}
 .lrank{display:flex;align-items:center;gap:10px;padding:10px 6px;border-radius:12px;cursor:pointer}.lrank:hover{background:#F9FAFB}.lrank.me{background:#E8F3FF}
 .lrank .no{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex:none}
 .lrank i{width:10px;height:10px;border-radius:3px;flex:none}
-.lown{display:inline-block;width:max-content;transform:translate(-50%,-135%);white-space:nowrap;pointer-events:none;padding:4px 8px;border-radius:8px;background:#fff;color:#191F28;font-size:11px;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.lown{font-family:'Pretendard Variable',Pretendard,sans-serif;display:inline-block;width:max-content;transform:translate(-50%,-135%);white-space:nowrap;pointer-events:none;padding:4px 8px;border-radius:8px;background:#fff;color:#191F28;font-size:11px;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+
+.land-tools{position:absolute;top:14px;left:14px;z-index:1001;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 80px)}
+.land-tools button{border:1px solid #dce5ee;border-radius:12px;background:#fff;padding:10px 13px;color:#364559;font-weight:750;box-shadow:0 4px 18px #12223422;cursor:pointer}.land-tools button.on{background:#3182f6;color:#fff;border-color:#3182f6}
+.land-tools span{padding:10px 13px;background:#172b42e8;border-radius:12px;color:#fff;font-size:12px;font-weight:750}
+.land-selecting{cursor:crosshair!important;touch-action:none!important}.land-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.land-summary div{border-radius:12px;background:#f1f5f9;padding:11px 6px;text-align:center;font-size:11px;color:#6b7684}.land-summary b{display:block;font-size:21px;color:#191f28;margin-bottom:3px}.land-action{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:13px;border:0;border-radius:12px;background:#3182f6;color:#fff;font-weight:750;font-size:14px;cursor:pointer}.land-action small{display:block;text-align:left;font-size:11px;opacity:.8;margin-top:3px}.land-action.sell{background:#e8f3ff;color:#1b64da}.land-action.take{background:#f04452}.land-action:disabled{background:#f2f4f6;color:#a1aab6;cursor:default}
 </style>
 </head>
 <body>
@@ -116,7 +121,7 @@ input[type=range]{width:100%;accent-color:#3182F6}
     <div class="pbody" id="pbody"></div>
     <div id="sheet"><div class="in" id="sheetIn"></div></div>
   </aside>
-  <div id="mapwrap"><div id="map"></div><div class="mapctl" id="mapctl"></div></div>
+  <div id="mapwrap"><div id="map"></div><div class="land-tools" id="landTools" hidden style="display:none"></div><div class="mapctl" id="mapctl"></div></div>
 </div>
 <script>
 (function () {
@@ -410,6 +415,7 @@ input[type=range]{width:100%;accent-color:#3182F6}
   const LAT0 = 33.0, LNG0 = 125.0, LSTEP = .05, LR = 114, LC = 140, LAND_BASE = 500000, LAND_HEAT = 8, LAND_UP = .04;
   const LMASK = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAH/4AAAAAAAAAAAAAAAAAAAAB//gAAAAAAAAAAAAAAAAAAAAP/8AAAAAAAAAAAAAAAAAAAAB//gAAAAAAAAAAAAAAAAAAAAP/4AAAAAAAAAAAAAAAAAAAAAf8AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAAAAAAAADxgAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAD/MAAAAAAAAAAAAAAAAAAABx/iAAAAAAAAAAAAAAAAAAAA+fcOGAAAAAAAAAAAAAAAAAAH37j5AAAAAAAAAAAAAAAAAAA++8/gwAAAAAAAAAAAAAAAADH//HsEAAAAAAAAAAAAAAAAAx//4fLgMAAAAAAAAAAAAAIAwef/3mQAAAAAAAAAAAAAAAAM3///x94AMAAAAAAAAAAAAADcf//8efAnAAAAAAAAAAAAAAGH/////yb4AAAAAAAAAAAAADm////D4P+AAAAAAAAAAAAAAS////8Z/jgAAAAAAAAAAAAAAP/////f4YAAAAAAAAAAAAAAR///////CgAAAAAAAAAAAAAf3//////2dgAAAAAAAAAAAACb///////f+AAAAAAAAAAAAAB/////////wAAAAAAAAAAAAAf////////+AAAAAAAAAAAAAH/////////gAAAAAAAAAAAAB/////////+AAAAAAAAAAAAAP/////////gAAAAAAAAAAAAD/////////8AAAAAAAAAAAAAf/////////gAAAAAAAAAAAAD/////////4AAAAAAAAAAAAQ//////////AAAAAAAAAAAAAf/////////gAAAAAAAAAAAAD/////////8AAAAAAAAAAAAAP/////////AAAAAAAAAAAAAD/////////wAAAAAAAAAAAAAP////////+AAAAAAAAAAAAAH/////////gAAAAAAAAAAAAD/////////4AAAAAAAAAAAAD/////////+AAAAAAAAAAAAAH////////8wAAAAAAAAAAAAD/////////kAAAAAAAAAAAAB/////////4AAAAAAAAAAAAA/////////8AAAAAAAAAAAAAH/////////AAAAAAAAAAAAAB/////////wAAAAAAAAAAAAA/////////8AAAAAAAAAAAAAP/////////gAAAAAAAAAAAAb/////////4AAAAAAAAAAAAN/////////+AAAAAAAAAAAADf/////////gAAAAAAAAAAAA3/////////4AAAAAAAAAAAAO/////////+AAAAAAAAAAAAf//////////gAAAAAAAAAAAL//////////8AAAAAAAAAAAD///////////AAAAAAAAAAAAP//////////gAAAAAAAAAAADv/////////4AAAAAAAAAAAAT/P///////+AAAAAAAAAAAABv/////////gAAAAAAAAAAAADD////////4AAAAAAAAAAAAAB////////+AAAAAAAAAAAAAA/////////AAAAAAAAAAAAAAf////////wAAAAAAAAAAACAX////////4AAAAAAAAAAAAAUP///////+AAAAAAAAAAAAAAP////////AAAAAAAAAAAAAAP////////gAAAAAAAAAAAAAz////////4AAAAAAAAAAAAAf////////8AAAAAwAAAAAAAAv///////+AAAAAOAAAAAAAAH////////gAAAAAAAAAAAAAf////////wAAAAAAAAAAAAAP////////8AAAAAAAAAAAAAD////////+AAAAAAAAAAAAAD/f///////AAAAAAAAAAAAAASH///////AAAAAAAAAAAAAAAB///////wAAAAAAAAAAAAAAAf//////4AAAAAAAAAAAAAAAB//////8AAAAAAAAAAAAAAAAP/////+AAAAAAAAAAAAAAAAB//////AAAAAAAAAAAAAAAAAP/////gAAAAAAAAAAAAAAAAD/////4AAAAAAAAAAAAAAAAAf////8AAAAAAAAAAAAAAAAAB/////AAAAAAAAAAAAAAAAAADx8H/gAAAAAAAAAAAAAAAAAAAAAfwAAAAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAAAAAAAAAeAAAAAAAAAAAAAAAAAAAAAAHgAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
   const LAND_TITLES = [[0, "", "토지 없음"], [1, "", "이장"], [3, "", "지주"], [8, "", "영주"], [20, "", "백작"], [45, "", "공작"], [90, "", "왕"], [180, "", "황제"], [350, "", "대륙의 지배자"]];
+  let landSelection = [], landDragMode = false, landSuppress = 0, landPending = null;
   let LCELLS = null, cellById = {}, landLayer = null, landLabels = null, landRects = {}, landLblSig = "", landBusy = false;
   const LAND = () => EST.land || {};
   const landTitle = n => { let t = LAND_TITLES[0]; LAND_TITLES.forEach(x => { if (n >= x[0]) t = x; }); return t; };
@@ -424,17 +430,21 @@ input[type=range]{width:100%;accent-color:#3182F6}
   function landStats() { landCells(); const L = LAND(), by = {};
     Object.keys(L).forEach(id => { const x = L[id], cell = cellById[id]; if (!x || !x.o || !cell) return; const s = by[x.o] || (by[x.o] = { k: x.o, n: 0, km: 0, name: x.on, first: x.ts || 0 }); s.n++; s.km += cell.km; if ((x.ts || 0) < s.first) s.first = x.ts; });
     const list = Object.keys(by).map(k => by[k]).sort((a, b) => b.n - a.n || a.first - b.first); list.forEach(s => { s.name = (S.users[s.k] || {}).name || s.name || "?"; }); return { list, by }; }
-  function cellStyle(cell, x) { const sel = S.land === cell.id;
+  function cellStyle(cell, x) { const sel = landSelection.includes(cell.id);
     if (!x) return { color: "#fff", weight: sel ? 2.5 : .4, opacity: sel ? 1 : .2, fillColor: "#fff", fillOpacity: sel ? .38 : .04 };
     const mine = x.o === me, col = ownerColor(x.o); return { color: sel ? "#fff" : mine ? "#BFD9FF" : col, weight: sel ? 3 : 1, opacity: 1, fillColor: col, fillOpacity: mine ? .85 : .65 }; }
   function landShow(on) { if (!map) return; const ctl = $("mapctl"); if (ctl) ctl.style.display = on ? "none" : "";
+    const tools = $("landTools"); tools.style.display = on ? "flex" : "none"; tools.hidden = !on;
+    $("map").classList.toggle("land-selecting", on && landDragMode);
+    if (on && landDragMode) { map.dragging.disable(); map.boxZoom.disable(); } else { map.dragging.enable(); map.boxZoom.enable(); }
+    if (on) tools.innerHTML = `<button data-landdrag="1" class="${landDragMode ? "on" : ""}">${landDragMode ? "드래그해서 선택 중" : "드래그 선택"}</button><button data-landme="${me || ""}">내 땅 보기</button><button data-landclear="1">선택 해제</button><span>${landSelection.length ? landSelection.length + "칸 선택" : "칸을 누르거나 드래그로 선택"}</span>`;
     if (!on) { if (landLayer && map.hasLayer(landLayer)) { map.removeLayer(landLayer); map.removeLayer(landLabels); } return; }
     Object.keys(markers).forEach(k => { map.removeLayer(markers[k]); delete markers[k]; });
     const L = LAND(), cells = landCells();
     if (!landLayer) { const rend = L_canvas(); landLayer = L_group(); landLabels = L_group();
-      cells.forEach(cell => { const r = Lf.rectangle([[LAT0 + cell.r * LSTEP, LNG0 + cell.c * LSTEP], [LAT0 + (cell.r + 1) * LSTEP, LNG0 + (cell.c + 1) * LSTEP]], Object.assign({ renderer: rend, interactive: true, bubblingMouseEvents: false }, cellStyle(cell, L[cell.id]))); r._sig = ""; r.on("click", () => { S.land = cell.id; landShow(true); render(); $("pbody").scrollTop = 0; }); r.addTo(landLayer); landRects[cell.id] = r; }); }
+      cells.forEach(cell => { const r = Lf.rectangle([[LAT0 + cell.r * LSTEP, LNG0 + cell.c * LSTEP], [LAT0 + (cell.r + 1) * LSTEP, LNG0 + (cell.c + 1) * LSTEP]], Object.assign({ renderer: rend, interactive: true, bubblingMouseEvents: false }, cellStyle(cell, L[cell.id]))); r._sig = ""; r.on("click", () => { if (Date.now() < landSuppress || landDragMode) return; S.land = cell.id; landSelection = [cell.id]; landShow(true); render(); $("pbody").scrollTop = 0; }); r.addTo(landLayer); landRects[cell.id] = r; }); }
     if (!map.hasLayer(landLayer)) { landLayer.addTo(map); landLabels.addTo(map); }
-    cells.forEach(cell => { const x = L[cell.id], r = landRects[cell.id], sig = (x ? x.o : "") + (S.land === cell.id ? "*" : "") + (x && x.o === me ? "m" : ""); if (r._sig !== sig) { r._sig = sig; r.setStyle(cellStyle(cell, x)); if (S.land === cell.id) r.bringToFront(); } });
+    cells.forEach(cell => { const x = L[cell.id], r = landRects[cell.id], sig = (x ? x.o : "") + (landSelection.includes(cell.id) ? "*" : "") + (x && x.o === me ? "m" : ""); if (r._sig !== sig) { r._sig = sig; r.setStyle(cellStyle(cell, x)); if (landSelection.includes(cell.id)) r.bringToFront(); } });
     const st = landStats(), top = st.list.slice(0, 8), sg = top.map(s => s.k + s.n + s.name).join("|");
     if (sg !== landLblSig) { landLblSig = sg; landLabels.clearLayers();
       top.forEach((s, i) => { const mine = cells.filter(c => (L[c.id] || {}).o === s.k); let la = 0, ln = 0; mine.forEach(c => { la += c.lat; ln += c.lng; }); la /= mine.length; ln /= mine.length; let best = mine[0], bd = 9; mine.forEach(c => { const d = Math.hypot(c.lat - la, c.lng - ln); if (d < bd) { bd = d; best = c; } });
@@ -444,28 +454,55 @@ input[type=range]{width:100%;accent-color:#3182F6}
   function landView() { const st = landStats(), tot = landCells().length, my = st.by[me], n = my ? my.n : 0, tt = landTitle(n), nx = LAND_TITLES.find(x => x[0] > n), rk = my ? st.list.indexOf(my) + 1 : 0, sold = st.list.reduce((a, s) => a + s.n, 0), cash = (S.user && S.user.cash) || 0;
     let h = '<div style="background:#191F28;color:#fff;border-radius:20px;padding:20px"><div style="font-size:13px;color:#B0B8C1;font-weight:700">내 영토 · ' + tt[2] + '</div><div style="font-size:30px;font-weight:900;letter-spacing:-1px;margin-top:4px">' + n + '칸</div><div style="display:flex;gap:14px;margin-top:8px;font-size:13px;color:#B0B8C1">'
       + (n ? '<span>랭킹 <b style="color:#fff">' + rk + '위</b></span><span>' + fmt(my.km) + 'km²</span><span>전국 ' + (n / tot * 100).toFixed(1) + "%</span>" : "<span>지도에서 칸을 눌러 첫 땅을 사 보세요</span>") + "</div>" + (nx ? '<div style="font-size:12px;color:#8B95A1;margin-top:10px">' + nx[2] + "까지 " + (nx[0] - n) + "칸 남았어요</div>" : "") + "</div>";
-    const sc = S.land && cellById[S.land];
-    if (sc) { const x = LAND()[sc.id], price = landPrice(sc, n);
-      if (x) h += '<div class="card"><div class="lbl">' + esc(sc.near) + " 인근 · " + sc.km.toFixed(1) + 'km²</div><div class="val">' + (x.o === me ? "내 땅" : esc(((S.users[x.o] || {}).name) || x.on || "?") + " 님의 땅") + '</div><div class="lbl" style="margin-top:3px">' + short(x.p || 0) + "준에 매입 · " + ago(x.ts || Date.now()) + "</div></div>";
-      else h += '<div class="card" style="display:flex;flex-direction:column;gap:10px"><div><div class="lbl">' + esc(sc.near) + " 인근 · " + sc.km.toFixed(1) + 'km² · 주인 없음</div><div class="val">' + fmt(price) + '준</div><div class="lbl" style="margin-top:3px">내 ' + (n + 1) + '번째 땅</div></div><button class="big-btn" data-buyland="' + sc.id + '" style="background:' + (cash >= price ? "#3182F6" : "#F2F4F6") + ";color:" + (cash >= price ? "#fff" : "#B0B8C1") + '">' + (cash >= price ? "이 땅 사기" : "현금이 모자라요") + "</button></div>"; }
+    h += '<div class="card" style="background:#eef5ff"><b style="font-size:15px">원하는 땅을 한 번에</b><div style="font-size:12px;color:#64748b;line-height:1.7;margin-top:5px">지도 위 <b>드래그 선택</b>을 켜고 영역을 그려 보세요.<br>빈 땅 구매 · 내 땅 판매 · 다른 주인 땅 빼앗기</div></div>';
+    if (landSelection.length) {
+      const buy = landQuote("buy"), sell = landQuote("sell"), take = landQuote("take"), protectedN = landSelection.filter(id => { const x=LAND()[id]; return x && x.o!==me && Date.now()-(x.ts||0)<300000; }).length;
+      h += '<div class="card" style="background:#fff;border:1px solid #e5e8eb;display:flex;flex-direction:column;gap:12px"><div style="display:flex;justify-content:space-between;align-items:center"><b>' + landSelection.length + '칸 선택했어요</b><span class="lbl">최대 100칸</span></div><div class="land-summary"><div><b>' + buy.ids.length + '</b>빈 땅</div><div><b>' + sell.ids.length + '</b>내 땅</div><div><b>' + (take.ids.length + protectedN) + '</b>다른 주인</div></div>';
+      const action = (kind,q,title,sub) => q.ids.length ? '<button class="land-action ' + kind + '" data-landtrade="' + kind + '"' + (landBusy || kind!=="sell" && cash<q.total ? ' disabled' : '') + '><span>' + title + ' ' + q.ids.length + '칸<small>' + sub + '</small></span><span>' + (kind==="sell" ? "+" : "−") + short(q.total) + '준</span></button>' : '';
+      h += action("buy",buy,"빈 땅 사기","선택한 빈 땅을 한 번에 매입") + action("sell",sell,"내 땅 팔기","매입가의 80%를 현금으로 반환") + action("take",take,"다른 땅 빼앗기","강제 매입 · 이전 주인에게 80% 보상");
+      if (protectedN) h += '<div class="lbl">' + protectedN + '칸은 매입 후 5분 보호 중이라 빼앗기에서 제외해요.</div>';
+      if (landSelection.length===1) { const c=cellById[landSelection[0]], x=LAND()[c.id]; h += '<div class="lbl">' + esc(c.near) + ' 인근 · ' + c.km.toFixed(1) + 'km²' + (x ? '<br>주인: ' + esc((S.users[x.o]||{}).name || x.on || "?") + ' · 매입가 ' + short(x.p||0) + '준' : '') + '</div>'; }
+      h += '</div>';
+    }
     h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:8px 4px 0"><b style="font-size:15px">영토 랭킹</b><span class="lbl">전국 ' + fmt(tot) + "칸 중 " + fmt(sold) + "칸 주인 있음</span></div>";
     if (!st.list.length) h += '<div class="empty">아직 땅 주인이 없어요</div>';
     else { const top = st.list.slice(0, 10); if (my && rk > 10) top.push(my);
       h += top.map(s => { const i = st.list.indexOf(s); return '<div class="lrank' + (s.k === me ? " me" : "") + '" data-landme="' + s.k + '"><span class="no" style="background:' + (["#FFC342", "#B0B8C1", "#D9925B"][i] || "#8B95A1") + '">' + (i + 1) + '</span><i style="background:' + ownerColor(s.k) + '"></i><span style="flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(s.name) + (s.k === me ? " (나)" : "") + ' <span class="lbl">' + landTitle(s.n)[2] + '</span></span><span style="text-align:right;flex:none"><b style="font-size:14px">' + s.n + '칸</b><div class="lbl">' + fmt(s.km) + "km²</div></span></div>"; }).join(""); }
-    return h + '<div class="lbl" style="padding:4px 6px;line-height:1.7">월세·세금 없이 영토만 늘어나요. 도시에 가까울수록, 내 땅이 많을수록 비싸고 산 땅은 팔 수 없어요. 칭호: ' + LAND_TITLES.slice(1).map(x => x[2] + " " + x[0] + "칸").join(" · ") + "</div>"; }
-  async function buyLand(id) { const cell = cellById[id]; if (!cell || landBusy || !S.user) return; if (LAND()[id]) return toast("이미 주인이 있는 땅이에요");
-    const my = landStats().by[me], n = my ? my.n : 0, price = landPrice(cell, n); if ((S.user.cash || 0) < price) return toast("현금이 모자라요 · 필요 " + fmt(price) + "준");
-    landBusy = true; const t0 = Date.now();
-    try { let got = false; const r1 = await db.ref("estate/land/" + id).transaction(x => { got = false; if (x) return; got = true; return { o: me, on: myName(), p: price, ts: t0 }; }).catch(() => ({ committed: false }));
-      if (!r1.committed || !got) return toast("방금 다른 사람이 샀어요");
-      let ok = false; const r2 = await db.ref("users/" + me).transaction(x => { ok = false; if (!x) return x; if ((x.cash || 0) < price) return; ok = true; x.cash -= price; return x; }).catch(() => ({ committed: false }));
-      if (!r2.committed || !ok) { await db.ref("estate/land/" + id).remove().catch(() => {}); return toast("현금이 모자라요"); }
-      try { WJ.log(me, "buy", { stock: "땅 " + cell.near + " (땅따먹기)", qty: 1, price }); } catch (e) {}
-      const a = landTitle(n), b = landTitle(n + 1); toast(a[0] !== b[0] ? "<b>" + b[2] + "(으)로 승급했어요</b> · 영토 " + (n + 1) + "칸" : "<b>" + (n + 1) + "번째 땅</b>을 샀어요 · −" + fmt(price) + "준"); try { WJ.sfx && WJ.sfx("win"); a[0] !== b[0] && WJ.confetti && WJ.confetti(); } catch (e) {}
-    } finally { landBusy = false; } }
+    return h + '<div class="lbl" style="padding:4px 6px;line-height:1.8">판매는 매입가의 80%를 돌려받아요. 빼앗기는 일반 구매가와 기존 매입가 중 높은 금액의 1.5배이며, 이전 주인에게 80%를 보상해요. 매입 후 5분간 보호돼요. 월세·보유세는 없어요.</div>'; }
+  function landQuote(action) {
+    const st=landStats().by[me]; let n=st ? st.n : 0, total=0;
+    const ids=landSelection.slice().sort().filter(id => { const x=LAND()[id]; return action==="buy" ? !x || !x.o : action==="sell" ? x && x.o===me : x && x.o!==me && Date.now()-(x.ts||0)>=300000; });
+    ids.forEach(id => { const c=cellById[id], x=LAND()[id]; if (action==="sell") total+=Math.floor((x.p||c.base)*.8/10000)*10000; else { total+=action==="take" ? Math.round(Math.max(landPrice(c,n),x.p||0)*1.5/10000)*10000 : landPrice(c,n); n++; } });
+    return {ids,total};
+  }
+  async function tradeLand(action) {
+    if (landBusy || !S.user) return;
+    const q=landQuote(action); if (!q.ids.length) return;
+    if (action!=="sell" && (S.user.cash||0)<q.total) return toast("현금이 모자라요");
+    const label=action==="sell" ? "판매" : action==="take" ? "강제 매입" : "구매";
+    if (!confirm(q.ids.length + "칸 " + label + " · " + fmt(q.total) + "준" + (action==="sell" ? "을 돌려받아요." : "을 사용해요.") + (action==="take" ? "\n이전 주인에게 80%가 보상되고 소유권이 바뀌어요." : ""))) return;
+    const key=action+"|"+q.ids.join(",")+"|"+q.total;
+    if (!landPending || landPending.key!==key) landPending={key,nonce:crypto.randomUUID().replace(/-/g,"")};
+    landBusy=true; render();
+    try {
+      const r=await WJ.api("land/trade",{action,ids:q.ids,maxTotal:q.total,nonce:landPending.nonce});
+      landPending=null; landSelection=[]; S.land=null;
+      toast("<b>"+r.count+"칸 "+label+" 완료</b> · "+(action==="sell" ? "+"+fmt(r.credit) : "−"+fmt(r.debit))+"준"); WJ.sfx(action==="sell" ? "coin" : "win");
+    } catch (e) { toast(esc(e.message||"거래를 확인하지 못했어요. 같은 버튼을 다시 눌러 확인해 주세요.")); }
+    finally { landBusy=false; landShow(S.tab==="land"); render(); }
+  }
+  function setupLandDrag() {
+    const el=$("map"); let start=null, box=null, pointer=null;
+    const clear=() => { if (box) map.removeLayer(box); box=null; start=null; pointer=null; };
+    el.addEventListener("pointerdown",e => { if (S.tab!=="land" || !landDragMode || landBusy || e.button!==0 || e.target.closest(".leaflet-control")) return; e.preventDefault(); e.stopImmediatePropagation(); start=map.mouseEventToLatLng(e); pointer=e.pointerId; el.setPointerCapture(pointer); box=Lf.rectangle([start,start],{color:"#fff",weight:2,dashArray:"6 4",fillColor:"#3182f6",fillOpacity:.2,interactive:false}).addTo(map); },true);
+    el.addEventListener("pointermove",e => { if (!start || e.pointerId!==pointer) return; e.preventDefault(); e.stopImmediatePropagation(); box.setBounds(Lf.latLngBounds(start,map.mouseEventToLatLng(e))); },true);
+    el.addEventListener("pointerup",e => { if (!start || e.pointerId!==pointer) return; e.preventDefault(); e.stopImmediatePropagation(); const end=map.mouseEventToLatLng(e), b=Lf.latLngBounds(start,end), ids=landCells().filter(c => c.lat>=b.getSouth() && c.lat<=b.getNorth() && c.lng>=b.getWest() && c.lng<=b.getEast()).map(c=>c.id); if (!ids.length) { const r=Math.floor((end.lat-LAT0)/LSTEP), c=Math.floor((end.lng-LNG0)/LSTEP), id=r+"_"+c; if (cellById[id]) ids.push(id); } landSuppress=Date.now()+500; clear(); if (ids.length>100) toast("100칸을 넘었어요. 지도를 확대하거나 더 작은 영역을 선택해 주세요."); else { landSelection=ids; S.land=ids[0]||null; } landShow(true); render(); },true);
+    el.addEventListener("pointercancel",clear,true);
+    window.addEventListener("blur",clear);
+  }
 
   // ---------- 이벤트 ----------
-  document.addEventListener("click", e => { const t = e.target.closest("[data-tab],[data-sel],[data-back],[data-sort],[data-range],[data-dtab],[data-rent],[data-type],[data-contract],[data-close],[data-sign],[data-list],[data-unlist],[data-unlist2],[data-quick],[data-repay],[data-mode],[data-rm],[data-all],[data-buyland],[data-landme]"); if (!t) return; const d = t.dataset;
+  document.addEventListener("click", e => { const t = e.target.closest("[data-tab],[data-sel],[data-back],[data-sort],[data-range],[data-dtab],[data-rent],[data-type],[data-contract],[data-close],[data-sign],[data-list],[data-unlist],[data-unlist2],[data-quick],[data-repay],[data-mode],[data-rm],[data-all],[data-landtrade],[data-landme],[data-landdrag],[data-landclear]"); if (!t) return; const d = t.dataset;
     if (d.tab) { S.tab = d.tab; if (d.tab !== "map") S.sel = null; setTabs(); drawPins(); render(); }
     else if (d.all) { if (map && KOR) map.flyToBounds(KOR, { duration: .8 }); }
     else if (d.type) { S.type = d.type; renderCtl(); drawPins(); render(); }
@@ -479,7 +516,9 @@ input[type=range]{width:100%;accent-color:#3182F6}
     else if (d.repay) repay(d.repay);
     else if (d.mode) { const [hid, m] = d.mode.split("|"); setMode(hid, m); }
     else if (d.rm) remodel(d.rm);
-    else if (d.buyland) buyLand(d.buyland);
+    else if (d.landtrade) tradeLand(d.landtrade);
+    else if (d.landdrag) { landDragMode=!landDragMode; landShow(true); }
+    else if (d.landclear) { landSelection=[]; S.land=null; landShow(true); render(); }
     else if (d.landme) landMe(d.landme);
     else if (d.sel) select(d.sel, true);
     else if (d.back) { S.sel = null; drawPins(); render(); }
@@ -492,7 +531,7 @@ input[type=range]{width:100%;accent-color:#3182F6}
   $("logout").addEventListener("click", () => window.WJ && WJ.logout());
 
   (async function boot() {
-    initMap(); render();
+    initMap(); setupLandDrag(); render();
     while (!window.WJ) await new Promise(r => setTimeout(r, 40));
     await WJ.authReady; me = WJ.uid(); if (!me) { WJ.requireUser(); return; }
     db = await WJ.ready; WJ.presence(me).catch(() => {});

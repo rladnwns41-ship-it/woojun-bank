@@ -64,7 +64,7 @@
     "companyChat": { ".read": "auth != null", "$cid": { ".write": "auth != null" } },
     "cwars": { ".read": "auth != null", ".indexOn": ["ts"], "$id": { ".write": "auth != null" } },
     "coGrave": { ".read": "auth != null", "$id": { ".write": "auth != null && !data.exists()" } },
-    "estate": { ".read": "auth != null", "$pid": { ".write": "auth != null" } },
+    "estate": { ".read": "auth != null", "$pid": { ".write": "auth != null && $pid !== 'land'" } },
     "tourney": { ".read": "auth != null", ".write": "auth != null" },
 
     "tables": {

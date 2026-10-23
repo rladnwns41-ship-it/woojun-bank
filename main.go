@@ -29,11 +29,11 @@ import (
 )
 
 const (
-	codeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-	day          = int64(24 * time.Hour / time.Millisecond)
-	loanPenalty  = 0.05
-	maxIssue     = 50
-	maxAmount    = 100_000_000
+	codeAlphabet  = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+	day           = int64(24 * time.Hour / time.Millisecond)
+	loanPenalty   = 0.05
+	maxIssue      = 50
+	maxAmount     = 100_000_000
 	exchangeBonus = 0.05 // 화폐 교환 시 액면가에 더 얹어 주는 비율
 )
 
@@ -87,7 +87,7 @@ func main() {
 	mux.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.Header().Set("Cache-Control", "no-store")
-		for _, f := range []string{"tourney.js", "tournament.dc.html", "game-core.js", "wj-ui.js", "company.dc.html", "company-core.js", "coin.dc.html", "estate.html", "trade.dc.html", "bank.dc.html"} {
+		for _, f := range []string{"tourney.js", "tournament.dc.html", "game-core.js", "wj-ui.js", "company.dc.html", "company-core.js", "coin.dc.html", "estate.html", "trade.dc.html", "bank.dc.html", "games.dc.html", "games-duo.js", "land-catalog.json"} {
 			b, err := os.ReadFile(filepath.Join(root, f))
 			if err != nil {
 				w.Write([]byte(f + "  없음\n"))
@@ -102,6 +102,7 @@ func main() {
 	mux.HandleFunc("/api/admin/currency/void", post(adminOnly(handleVoid)))
 	mux.HandleFunc("/api/admin/event", post(adminOnly(handleLiveEventAdmin)))
 	mux.HandleFunc("/api/event/answer", post(handleLiveEventAnswer))
+	mux.HandleFunc("/api/land/trade", post(handleLandTrade))
 	mux.HandleFunc("/", static)
 
 	port := os.Getenv("PORT")

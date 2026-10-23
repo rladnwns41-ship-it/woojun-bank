@@ -9,7 +9,7 @@
       this.cancels = new Map();
     }
     validStake(n) { return Number.isSafeInteger(n) && this.stakes.includes(n); }
-    fresh(r) { return !!r && r.st === "wait" && !r.gu && this.validStake(r.stake) && !!this.game(r.g) && Number.isFinite(r.ts) && this.now() - r.ts < WAIT_MS && r.ts <= this.now() + 30000; }
+    fresh(r) { return !!r && r.st === "wait" && !r.gu && this.validStake(r.stake) && !!this.game(r.g) && (!this.game(r.g).friendlyOnly || r.stake===0) && Number.isFinite(r.ts) && this.now() - r.ts < WAIT_MS && r.ts <= this.now() + 30000; }
     visible(tables) {
       // 예전 버그로 한 사람이 여러 방을 만든 기록도 한 사람의 대기 1건으로 표시한다.
       const hosts = new Set();
@@ -109,7 +109,7 @@
       return keep;
     }
     async create(gid, stake, invite = false) {
-      if (!this.game(gid) || !this.validStake(stake)) throw new Error("게임 또는 판돈이 올바르지 않아요.");
+      if (!this.game(gid) || !this.validStake(stake) || this.game(gid).friendlyOnly && stake!==0) throw new Error("게임 또는 판돈이 올바르지 않아요.");
       const waits = await this.waits();
       const own = Object.keys(waits).filter(id => {
         const r = waits[id]; return this.fresh(r) && r.h === this.uid && r.g === gid && r.stake === stake && !!r.invite === invite;
