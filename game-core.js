@@ -89,8 +89,15 @@
     const tok = await u.getIdToken();
     let r; try { r = await fetch("/api/" + path, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + tok, "X-WJ-Device": DID }, body: JSON.stringify(body || {}) }); }
     catch (e) { throw new Error("서버에 연결하지 못했어요"); }
-    let j = {}; try { j = await r.json(); } catch (e) { if (!r.ok) throw new Error("서버가 응답하지 않아요 (" + r.status + ")"); }
-    if (!r.ok || j.error) throw new Error(j.error || "요청 실패 (" + r.status + ")");
+    // A Render static site can return index.html (200) for an unknown /api route.
+    // Never interpret that fallback as a successful financial transaction.
+    const type = (r.headers.get("content-type") || "").toLowerCase();
+    if (!type.includes("application/json")) {
+      throw new Error("거래 서버 API가 연결되지 않았어요. Render를 정적 사이트가 아닌 Go 웹 서비스로 배포해야 합니다.");
+    }
+    let j;
+    try { j = await r.json(); } catch (e) { throw new Error("거래 서버 응답이 올바르지 않아요 (" + r.status + ")"); }
+    if (!r.ok || !j || typeof j !== "object" || j.error) throw new Error((j && j.error) || "요청 실패 (" + r.status + ")");
     return j;
   }
   // ---------- 게스트 ----------
