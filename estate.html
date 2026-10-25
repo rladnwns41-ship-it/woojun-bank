@@ -490,8 +490,8 @@ input[type=range]{width:100%;accent-color:#3182F6}
     landBusy=true; render();
     try {
       const r=await WJ.api("land/trade",{action,ids:q.ids,maxTotal:q.total,nonce:landPending.nonce});
-      landPending=null; landSelection=[]; S.land=null;
       if (!r || r.action !== action || !Number.isInteger(r.count) || r.count !== q.ids.length || !Number.isFinite(r.debit) || !Number.isFinite(r.credit)) { throw new Error("거래 결과를 확인할 수 없어요. 잔액과 소유권을 확인한 뒤 다시 시도해 주세요."); }
+      landPending=null; landSelection=[]; S.land=null;
       toast("<b>"+r.count+"칸 "+label+" 완료</b> · "+(action==="sell" ? "+"+fmt(r.credit) : "−"+fmt(r.debit))+"준"); WJ.sfx(action==="sell" ? "coin" : "win");
     } catch (e) { toast(esc(e.message||"거래를 확인하지 못했어요. 같은 버튼을 다시 눌러 확인해 주세요.")); }
     finally { landBusy=false; landShow(S.tab==="land"); render(); }
